@@ -24,24 +24,29 @@ $db = $database->getConnection();
  */
 $txn = new Txn($db);
 
-$txn_type = $_POST['type'];
+$id = $_POST['id'];
+$name = $_POST['name'];
 $amount = $_POST['amount'];
 $details = $_POST['details'];
+$payment_type = $_POST['type'];
+$method = $_POST['method'];
+$userid = $_POST['userid'];
 
-//getting current timestamp
-$current_date = date("Y-m-d H:i:s");
-
-if (!empty($txn_type) && !empty($amount) && !empty($details))
+if (!empty($id) && !empty($name) && !empty($amount) && !empty($details) && !empty($method) && !empty($userid))
 {
-
+    $txn->id = $id;
+    $txn->name = $name;
     $txn->amount = $amount;
     $txn->details = $details;
-    $txn->date = $current_date;
+    $txn->payment_type = $payment_type;
+    $txn->method = $method;
+    $txn->userid = $userid;
+    $txn->date = date("Y-m-d H:i:s");
 
-    if ($txn->admin_txn($txn_type))
+    if ($txn->client_txn())
     {
         //if success
-        echo json_encode(array("message" => "Your Transaction has been successfully."));
+        echo json_encode(array("message" => 201));
 
     }else{
         echo json_encode(array("message" => "Error!!"));

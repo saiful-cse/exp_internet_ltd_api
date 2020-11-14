@@ -24,35 +24,28 @@ $db = $database->getConnection();
  */
 $txn = new Txn($db);
 
-$id = $_POST['id'];
-$name = $_POST['name'];
+$txn_type = $_POST['type'];
 $amount = $_POST['amount'];
 $details = $_POST['details'];
-$payment_type = $_POST['type'];
+$method = $_POST['method'];
+$userid = $_POST['userid'];
 
-//getting current timestamp
-$current_date = date("Y-m-d H:i:s");
 
-if (!empty($id) && !empty($name) && !empty($amount) && !empty($details))
-{
-    $txn->id = $id;
-    $txn->name = $name;
+if (!empty($txn_type) && !empty($amount) && !empty($details) && !empty($method) && !empty($userid)) {
+
     $txn->amount = $amount;
     $txn->details = $details;
-    $txn->payment_type = $payment_type;
-    $txn->date = $current_date;
+    $txn->method = $method;
+    $txn->userid = $userid;
+    $txn->date = date("Y-m-d H:i:s");
 
-    if ($txn->client_txn())
-    {
+    if ($txn->admin_txn($txn_type)) {
         //if success
-        echo json_encode(array("message" => "Your Transaction has been successfully."));
-
-    }else{
+        echo json_encode(array("message" => 201));
+        
+    } else {
         echo json_encode(array("message" => "Error!!"));
     }
-
-}else
-{
+} else {
     echo json_encode(array("message" => "Data incomplete, Try again later!!"));
 }
-

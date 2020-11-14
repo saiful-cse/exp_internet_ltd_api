@@ -45,21 +45,11 @@ if (!empty($get_first_date) && !empty($get_last_date))
         //retrieve the table contents
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            extract($row);
-
-            $each_txn = array(
-                "txn_id" => $txn_id,
-                "client_id" => $client_id,
-                "name" => $name,
-                "date" => $date,
-                "credit" => $credit,
-                "debit" => $debit,
-                "details" => $details
-            );
-
-            array_push($txn_arr["all_txn"], $each_txn);
+           
+            array_push($txn_arr["all_txn"], $row);
         }
         echo json_encode($txn_arr);
+
     }else{
 
         echo json_encode(array("message" => "No transaction found!!"));

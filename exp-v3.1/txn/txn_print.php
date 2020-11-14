@@ -6,19 +6,19 @@ $last_date = "";
 $api = "";
 $totalCreditDebitApi = "";
 
-if (isset($_GET['view'])) {
-    if (empty($_GET['first_date'])) {
+if (isset($_POST['view'])) {
+    if (empty($_POST['first_date'])) {
         $error = "Select first date";
-    } else if (empty($_GET['last_date'])) {
+    } else if (empty($_POST['last_date'])) {
         $error = "Select last date";
-    }else if(empty($_GET['password'])){
+    }else if(empty($_POST['password'])){
         $error = "Enter correct password";
-    }else if($_GET['password'] != "saiful@#21490"){
+    }else if($_POST['password'] != "89919161"){
         $error = "Enter correct password";
     }
      else {
-        $first_date = $_GET['first_date'];
-        $last_date = $_GET['last_date'];
+        $first_date = $_POST['first_date'];
+        $last_date = $_POST['last_date'];
 
         //echo "You have selected: ".$first_date."<br>".$last_date;
         $api = "http://creativesaif.com/api/exp-v3.1/txn/all_txn.php?" . "first_date=" . $first_date . "&last_date=" . $last_date;
@@ -98,7 +98,7 @@ $getTotalCreditDebit = fetchTxn($totalCreditDebitApi);
 
     <div id="company_header">
         <strong>Expert Internet Ltd.</strong> <br>
-        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
             <input type="date" name="first_date" value="<?php echo $_GET['first_date'] ?>"> <span>To</span>
             <input type="date" name="last_date" value="<?php echo $_GET['last_date'] ?>">
             <input type="password" name="password">
