@@ -70,7 +70,7 @@ class Dashboard
         $current_date = date("Y-m-d H:i:s");
 
         //query
-        $query = "SELECT SUM(credit) FROM txn_list WHERE MONTH(date) = MONTH('$current_date') 
+        $query = "SELECT FORMAT(SUM(credit),2) FROM txn_list WHERE MONTH(date) = MONTH('$current_date') 
         AND YEAR(date) = YEAR('$current_date')";
 
         //prepare query
@@ -93,7 +93,7 @@ class Dashboard
         $current_date = date("Y-m-d H:i:s");
 
         //query
-        $query = "SELECT SUM(debit) FROM txn_list WHERE MONTH(date) = MONTH('$current_date') 
+        $query = "SELECT FORMAT(SUM(debit),2) FROM txn_list WHERE MONTH(date) = MONTH('$current_date') 
         AND YEAR(date) = YEAR('$current_date')";
 
         //prepare query

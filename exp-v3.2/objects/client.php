@@ -32,7 +32,7 @@ class Client
     function active_client()
     {
         //query
-        $query = "SELECT id, name, phone 
+        $query = "SELECT id, name, phone, area 
                   FROM client 
                   WHERE mode = 'active' 
                   ORDER BY id 
@@ -52,7 +52,7 @@ class Client
     function more_active_client()
     {
         //query
-        $query = "SELECT id, name, phone 
+        $query = "SELECT id, name, phone, area  
                   FROM client 
                   WHERE mode = 'active' AND id < '$this->last_id'
                   ORDER BY id
@@ -74,7 +74,7 @@ class Client
     function inactive_client()
     {
         //query
-        $query = "SELECT id, name, phone 
+        $query = "SELECT id, name, phone , area 
                   FROM client 
                   WHERE mode = 'inactive'
                   ORDER BY id 
@@ -94,7 +94,7 @@ class Client
     function more_inactive_client()
     {
         //query
-        $query = "SELECT id, name, phone 
+        $query = "SELECT id, name, phone , area 
                   FROM client 
                   WHERE mode = 'inactive' AND id < '$this->last_id'
                   ORDER BY id 
@@ -120,7 +120,7 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone  FROM client 
+        $query2 = "SELECT id, name, phone, area   FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 30 DAY) <= '$this->current_date' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
@@ -141,7 +141,7 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone  FROM client 
+        $query2 = "SELECT id, name, phone, area   FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 30 DAY) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
@@ -159,7 +159,7 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone  FROM client 
+        $query2 = "SELECT id, name, phone, area   FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 33 DAY) <= '$this->current_date' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
@@ -177,7 +177,7 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone  FROM client 
+        $query2 = "SELECT id, name, phone, area   FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 33 DAY) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";

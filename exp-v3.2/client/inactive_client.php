@@ -40,10 +40,10 @@ function inactive_client()
         //retrieve the table contents
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-
             array_push($client_arr["inactive_client"], $row);
         }
         echo json_encode($client_arr);
+
     }else
     {
         echo json_encode(array("message" => "No found inactive client"));
@@ -79,17 +79,10 @@ function more_inactive_client($last_id)
         //retrieve the table contents
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            extract($row);
-
-            $each_client = array(
-                "id" => $id,
-                "name" => $name,
-                "phone" => $phone
-            );
-
-            array_push($client_arr["inactive_client"], $each_client);
+            array_push($client_arr["inactive_client"], $row);
         }
         echo json_encode($client_arr);
+        
     }else
     {
         echo json_encode(array("message" => "No found more inactive client"));
