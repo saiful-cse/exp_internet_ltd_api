@@ -60,6 +60,7 @@ if($data > 0){
     $p = explode("|",$smsresult);
     $sendstatus = $p[0];
 
+
     switch ($sendstatus) {
         case '1000':
             echo json_encode(array("message" => "Invalid user or Password"));

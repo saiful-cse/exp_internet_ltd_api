@@ -16,6 +16,8 @@ class Client
     $int_conn_type, $username, $pasword, $onu_mac, $speed, $fee, $bill_type,
     $reg_date, $active_date, $inactive_date, 
     $last_id, $current_date;
+    
+    public $search_key;
     /*
      * Constructor with $db as database connection
      */
@@ -26,13 +28,27 @@ class Client
 
 
     // ------------------ Active --------------------
-    /*
-     * Function for active client list
-     */
+   function all_active_client()
+    {
+        //query
+        $query = "SELECT id, name, phone, area, username 
+                  FROM client 
+                  WHERE mode = 'active' 
+                  ORDER BY id DESC";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+    
+    
     function active_client()
     {
         //query
-        $query = "SELECT id, name, phone, area
+        $query = "SELECT id, name, phone, area, username 
                   FROM client 
                   WHERE mode = 'active' 
                   ORDER BY id 
@@ -52,7 +68,7 @@ class Client
     function more_active_client()
     {
         //query
-        $query = "SELECT id, name, phone, area  
+        $query = "SELECT id, name, phone, area , username 
                   FROM client 
                   WHERE mode = 'active' AND id < '$this->last_id'
                   ORDER BY id
@@ -74,9 +90,9 @@ class Client
     function inactive_client()
     {
         //query
-        $query = "SELECT id, name, phone , area 
+        $query = "SELECT id, name, phone, area, username
                   FROM client 
-                  WHERE mode = 'inactive'
+                  WHERE mode = 'inactive' 
                   ORDER BY id 
                   DESC LIMIT 15";
 
@@ -94,10 +110,10 @@ class Client
     function more_inactive_client()
     {
         //query
-        $query = "SELECT id, name, phone , area 
+        $query = "SELECT id, name, phone , area, username
                   FROM client 
                   WHERE mode = 'inactive' AND id < '$this->last_id'
-                  ORDER BY id 
+                  ORDER BY id
                   DESC LIMIT 15";
 
         // prepare query statement
@@ -111,17 +127,32 @@ class Client
 
     // ------------------ Alert --------------------
     
-    /*
-     * Function for inactive client list
-     */
+    function all_alert_client()
+    {
+        
+        /*
+         * Extract alert client
+         */
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
+                   WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'
+                   ORDER BY id DESC";
+        // prepare query statement
+        $stmt2 = $this->conn->prepare($query2);
+        //query execute
+        $stmt2->execute();
+        return $stmt2;
+    }
+    
     function alert_client()
     {
         
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone, area   FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 30 DAY) <= '$this->current_date' AND mode = 'Active'
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
+                   WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
         // prepare query statement
@@ -141,10 +172,28 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone, area   FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 30 DAY) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
+                   WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
+        // prepare query statement
+        $stmt2 = $this->conn->prepare($query2);
+        //query execute
+        $stmt2->execute();
+        return $stmt2;
+    }
+    
+    function all_over3Day_client()
+    {
+        
+        /*
+         * Extract alert client
+         */
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
+                   WHERE DATE_ADD(active_date, INTERVAL 33 DAY) <= '$this->current_date' AND mode = 'Active'
+                   ORDER BY id DESC";
         // prepare query statement
         $stmt2 = $this->conn->prepare($query2);
         //query execute
@@ -159,7 +208,8 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone, area   FROM client 
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 33 DAY) <= '$this->current_date' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
@@ -177,7 +227,8 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT id, name, phone, area   FROM client 
+        $query2 = "SELECT id, name, phone, area , username
+                    FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 33 DAY) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
                    ORDER BY id 
                    DESC LIMIT 15";
@@ -193,7 +244,7 @@ class Client
     {
         
         //query
-        $query = "SELECT COUNT(*) FROM client WHERE DATE_ADD(active_date, INTERVAL 30 DAY) <= '$this->current_date' AND mode = 'Active'";
+        $query = "SELECT COUNT(*) FROM client WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'";
 
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -214,9 +265,9 @@ class Client
     function username()
     {
         
-        $query = "SELECT id, name, username, mode FROM client
+        $query = "SELECT id, name, phone, username, mode, area  FROM client
                     
-                   ORDER BY LPAD(LOWER(username), 10,0) DESC";
+                   ORDER BY LPAD(LOWER(mode), 10,0) DESC";
         // prepare query statement
         $stmt2 = $this->conn->prepare($query);
         //query execute
@@ -456,6 +507,30 @@ class Client
         $stmt->bindParam(":phone",$this->phone);
 
         // execute query
+        $stmt->execute();
+        return $stmt;
+    }
+    
+    //client search
+    function clientSearch()
+    {
+        //query
+         $query = "SELECT id, name, phone, username, area , mode FROM client
+                    WHERE (id LIKE '%$this->search_key%' OR name LIKE '%$this->search_key%' OR phone LIKE '%$this->search_key%'
+            OR username LIKE '%$this->search_key%' OR area LIKE '%$this->search_key%' )";   
+            
+         // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+    
+     //All active client fetch
+    function allClient(){
+        $q = "SELECT * FROM client WHERE mode = 'Active'";
+        $stmt = $this->conn->prepare($q);
         $stmt->execute();
         return $stmt;
     }

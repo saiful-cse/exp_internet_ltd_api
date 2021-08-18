@@ -9,6 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $message = $_POST['message'];
 
+
 /*
  * include database and object files
  */
@@ -27,7 +28,10 @@ $db = $database->getConnection();
  */
 $sms = new Sms($db);
 
-$stmt = $sms->get_active_client_phone();
+//set the value for extracking phone numbers
+$sms->current_date = date("Y-m-d H:i:s");
+
+$stmt = $sms->getting_alert_client_phone();
 $data = $stmt->rowCount();
 
 if($data > 0){
@@ -39,6 +43,7 @@ if($data > 0){
     $numbers =  implode(', ', $num);
     
     //Set the value
+    $sms->numbers = $numbers;
     $sms->msg_body = $message;
     $sms->created_at = date("Y-m-d H:i:s");
 
@@ -59,6 +64,7 @@ if($data > 0){
 
     $p = explode("|",$smsresult);
     $sendstatus = $p[0];
+
 
     switch ($sendstatus) {
         case '1000':
@@ -87,7 +93,7 @@ if($data > 0){
             break;
         case '1101':
             
-            if($sms->active_client_sms_store()){
+            if($sms->sms_status_update_and_store()){
                 echo json_encode(array("message" => 200));
             }
             break;
@@ -95,5 +101,5 @@ if($data > 0){
 
 }else{
     
-    echo json_encode(array("message" => "Nothing active client"));
+    echo json_encode(array("message" => "Nothing unsent alert client"));
 }

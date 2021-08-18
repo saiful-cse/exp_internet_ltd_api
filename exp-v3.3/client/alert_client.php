@@ -1,6 +1,7 @@
 <?php
 
 //Required headers
+date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Credentials: true");
@@ -12,10 +13,11 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once  '../objects/client.php';
 
+
 /*
- * Function for active client
+ * Function for alert client
  */
-function active_client()
+function alert_client()
 {
     /*
  * Instance database and dashboard object
@@ -28,32 +30,38 @@ function active_client()
      */
     $client = new Client($db);
 
-    $stmt = $client->active_client();
+    //Set the value on client class
+    $client->current_date = date("Y-m-d H:i:s");
+
+    $total_alert_client = $client->count_alert_client();
+    $stmt = $client->alert_client();
     $num = $stmt->rowCount();
 
     if ($num>0)
     {
-        //active client array
-        $client_arr["active_client"] = array();
 
-        //retrieve the table contents
+        $client_arr["alert_client"] = array();
+
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            array_push($client_arr["active_client"], $row);
+            
+            $d[] = $row;
+
         }
-        echo json_encode($client_arr);
+        $data = ['total' => $total_alert_client, 'alert_client' => $d];
+        echo json_encode($data);
 
     }else
     {
-        echo json_encode(array("message" => "No found active client"));
+        echo json_encode(array("message" => "No found alert client"));
     }
 }
 
 
 /*
- * Function for more active client
+ * Function for more alert client
  */
-function more_active_client($last_id)
+function more_alert_client($last_id)
 {
     /*
  * Instance database and dashboard object
@@ -68,26 +76,26 @@ function more_active_client($last_id)
 
     //set the last_id to client class
     $client->last_id = $last_id;
+    $client->current_date = date("Y-m-d H:i:s");
 
-    $stmt = $client->more_active_client();
+    $stmt = $client->more_alert_client();
     $num = $stmt->rowCount();
 
     if ($num>0)
     {
-        //active client array
-        $client_arr["active_client"] = array();
+
+        $client_arr["alert_client"] = array();
 
         //retrieve the table contents
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-           
-            array_push($client_arr["active_client"], $row);
+            array_push($client_arr["alert_client"], $row);
         }
         echo json_encode($client_arr);
 
     }else
     {
-        echo json_encode(array("message" => "No found more active client"));
+        echo json_encode(array("message" => "No found more alert client"));
     }
 }
 
@@ -96,11 +104,11 @@ function more_active_client($last_id)
 if (isset($_GET['last_id']))
 {
     $last_id = $_GET['last_id'];
-    more_active_client($last_id);
+    more_alert_client($last_id);
 
 }else
 {
-    active_client();
+    alert_client();
 }
 
 

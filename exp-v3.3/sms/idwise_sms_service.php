@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 //Requires headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -8,6 +9,8 @@ header("Access-Control-Max-Age: 5");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $message = $_POST['message'];
+$number = $_POST['phone'];
+$client_id = $_POST['client_id'];
 
 /*
  * include database and object files
@@ -27,19 +30,12 @@ $db = $database->getConnection();
  */
 $sms = new Sms($db);
 
-$stmt = $sms->get_active_client_phone();
-$data = $stmt->rowCount();
+//data check
+if(!empty($message) && !empty($number) && !empty($client_id)){
 
-if($data > 0){
-    
-    while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-
-        $num[] = $row['phone'];
-    }
-    $numbers =  implode(', ', $num);
-    
-    //Set the value
+    //set the value
     $sms->msg_body = $message;
+    $sms->client_id = $client_id;
     $sms->created_at = date("Y-m-d H:i:s");
 
     //SMS service
@@ -47,7 +43,7 @@ if($data > 0){
     $data= array(
     'username'=>"01835559161",
     'password'=>"saiful@#21490",
-    'number'=>$numbers,
+    'number'=>$number,
     'message'=>$message
     );
 
@@ -87,13 +83,13 @@ if($data > 0){
             break;
         case '1101':
             
-            if($sms->active_client_sms_store()){
+            if($sms->idwise_sms_store()){
                 echo json_encode(array("message" => 200));
             }
             break;
     }
 
 }else{
-    
-    echo json_encode(array("message" => "Nothing active client"));
+
+    echo json_encode(array("message" => "Data incomplete, Try again later!!"));
 }

@@ -1,0 +1,6 @@
+[09-Jun-2021 03:07:15 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/creative/public_html/api/exp-v3.3/objects/sms.php:193
+Stack trace:
+#0 /home/creative/public_html/api/exp-v3.3/sms/sms_history.php(24): Sms->sms_history()
+#1 /home/creative/public_html/api/exp-v3.3/sms/sms_history.php(83): sms_history()
+#2 {main}
+  thrown in /home/creative/public_html/api/exp-v3.3/objects/sms.php on line 193

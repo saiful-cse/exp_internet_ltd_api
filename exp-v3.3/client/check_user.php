@@ -40,14 +40,14 @@ if (!empty($phone)){
 
         // tell the user, exist user
         echo json_encode(
-            array("message" => 200, "ip" => "103.120.163.20", "ftp_server" => "http://10.16.100.244/index.php", "live_tv" => "http://10.16.100.244/livetv.php")
+            array("message" => 200, "ip" => "103.120.163.18", "ftp_server" => "http://10.16.100.244/index.php", "live_tv" => "http://10.16.100.244/livetv.php")
         );
 
     }else{
 
         // tell the user, for new registration
         echo json_encode(
-            array("message" => 404, "ip" => "103.120.163.20", "ftp_server" => "http://10.16.100.244/index.php", "live_tv" => "http://10.16.100.244/livetv.php")
+            array("message" => 404, "ip" => "103.120.163.18", "ftp_server" => "http://10.16.100.244/index.php", "live_tv" => "http://10.16.100.244/livetv.php")
         );
     }
 
