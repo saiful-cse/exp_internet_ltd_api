@@ -1,29 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: SAIFUL
- * Date: 2/27/2019
- * Time: 11:54 AM
- */
-
+// used to get mysql database connection
 class Database{
-    //Specify the own database credentials
+ 
+    // specify your own database credentials
     private $host = "localhost";
-    private $db_name = "creative_expert_internet";
-    private $username = "creative_exp_int";
-    private $password = "saifulcse0001";
-    private $conn;
-
-    //Get the database connection
+    private $db_name = "exp";
+    private $username = "root";
+    private $password = "";
+    public $conn;
+ 
+    // get the database connection
     public function getConnection(){
+ 
         $this->conn = null;
-
+ 
         try{
-            $this->conn = new PDO("mysql:host=".$this->host.";dbname=".$this->db_name, $this->username, $this->password);
-            $this->conn->exec("set names utf8");
-        }catch (PDOException $exception){
-            echo "Connection error: ".$exception->getMessage();
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+        }catch(PDOException $exception){
+            echo "Connection error: " . $exception->getMessage();
         }
+ 
         return $this->conn;
     }
 }
+?>

@@ -12,11 +12,12 @@ class Client
     /*
      * Objects properties
      */
-    public $id, $over_day, $mode, $name, $phone, $address, $email, $area, 
-    $int_conn_type, $username, $pasword, $onu_mac, $speed, $fee, $bill_type,
-    $reg_date, $active_date, $inactive_date, 
-    $last_id, $current_date;
-    
+    public $id, $mode, $name, $phone, $address, $email, $area,
+        $username, $pasword,
+        $speed, $fee, $payment_method,
+        $reg_date, $active_date, $inactive_date,
+        $last_id, $current_date;
+
     public $search_key;
     /*
      * Constructor with $db as database connection
@@ -28,7 +29,7 @@ class Client
 
 
     // ------------------ Active --------------------
-   function all_active_client()
+    function all_active_client()
     {
         //query
         $query = "SELECT id, name, phone, area, username 
@@ -43,12 +44,12 @@ class Client
         $stmt->execute();
         return $stmt;
     }
-    
-    
+
+
     function active_client()
     {
         //query
-        $query = "SELECT id, name, phone, area, username 
+        $query = "SELECT id, name, phone, area, username, payment_method 
                   FROM client 
                   WHERE mode = 'active' 
                   ORDER BY id 
@@ -68,7 +69,7 @@ class Client
     function more_active_client()
     {
         //query
-        $query = "SELECT id, name, phone, area , username 
+        $query = "SELECT id, name, phone, area , username, payment_method
                   FROM client 
                   WHERE mode = 'active' AND id < '$this->last_id'
                   ORDER BY id
@@ -126,10 +127,10 @@ class Client
 
 
     // ------------------ Alert --------------------
-    
+
     function all_alert_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -143,10 +144,10 @@ class Client
         $stmt2->execute();
         return $stmt2;
     }
-    
+
     function alert_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -168,7 +169,7 @@ class Client
      */
     function more_alert_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -183,10 +184,10 @@ class Client
         $stmt2->execute();
         return $stmt2;
     }
-    
+
     function all_over3Day_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -200,11 +201,11 @@ class Client
         $stmt2->execute();
         return $stmt2;
     }
-    
+
     //Over 3day client list
     function over3Day_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -223,7 +224,7 @@ class Client
     //Over more3day client list
     function more_over3Day_client()
     {
-        
+
         /*
          * Extract alert client
          */
@@ -242,7 +243,7 @@ class Client
 
     function count_alert_client()
     {
-        
+
         //query
         $query = "SELECT COUNT(*) FROM client WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'";
 
@@ -250,21 +251,20 @@ class Client
         $stmt = $this->conn->prepare($query);
 
         //execute query
-        if ($stmt->execute())
-        {
+        if ($stmt->execute()) {
             return $stmt->fetchColumn();
         }
 
         return false;
     }
 
-    
+
 
     //------ Get Username -------
 
     function username()
     {
-        
+
         $query = "SELECT id, name, phone, username, mode, area  FROM client
                     
                    ORDER BY LPAD(LOWER(mode), 10,0) DESC";
@@ -281,7 +281,6 @@ class Client
     function client_details()
     {
 
-        $current_date = date("Y-m-d H:i:s");
         //query
         $query = "SELECT * FROM client WHERE id = '$this->id'";
 
@@ -305,116 +304,104 @@ class Client
         $f = $stmt->fetch();
         $current_mode = $f['mode'];
 
-        if ($this->mode == $current_mode)
-        {
+        if ($this->mode == $current_mode) {
             $query = "UPDATE client
                       SET 
                       name = :name, phone = :phone, address = :address, email = :email, area = :area,
-                      int_conn_type = :int_conn_type, username = :username, password = :password, onu_mac = :onu_mac, speed = :speed, fee = :fee, bill_type = :bill_type
+                      username = :username, password = :password,
+                      speed = :speed, fee = :fee, payment_method = :payment_method
                       WHERE id = '$this->id'";
 
             //prepare query
             $stmt = $this->conn->prepare($query);
 
             //Bind Value
-            $stmt->bindParam(":name",$this->name);
-            $stmt->bindParam(":phone",$this->phone);
-            $stmt->bindParam(":address",$this->address);
-            $stmt->bindParam(":email",$this->email);
-            $stmt->bindParam(":area",$this->area);
+            $stmt->bindParam(":name", $this->name);
+            $stmt->bindParam(":phone", $this->phone);
+            $stmt->bindParam(":address", $this->address);
+            $stmt->bindParam(":email", $this->email);
+            $stmt->bindParam(":area", $this->area);
 
-            $stmt->bindParam(":int_conn_type",$this->int_conn_type);
-            $stmt->bindParam(":username",$this->username);
-            $stmt->bindParam(":password",$this->password);
-            $stmt->bindParam(":onu_mac",$this->onu_mac);
-
-            $stmt->bindParam(":speed",$this->speed);
-            $stmt->bindParam(":fee",$this->fee);
-            $stmt->bindParam(":bill_type",$this->bill_type);
+            $stmt->bindParam(":username", $this->username);
+            $stmt->bindParam(":password", $this->password);
+        
+            $stmt->bindParam(":speed", $this->speed);
+            $stmt->bindParam(":fee", $this->fee);
+            $stmt->bindParam(":payment_method", $this->payment_method);
 
             //Execute query
-            if ($stmt->execute())
-            {
+            if ($stmt->execute()) {
                 return true;
             }
             return false;
-
-        }else if($this->mode != "Inactive")
-        {
+        } else if ($this->mode != "Inactive") {
             $query = "UPDATE client
                       SET 
                       mode = :mode, active_date = :active_date, name = :name, phone = :phone, address = :address, email = :email, area = :area,
-                      int_conn_type = :int_conn_type, username = :username, password = :password, onu_mac = :onu_mac,
-                      speed = :speed, fee = :fee, bill_type = :bill_type
+                      username = :username, password = :password,
+                      speed = :speed, fee = :fee, payment_method = :payment_method
                       WHERE id = '$this->id'";
 
             //prepare query
             $stmt = $this->conn->prepare($query);
 
             //Bind Value
-            $stmt->bindParam(":mode",$this->mode);
-            $stmt->bindParam(":active_date",$this->active_date);
-            $stmt->bindParam(":name",$this->name);
-            $stmt->bindParam(":phone",$this->phone);
-            $stmt->bindParam(":address",$this->address);
-            $stmt->bindParam(":email",$this->email);
-            $stmt->bindParam(":area",$this->area);
+            $stmt->bindParam(":mode", $this->mode);
+            $stmt->bindParam(":active_date", $this->active_date);
+            $stmt->bindParam(":name", $this->name);
+            $stmt->bindParam(":phone", $this->phone);
+            $stmt->bindParam(":address", $this->address);
+            $stmt->bindParam(":email", $this->email);
+            $stmt->bindParam(":area", $this->area);
 
-            $stmt->bindParam(":int_conn_type",$this->int_conn_type);
-            $stmt->bindParam(":username",$this->username);
-            $stmt->bindParam(":password",$this->password);
-            $stmt->bindParam(":onu_mac",$this->onu_mac);
+            $stmt->bindParam(":username", $this->username);
+            $stmt->bindParam(":password", $this->password);
 
-            $stmt->bindParam(":speed",$this->speed);
-            $stmt->bindParam(":fee",$this->fee);
-            $stmt->bindParam(":bill_type",$this->bill_type);
+            $stmt->bindParam(":speed", $this->speed);
+            $stmt->bindParam(":fee", $this->fee);
+            $stmt->bindParam(":payment_method", $this->payment_method);
 
             //Execute query
-            if ($stmt->execute())
-            {
+            if ($stmt->execute()) {
                 return true;
             }
             return false;
-
-        }else if($this->mode != "Active")
-        {
+        } else if ($this->mode != "Active") {
             $query = "UPDATE client SET 
                       mode = :mode, inactive_date = :inactive_date, name = :name, phone = :phone, address = :address, email = :email, area = :area,
-                      int_conn_type = :int_conn_type, username = :username, password = :password, onu_mac = :onu_mac,
-                      speed = :speed, fee = :fee, bill_type = :bill_type WHERE id = '$this->id'";
+                      username = :username, password = :password,
+                      speed = :speed, fee = :fee, payment_method = :payment_method
+                      WHERE id = '$this->id'";
 
             //prepare query
             $stmt = $this->conn->prepare($query);
 
             //Bind Value
-            $stmt->bindParam(":mode",$this->mode);
-            $stmt->bindParam(":inactive_date",$this->inactive_date);
-            $stmt->bindParam(":name",$this->name);
-            $stmt->bindParam(":phone",$this->phone);
-            $stmt->bindParam(":address",$this->address);
-            $stmt->bindParam(":email",$this->email);
-            $stmt->bindParam(":area",$this->area);
+            $stmt->bindParam(":mode", $this->mode);
+            $stmt->bindParam(":inactive_date", $this->inactive_date);
+            $stmt->bindParam(":name", $this->name);
+            $stmt->bindParam(":phone", $this->phone);
+            $stmt->bindParam(":address", $this->address);
+            $stmt->bindParam(":email", $this->email);
+            $stmt->bindParam(":area", $this->area);
 
-            $stmt->bindParam(":int_conn_type",$this->int_conn_type);
-            $stmt->bindParam(":username",$this->username);
-            $stmt->bindParam(":password",$this->password);
-            $stmt->bindParam(":onu_mac",$this->onu_mac);
-
-            $stmt->bindParam(":speed",$this->speed);
-            $stmt->bindParam(":fee",$this->fee);
-            $stmt->bindParam(":bill_type",$this->bill_type);
+            $stmt->bindParam(":username", $this->username);
+            $stmt->bindParam(":password", $this->password);
+           
+            $stmt->bindParam(":speed", $this->speed);
+            $stmt->bindParam(":fee", $this->fee);
+            $stmt->bindParam(":payment_method", $this->payment_method);
 
             //Execute query
-            if ($stmt->execute())
-            {
+            if ($stmt->execute()) {
                 return true;
             }
             return false;
-
         }
     }
 
-    function profile(){
+    function profile()
+    {
 
         $query = "SELECT * FROM client WHERE phone = :phone";
 
@@ -445,7 +432,6 @@ class Client
         $this->reg_date = $row['reg_date'];
         $this->active_date = $row['active_date'];
         $this->inactive_date = $row['inactive_date'];
-
     }
 
     function profile_update()
@@ -458,13 +444,12 @@ class Client
         $stmt = $this->conn->prepare($query);
 
         //Bind Value
-        $stmt->bindParam(":name",$this->name);
-        $stmt->bindParam(":address",$this->address);
-        $stmt->bindParam(":email",$this->email);
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":address", $this->address);
+        $stmt->bindParam(":email", $this->email);
 
         //Execute query
-        if ($stmt->execute())
-        {
+        if ($stmt->execute()) {
             return true;
         }
         return false;
@@ -477,25 +462,25 @@ class Client
         $query = "INSERT INTO client
                   SET 
                   mode = 'Inactive', name = :name, phone = :phone";
-   
+
 
         //prepare query
         $stmt = $this->conn->prepare($query);
 
         //Bind Value
-        $stmt->bindParam(":name",$this->name);
-        $stmt->bindParam(":phone",$this->phone);
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":phone", $this->phone);
 
         //Execute query
-        if ($stmt->execute())
-        {
+        if ($stmt->execute()) {
             return true;
         }
         return false;
     }
 
     // check user is exist
-    function check(){
+    function check()
+    {
 
         // query to select record
         $query = "SELECT phone FROM client WHERE phone = :phone";
@@ -504,36 +489,35 @@ class Client
         $stmt = $this->conn->prepare($query);
 
         //bind value
-        $stmt->bindParam(":phone",$this->phone);
+        $stmt->bindParam(":phone", $this->phone);
 
         // execute query
         $stmt->execute();
         return $stmt;
     }
-    
+
     //client search
     function clientSearch()
     {
         //query
-         $query = "SELECT id, name, phone, username, area , mode FROM client
+        $query = "SELECT id, name, phone, username, area , mode FROM client
                     WHERE (id LIKE '%$this->search_key%' OR name LIKE '%$this->search_key%' OR phone LIKE '%$this->search_key%'
-            OR username LIKE '%$this->search_key%' OR area LIKE '%$this->search_key%' )";   
-            
-         // prepare query statement
+            OR username LIKE '%$this->search_key%' OR area LIKE '%$this->search_key%' )";
+
+        // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         //query execute
         $stmt->execute();
         return $stmt;
     }
-    
-     //All active client fetch
-    function allClient(){
+
+    //All active client fetch
+    function allClient()
+    {
         $q = "SELECT * FROM client WHERE mode = 'Active'";
         $stmt = $this->conn->prepare($q);
         $stmt->execute();
         return $stmt;
     }
-
-
 }

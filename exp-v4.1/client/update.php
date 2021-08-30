@@ -1,17 +1,29 @@
 <?php
-// Requires headers
 date_default_timezone_set("Asia/Dhaka");
-header("Access-Control-Allow-Origin: *");
+include_once '../config/url_config.php';
+// required headers
+header("Access-Control-Allow-Origin:" . $BASE_URL . $SECOND_PATH);
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 
 /*
  * include database and object files
  */
 include_once '../config/database.php';
 include_once  '../objects/client.php';
+
+
+// generate json web token
+include_once '../config/core.php';
+include_once '../libs/php-jwt-master/src/BeforeValidException.php';
+include_once '../libs/php-jwt-master/src/ExpiredException.php';
+include_once '../libs/php-jwt-master/src/SignatureInvalidException.php';
+include_once '../libs/php-jwt-master/src/JWT.php';
+
+use \Firebase\JWT\JWT;
 
 /*
  * Instance database and news object
@@ -24,6 +36,7 @@ $db = $database->getConnection();
  */
 $client = new Client($db);
 
+$jwt = $_POST['jwt'];
 $id = $_POST['id'];
 $mode = $_POST['mode'];
 $name = $_POST['name'];
@@ -32,53 +45,72 @@ $address = $_POST['address'];
 $email = $_POST['email'];
 $area = $_POST['area'];
 
-$int_conn_type = $_POST['int_conn_type'];
 $username = $_POST['username'];
 $password = $_POST['password'];
-$onu_mac = $_POST['onu_mac'];
 
 $speed = $_POST['speed'];
 $fee = $_POST['fee'];
-$bill_type = $_POST['bill_type'];
+$payment_method = $_POST['payment_method'];
 
-if (!empty($name) && !empty($mode) && !empty($id) && !empty($phone)&&
-    !empty($address) && !empty($email) && !empty($area) && !empty($int_conn_type) &&
+if (
+    !empty($id) && !empty($jwt) && !empty($name) && !empty($mode) 
+    && !empty($phone) && !empty($address) && !empty($email) && !empty($area) &&
     !empty($username) && !empty($password) &&
-    !empty($speed) && !empty($fee) && !empty($bill_type)){
+    !empty($speed) && !empty($fee) && !empty($payment_method)
+) {
 
-    //getting current timestamp
-    $current_date = date("Y-m-d H:i:s");
 
-    $client->id = $id;
-    $client->mode = $mode;
-    $client->name = $name;
-    $client->phone = $phone;
-    $client->address = $address;
-    $client->email = $email;
-    $client->area = $area;
+    try {
+        // decode jwt
+        $decoded = JWT::decode($jwt, $key, array('HS256'));
 
-    $client->int_conn_type = $int_conn_type;
-    $client->username = $username;
-    $client->password = $password;
-    $client->onu_mac = $onu_mac;
-    
-    $client->speed = $speed;
-    $client->fee = $fee;
-    $client->bill_type = $bill_type;
-    $client->active_date = $current_date;
-    $client->inactive_date = $current_date;
+        //getting current timestamp
+        $current_date = date("Y-m-d H:i:s");
 
-    if ($client->data_update())
-    {
-        //if success
-        echo json_encode(array("message" => 200));
+        $client->id = $id;
+        $client->mode = $mode;
+        $client->name = $name;
+        $client->phone = $phone;
+        $client->address = $address;
+        $client->email = $email;
+        $client->area = $area;
 
-    }else{
-        echo json_encode(array("message" => "Error!!"));
+        $client->username = $username;
+        $client->password = $password;
+        
+        $client->speed = $speed;
+        $client->fee = $fee;
+        $client->payment_method = $payment_method;
+
+        $client->active_date = $current_date;
+        $client->inactive_date = $current_date;
+
+        if ($client->data_update()) {
+            //if success
+            echo json_encode(array(
+                "status" => 200,
+                "message" => "Updated Successfully"
+            ));
+
+        } else {
+            echo json_encode(array(
+                "status" => 201,
+                "message" => "Not Updated"
+            ));
+        }
+        
+    } catch (\Throwable $th) {
+        // tell the user access denied  & show error message
+        echo json_encode(array(
+            "status" => 401,
+            "message" => "Login time expired!!",
+            "error" => $th->getMessage()
+        ));
     }
+} else {
 
-}else{
-
-    echo json_encode(array("message" => "Data incomplete, Try again later!!"));
+    echo json_encode(array(
+        "status" => 416,
+        "message" => "Data Incomplete."
+    ));
 }
-

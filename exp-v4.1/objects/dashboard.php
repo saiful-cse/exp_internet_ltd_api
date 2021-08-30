@@ -162,31 +162,9 @@ function count_monthly_client(){
 
     }
     
-    /*
-    Time wise total invest
-    
-    function total_invest()
-    {
-        //getting current timestamp
-        $current_date = date("Y-m-d H:i:s");
-
-        //query
-        $query = "SELECT SUM(misba) as misba, SUM(saiful) as saiful FROM invests 
-        WHERE 90 <= DATEDIFF('$current_date', invested_at)";
-
-        //prepare query
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->execute();
-        return $stmt;
-    }
-    
-    */
-    
     function total_invest()
     {
     
-
         //query
         $query = "SELECT SUM(misba) as misba, SUM(saiful) as saiful FROM invests";
 

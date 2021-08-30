@@ -37,7 +37,6 @@ include_once  '../objects/client.php';
     $total_sent = $sms->count_sms_sent();
     $total_not_sent = $sms->count_sms_unsent();
 
-
     $data = ['total_active' => $total_active_client,'total_alert' => $total_alert_client, "sent" => $total_sent , "unsent" => $total_not_sent];
     echo json_encode($data);
 

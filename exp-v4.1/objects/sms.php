@@ -12,7 +12,8 @@ class Sms
     /*
      * Objects properties
      */
-    public  $numbers, $msg_id, $client_id, $msg_body, $area, $created_at, $current_date;
+    public  $numbers, $msg_id, $client_id, $msg_body, 
+    $area, $created_at, $current_date;
 
      /*
      * Constructor with $db as database connection

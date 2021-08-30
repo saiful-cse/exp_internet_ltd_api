@@ -39,8 +39,6 @@ if (!empty($id))
         //active client array
         $client_arr["client_details"] = array();
 
-        $payment_arr["payment_details"] = array();
-
         //retrieve the table contents
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
