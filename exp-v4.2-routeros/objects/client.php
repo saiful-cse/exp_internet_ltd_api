@@ -12,11 +12,10 @@ class Client
     /*
      * Objects properties
      */
-    public $id, $mode, $name, $phone, $address, $email, $area,
-        $username, $pasword,
-        $speed, $fee, $payment_method,
-        $reg_date, $active_date, $inactive_date,
-        $last_id, $current_date;
+    public $id, $registered, $mode, $payment_method, $name, $phone, $area,
+        $ppp_name, $ppp_pass,
+        $pkg_id, $sms,
+        $reg_date, $expire_date, $ppp_name_list;
 
     public $search_key;
     /*
@@ -29,13 +28,10 @@ class Client
 
 
     // ------------------ Active --------------------
-    function all_active_client()
+    function registered_client()
     {
         //query
-        $query = "SELECT * 
-                  FROM client 
-                  WHERE mode = 'active' 
-                  ORDER BY id DESC";
+        $query = "SELECT * FROM clients WHERE registered = 1 ORDER BY id DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -45,15 +41,10 @@ class Client
         return $stmt;
     }
 
-
-    function active_client()
+    function unregistered_client()
     {
         //query
-        $query = "SELECT *
-                  FROM client 
-                  WHERE mode = 'active' 
-                  ORDER BY id 
-                  DESC LIMIT 15";
+        $query = "SELECT * FROM clients WHERE registered = 0 ORDER BY id DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -69,7 +60,7 @@ class Client
     function more_active_client()
     {
         //query
-        $query = "SELECT *
+        $query = "SELECT id, name, phone, area , username, payment_method
                   FROM client 
                   WHERE mode = 'active' AND id < '$this->last_id'
                   ORDER BY id
@@ -91,7 +82,7 @@ class Client
     function inactive_client()
     {
         //query
-        $query = "SELECT *
+        $query = "SELECT id, name, phone, area, username
                   FROM client 
                   WHERE mode = 'inactive' 
                   ORDER BY id 
@@ -111,7 +102,7 @@ class Client
     function more_inactive_client()
     {
         //query
-        $query = "SELECT *
+        $query = "SELECT id, name, phone , area, username
                   FROM client 
                   WHERE mode = 'inactive' AND id < '$this->last_id'
                   ORDER BY id
@@ -134,7 +125,7 @@ class Client
         /*
          * Extract alert client
          */
-        $query2 = "SELECT *
+        $query2 = "SELECT id, name, phone, area , username
                     FROM client 
                    WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'
                    ORDER BY id DESC";
@@ -144,102 +135,6 @@ class Client
         $stmt2->execute();
         return $stmt2;
     }
-
-    function alert_client()
-    {
-
-        /*
-         * Extract alert client
-         */
-        $query2 = "SELECT *
-                    FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND mode = 'Active'
-                   ORDER BY id 
-                   DESC LIMIT 15";
-        // prepare query statement
-        $stmt2 = $this->conn->prepare($query2);
-        //query execute
-        $stmt2->execute();
-        return $stmt2;
-    }
-
-
-    /*
-     * Function for more inactive client list
-     */
-    function more_alert_client()
-    {
-
-        /*
-         * Extract alert client
-         */
-        $query2 = "SELECT *
-                    FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 1 MONTH) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
-                   ORDER BY id 
-                   DESC LIMIT 15";
-        // prepare query statement
-        $stmt2 = $this->conn->prepare($query2);
-        //query execute
-        $stmt2->execute();
-        return $stmt2;
-    }
-
-    function all_over3Day_client()
-    {
-
-        /*
-         * Extract alert client
-         */
-        $query2 = "SELECT 3
-                    FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 35 DAY) <= '$this->current_date' AND mode = 'Active'
-                   ORDER BY id DESC";
-        // prepare query statement
-        $stmt2 = $this->conn->prepare($query2);
-        //query execute
-        $stmt2->execute();
-        return $stmt2;
-    }
-
-    //Over 3day client list
-    function over3Day_client()
-    {
-
-        /*
-         * Extract alert client
-         */
-        $query2 = "SELECT *
-                    FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 35 DAY) <= '$this->current_date' AND mode = 'Active'
-                   ORDER BY id 
-                   DESC LIMIT 15";
-        // prepare query statement
-        $stmt2 = $this->conn->prepare($query2);
-        //query execute
-        $stmt2->execute();
-        return $stmt2;
-    }
-
-    //Over more3day client list
-    function more_over3Day_client()
-    {
-
-        /*
-         * Extract alert client
-         */
-        $query2 = "SELECT *
-                    FROM client 
-                   WHERE DATE_ADD(active_date, INTERVAL 35 DAY) <= '$this->current_date' AND id < '$this->last_id' AND mode = 'Active'
-                   ORDER BY id 
-                   DESC LIMIT 15";
-        // prepare query statement
-        $stmt2 = $this->conn->prepare($query2);
-        //query execute
-        $stmt2->execute();
-        return $stmt2;
-    }
-
 
     function count_alert_client()
     {
@@ -259,21 +154,35 @@ class Client
     }
 
 
-
-    //------ Get Username -------
-
-    function username()
+    function enabled_client()
     {
 
-        $query = "SELECT *  FROM client
-                    
-                   ORDER BY LPAD(LOWER(mode), 10,0) DESC";
+        //query
+        $query = "SELECT * FROM clients WHERE registered = '1' AND mode = 'enable'";
+
         // prepare query statement
-        $stmt2 = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
+
         //query execute
-        $stmt2->execute();
-        return $stmt2;
+        $stmt->execute();
+        return $stmt;
     }
+
+    function diabled_client()
+    {
+
+        //query
+        $query = "SELECT * FROM clients WHERE registered = '1' AND mode = 'disable'";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+
 
     /*
      * Function for client details
@@ -282,7 +191,7 @@ class Client
     {
 
         //query
-        $query = "SELECT * FROM client WHERE id = '$this->id'";
+        $query = "SELECT * FROM clients WHERE ppp_name = '$this->ppp_name'";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -290,6 +199,168 @@ class Client
         //query execute
         $stmt->execute();
         return $stmt;
+    }
+
+    function client_details_id()
+    {
+
+        //query
+        $query = "SELECT * FROM clients WHERE id = '$this->id'";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function expired_client()
+    {
+
+        //query
+        $query = "SELECT * FROM clients WHERE expire_date <= '$this->current_date' AND registered = '1' AND mode = 'enable'";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+
+    function isExistPhoneToUpdate()
+    {
+
+        $query = "SELECT phone FROM clients WHERE phone = :phone && id != $this->id";
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $stmt->bindParam(":phone", $this->phone);
+
+        // execute the query
+        $stmt->execute();
+        // get number of rows
+        $num = $stmt->rowCount();
+
+        if ($num > 0) {
+
+            return true;
+        }
+        return false;
+    }
+
+    function isExistPhone()
+    {
+        $query = "SELECT phone FROM clients WHERE phone = :phone";
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $stmt->bindParam(":phone", $this->phone);
+
+        // execute the query
+        $stmt->execute();
+        // get number of rows
+        $num = $stmt->rowCount();
+
+        if ($num > 0) {
+
+            return true;
+        }
+        return false;
+    }
+
+    function isExistPPPname()
+    {
+        $query = "SELECT id, ppp_name FROM clients WHERE ppp_name = :ppp_name && id != $this->id";
+
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $stmt->bindParam(":ppp_name", $this->ppp_name);
+
+        // execute the query
+        $stmt->execute();
+        // get number of rows
+        $num = $stmt->rowCount();
+
+        if ($num > 0) {
+
+            return true;
+        }
+        return false;
+    }
+
+    function all_packages()
+    {
+
+        //query
+        $query = "SELECT * FROM packages";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function modeUpdate()
+    {
+        $query = "UPDATE clients SET
+        mode = :mode WHERE id = $this->id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":mode", $this->mode);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+
+    function clientRegistration()
+    {
+        $query = "INSERT INTO clients 
+        SET registered = '0', name = :name, phone = :phone, area = :area";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":phone", $this->phone);
+        $stmt->bindParam(":area", $this->area);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    function client_details_update()
+    {
+        $query = "UPDATE clients SET
+        registered = '1', payment_method = :payment_method, name = :name, phone = :phone, area = :area,
+        ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(":payment_method", $this->payment_method);
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":phone", $this->phone);
+        $stmt->bindParam(":area", $this->area);
+        $stmt->bindParam(":ppp_name", $this->ppp_name);
+        $stmt->bindParam(":ppp_pass", $this->ppp_pass);
+        $stmt->bindParam(":pkg_id", $this->pkg_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
     }
 
     /*
@@ -324,7 +395,7 @@ class Client
 
             $stmt->bindParam(":username", $this->username);
             $stmt->bindParam(":password", $this->password);
-        
+
             $stmt->bindParam(":speed", $this->speed);
             $stmt->bindParam(":fee", $this->fee);
             $stmt->bindParam(":payment_method", $this->payment_method);
@@ -387,7 +458,7 @@ class Client
 
             $stmt->bindParam(":username", $this->username);
             $stmt->bindParam(":password", $this->password);
-           
+
             $stmt->bindParam(":speed", $this->speed);
             $stmt->bindParam(":fee", $this->fee);
             $stmt->bindParam(":payment_method", $this->payment_method);
@@ -500,7 +571,7 @@ class Client
     function clientSearch()
     {
         //query
-        $query = "SELECT * FROM client
+        $query = "SELECT id, name, phone, username, area , mode FROM client
                     WHERE (id LIKE '%$this->search_key%' OR name LIKE '%$this->search_key%' OR phone LIKE '%$this->search_key%'
             OR username LIKE '%$this->search_key%' OR area LIKE '%$this->search_key%' )";
 

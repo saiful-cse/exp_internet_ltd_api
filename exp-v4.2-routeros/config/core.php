@@ -6,8 +6,8 @@ error_reporting(E_ALL);
 date_default_timezone_set('Asia/Dhaka');
  
 // variables used for jwt
-$key = "expert_internet";
+$key = "saddamSaifulNanogleCoxBazar";
 $issued_at = time();
-$expiration_time = $issued_at + (60 * 20); //in 1200 second or 20min
+$expiration_time = $issued_at + (60 * 21600); // valid for 15 day
 $issuer = "saiful";
 ?>

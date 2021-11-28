@@ -24,10 +24,8 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
-$message = "Dear subscriber, your wifi connection has been expired. Pay monthly bill within next 3 days to avoid disconnect. 01975-559161 (bKash, Nagod, Rocket Marchant)";
-
-
 $jwt = $_POST['jwt'];
+$message = $_POST['message'];
 
 /*
 * Instance database and dashboard object
@@ -47,10 +45,10 @@ if (!empty($jwt)) {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
 
-        // decode jwt
+        
         $sms->current_date = date("Y-m-d H:i:s");
 
-        $stmt = $sms->getting_alert_client_phone();
+        $stmt = $sms->get_active_client_phone();
         $data = $stmt->rowCount();
 
         if ($data > 0) {
@@ -131,7 +129,7 @@ if (!empty($jwt)) {
 
                 case '1101':
 
-                    if ($sms->sms_status_update_and_store()) {
+                    if ($sms->active_client_sms_store()) {
                         echo json_encode(array(
 
                             "status" => 200,
@@ -151,7 +149,7 @@ if (!empty($jwt)) {
 
             echo json_encode(array(
                 "status" => 404,
-                "message" => "Nothing to send SMS"
+                "message" => "Nothing active client to send SMS"
             ));
         }
     } catch (\Throwable $th) {
@@ -162,6 +160,8 @@ if (!empty($jwt)) {
         ));
     }
 } else {
+    
+    
     echo json_encode(array(
         "status" => 416,
         "message" => "Data Incomplete."

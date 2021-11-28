@@ -24,10 +24,11 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
-$message = "Dear subscriber, your wifi connection has been expired. Pay monthly bill within next 3 days to avoid disconnect. 01975-559161 (bKash, Nagod, Rocket Marchant)";
+$data = json_decode(file_get_contents("php://input"));
 
+$extend_date =  date("Y-m-d", strtotime("+3 days"));
 
-$jwt = $_POST['jwt'];
+$message = "Dear subscriber, your wifi connection will be expire at ".$extend_date.". Pay monthly bill to avoid auto disconnect. 01975-559161 (bKash, Nagod, Rocket Marchant)";
 
 /*
 * Instance database and dashboard object
@@ -40,17 +41,17 @@ $db = $database->getConnection();
 */
 $sms = new Sms($db);
 
-if (!empty($jwt)) {
+if (!empty($data->jwt)) {
 
     try {
 
         // decode jwt
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
+        $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
         // decode jwt
         $sms->current_date = date("Y-m-d H:i:s");
 
-        $stmt = $sms->getting_alert_client_phone();
+        $stmt = $sms->getExpieringClientsPhone();
         $data = $stmt->rowCount();
 
         if ($data > 0) {
@@ -151,7 +152,7 @@ if (!empty($jwt)) {
 
             echo json_encode(array(
                 "status" => 404,
-                "message" => "Nothing to send SMS"
+                "message" => "Allready sent sms"
             ));
         }
     } catch (\Throwable $th) {

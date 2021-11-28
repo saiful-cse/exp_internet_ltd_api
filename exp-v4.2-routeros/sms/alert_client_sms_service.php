@@ -24,7 +24,7 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
-$message = "Dear subscriber, your wifi connection has been expired. Pay monthly bill within next 3 days to avoid disconnect. 01975-559161 (bKash, Nagod, Rocket Marchant)";
+$message = "Dear subscriber, your wifi connection has been expired. Pay monthly bill within next 5 days to avoid disconnect. 01975-559161 (bKash, Nagod, Rocket Marchant)";
 
 
 $jwt = $_POST['jwt'];

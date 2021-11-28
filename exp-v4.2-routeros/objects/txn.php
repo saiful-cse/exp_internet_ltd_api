@@ -12,8 +12,8 @@ class Txn
     /*
      * Objects properties
      */
-    public $id, $txn_id, $name, $date, $amount, $details, $first_date, $last_date, 
-    $payment_type,  $type, $userid, $method, $debit, $credit;
+    public $client_id, $txn_id, $name, $date, $amount, $details, $first_date, $last_date, 
+    $type, $txn_type, $admin_id, $method, $debit, $credit;
 
     /*
      * Constructor with $db as database connection
@@ -26,29 +26,29 @@ class Txn
     /*
      * Make client transaction
      */
-    function client_txn()
+    function admin_make_payment()
     {
 
-        if ($this->payment_type == "Service")
+        if ($this->type == "Service")
         {
 
             $query = "INSERT INTO txn_list 
                   SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
-                  type = :type, details = :details, method = :method, userid = :userid";
+                  type = :type, details = :details, method = :method, admin_id = :admin_id";
 
 
             //prepare query
             $stmt = $this->conn->prepare($query);
 
             //Bind Value
-            $stmt->bindParam(":client_id",$this->id);
+            $stmt->bindParam(":client_id",$this->client_id);
             $stmt->bindParam(":name",$this->name);
             $stmt->bindParam(":date",$this->date);
             $stmt->bindParam(":credit",$this->amount);
-            $stmt->bindParam(":type",$this->payment_type);
+            $stmt->bindParam(":type",$this->type);
             $stmt->bindParam(":details",$this->details);
             $stmt->bindParam(":method",$this->method);
-            $stmt->bindParam(":userid",$this->userid);
+            $stmt->bindParam(":admin_id",$this->admin_id);
 
             //Execute query
             if ($stmt->execute())
@@ -58,33 +58,35 @@ class Txn
             return false;
 
 
-        }else if($this->payment_type == "Bill")
+        }else if($this->type == "Bill")
         {
             
             try {
 
                 $this->conn->beginTransaction();
 
+                $expire_date = date("Y-m-d H:i:s", strtotime("+1 month"));
+
                 $query = "INSERT INTO txn_list 
                   SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
-                  type = :type, details = :details, method = :method, userid = :userid";
+                  type = :type, details = :details, method = :method, admin_id = :admin_id";
 
-                $query2 = "UPDATE client SET active_date = DATE_ADD(active_date, INTERVAL 1 MONTH), sms = 'unsent'
-                   WHERE id = '$this->id'";
+                $query2 = "UPDATE clients SET expire_date = DATE_ADD(expire_date, INTERVAL 1 MONTH), sms = 'unsent'
+                   WHERE id = '$this->client_id'";
 
                 //prepare query
                 $stmt = $this->conn->prepare($query);
                 $stmt2 = $this->conn->prepare($query2);
 
                 //Bind Value
-                $stmt->bindParam(":client_id",$this->id);
+                $stmt->bindParam(":client_id",$this->client_id);
                 $stmt->bindParam(":name",$this->name);
                 $stmt->bindParam(":date",$this->date);
                 $stmt->bindParam(":credit",$this->amount);
-                $stmt->bindParam(":type",$this->payment_type);
+                $stmt->bindParam(":type",$this->type);
                 $stmt->bindParam(":details",$this->details);
                 $stmt->bindParam(":method",$this->method);
-                $stmt->bindParam(":userid",$this->userid);
+                $stmt->bindParam(":admin_id",$this->admin_id);
 
                 $stmt->execute();
                 $stmt2->execute();
@@ -106,13 +108,14 @@ class Txn
     /*
      * Make admin transaction
      */
-    function admin_txn($txn_type)
+    function admin_make_txn($txn_type)
     {
 
         if ($txn_type == "Credit")
         {
             $query = "INSERT INTO txn_list 
-                  SET date = :date, credit = :credit, details = :details, method = :method, userid = :userid";
+                  SET 
+                  date = :date, credit = :credit, details = :details, method = :method, admin_id = :admin_id";
 
             //prepare query
             $stmt = $this->conn->prepare($query);
@@ -122,7 +125,7 @@ class Txn
             $stmt->bindParam(":credit",$this->amount);
             $stmt->bindParam(":details",$this->details);
             $stmt->bindParam(":method",$this->method);
-            $stmt->bindParam(":userid",$this->userid);
+            $stmt->bindParam(":admin_id",$this->admin_id);
 
             //Execute query
             if ($stmt->execute())
@@ -134,7 +137,7 @@ class Txn
         }else if($txn_type == "Debit")
         {
             $query = "INSERT INTO txn_list 
-                  SET date = :date, debit = :debit, details = :details, method = :method, userid = :userid";
+                  SET date = :date, debit = :debit, details = :details, method = :method, admin_id = :admin_id";
 
             //prepare query
             $stmt = $this->conn->prepare($query);
@@ -144,7 +147,7 @@ class Txn
             $stmt->bindParam(":debit",$this->amount);
             $stmt->bindParam(":details",$this->details);
             $stmt->bindParam(":method",$this->method);
-            $stmt->bindParam(":userid",$this->userid);
+            $stmt->bindParam(":admin_id",$this->admin_id);
 
             //Execute query
             if ($stmt->execute())
@@ -267,7 +270,7 @@ class Txn
     function txn_update()
     {
         $query = "UPDATE txn_list
-                    SET date = :date, details = :details, credit = :credit, debit = :debit
+                    SET date = :date, admin_id = :admin_id, details = :details, credit = :credit, debit = :debit
                     WHERE txn_id = :txn_id";
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -275,6 +278,7 @@ class Txn
         //Bind Value
         $stmt->bindParam(":txn_id",$this->txn_id);
         $stmt->bindParam(":date",$this->date);
+        $stmt->bindParam(":admin_id",$this->admin_id);
         $stmt->bindParam(":details",$this->details);
         $stmt->bindParam(":credit",$this->credit);
         $stmt->bindParam(":debit",$this->debit);
@@ -287,12 +291,12 @@ class Txn
     }
 
 
-    function datewise_and_userwise_total_credit_debit()
+    function datewise_and_adminwise_total_credit_debit()
     {
         //query
-        $query = "SELECT userid, SUM(credit) - SUM(debit) as cash 
+        $query = "SELECT admin_id, SUM(credit) - SUM(debit) as cash 
         FROM txn_list WHERE date >= :first_date AND date <= :last_date
-        GROUP BY userid";
+        GROUP BY admin_id";
 
         //prepare query
         $stmt = $this->conn->prepare($query);
