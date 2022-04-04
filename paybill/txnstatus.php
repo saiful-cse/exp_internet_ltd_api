@@ -7,10 +7,10 @@ if (!isset($_GET['status'])) {
   $status = $_GET['status'];
 }
 
-// unset($_SESSION['client_id']);
-// unset($_SESSION['amount']);
-// unset($_SESSION['token']);
-// unset($_SESSION['paymentID']);
+unset($_SESSION['client_id']);
+unset($_SESSION['amount']);
+unset($_SESSION['token']);
+unset($_SESSION['paymentID']);
 
 ?>
 
@@ -85,6 +85,7 @@ if (!isset($_GET['status'])) {
           <div class="card-body">
             <img src="img/error.png" alt="" />
             <p style="color: red;">Error!!</p>
+            <h3> <?php echo $status; ?></h3>
             <div class="input-btn mt-3">
               <a href="index.php" class="form-control btn btn-secondary">Try again</a>
             </div>

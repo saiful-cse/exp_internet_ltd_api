@@ -41,7 +41,7 @@ if (isset($_POST['next'])) {
                 </h6>
                 <span><?php echo $error; ?></span>
                 <form action="index.php" method="post">
-                    <input type="tel" maxlength="11" name="mobile_no" value="<?php echo $mobile_no ?>" class="form-control input-btn mt-2"><br>
+                    <input type="tel" maxlength="20" name="mobile_no" value="<?php echo $mobile_no ?>" class="form-control input-btn mt-2"><br>
                     <div class="input-btn">
                         <button type="submit" name="next" class="form-control btn btn-secondary">Next</button>
                     </div>

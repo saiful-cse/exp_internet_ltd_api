@@ -78,7 +78,7 @@ $details = $client->client_details();
                                 <?php echo "<b>Phone: </b>" . $details['phone']; ?> <br>
                                 <?php echo "<b>Area: </b>" . $details['area']; ?> <br>
                                 <?php echo "<b>PPPoE: </b>" . $details['ppp_name']; ?> <br>
-                                <?php echo "<b>Expire Date: </b>" . date_format($expiredate, "d F Y");; ?> <br>
+                                <?php echo "<b>Expire Date: </b>" . date_format($expiredate, "d F Y"); ?> <br>
                                 <?php echo "<b>Month : </b>" . $totalmonth; ?> <br>
                                 <?php echo "<b>Package ID: </b>" . $details['pkg_id']; ?> <br>
                                 <?php echo "<b>Package Name: </b>" . $details['title']; ?> <br>
@@ -96,7 +96,7 @@ $details = $client->client_details();
                             <div class="card-body">
                                 <img src="img/success.png" alt="" />
                                 <p style="color: green;">Congratulation</p>
-                                <h3>আপনার বিল পরিশোধ করা আছে। <br> ধন্যবাদ</h3>
+                                 <h3><?php echo $details['name'].", ".$details['area'].", ".$details['phone']; ?> <br> আপনার বিল <?php echo date_format($expiredate, "d F Y"); ?> পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ</h3>
                                 <div class="input-btn mt-3">
                                     <a href="index.php" class="form-control btn btn-secondary">Exit</a>
                                 </div>

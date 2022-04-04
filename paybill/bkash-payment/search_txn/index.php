@@ -11,7 +11,7 @@ if (isset($request_token['id_token'])) {
     if (isset($_POST['search'])) {
         $txn_id = $_POST['txn_id'];
         $pin = $_POST['pin'];
-        if (empty($pin)) {
+        if (empty($pin) && $pin == '89919161') {
             $error = '<div class="alert alert-danger">Please enter admin Pin</div>';
         } else if (empty($txn_id)) {
             $error = '<div class="alert alert-danger">Please enter bKash transaction ID</div>';
@@ -106,7 +106,7 @@ function searchTxn($txn_id)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Bay Communication
+        Expert Internet Ltd.
     </title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
@@ -126,11 +126,11 @@ function searchTxn($txn_id)
     <div class="header">
         <div class="d-flex justify-content-center mt-2">
             <div class="site_logo">
-                <img src="./img/baycomlogo.png" alt="">
+                <img src="./img/explogo.png" alt="">
             </div>
             <div class="site_info">
-                <h2>Bay Communication</h2>
-                <p>Internet Service Provider of Cox's Bazar</p>
+                <h2>Expert Internet Ltd.</h2>
+                <p>A Qualified internet service team</p>
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@ function searchTxn($txn_id)
                 <span><?php echo $error; ?></span>
                 <form action="index.php" method="post">
 
-                    <input style="text-align:center;" type="password" inputmode="numeric" maxlength="4" name="pin" placeholder="Admin Pin" value="<?php echo $pin ?>" class="form-control input-btn mt-2"><br>
+                    <input style="text-align:center;" type="password" inputmode="numeric" maxlength="8" name="pin" placeholder="Admin Pin" value="<?php echo $pin ?>" class="form-control input-btn mt-2"><br>
                     <input style="text-align:center;" type="text" name="txn_id" maxlength="30" placeholder="bKash transactin ID" value="<?php echo $txn_id ?>" class="form-control input-btn mt-2"><br>
 
                     <div class="input-btn">

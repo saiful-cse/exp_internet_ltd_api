@@ -15,7 +15,7 @@ $txn->client_id = $_SESSION['client_id'];
 $txn->name = $_SESSION['name'];
 $txn->amount = $_SESSION['amount'];
 $txn->month = $_SESSION['month'];
-$txn->details = $_SESSION['name'].", Bill, bKash txn: ".$_POST['txnid'].", MSISDN: ".$_POST['customerMsisdn'];
+$txn->details = $_SESSION['name'].", Bill, bKash, ".$_POST['txnid'].", ".$_POST['customerMsisdn'];
 
 
 if ($txn->bkash_txn_store()) {
