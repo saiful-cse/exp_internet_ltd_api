@@ -40,7 +40,9 @@ if (!empty($data->jwt ) && !empty($data->ppp_name) && !empty($data->phone) && !e
         // decode jwt
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
-        $message = "Dear subscriber, your wifi connection has been disconnected due to outstanding bill. 01975-559161 (bKash, nagod Marchant), Use Reference: ".$data->ppp_name;
+        $message = "বকেয়া বিলের জন্য আপনার WiFi সংযোগটি অটো বন্ধ হয়েছে, পুনরায় চালু করতে বিল পরিশোধ করুন
+https://expert-internet.net/paybill
+01975-559161 (bKash Payment). Reference: ".$data->ppp_name;
 
         //set the value
         $sms->msg_body = $message;

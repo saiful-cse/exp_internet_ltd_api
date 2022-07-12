@@ -10,7 +10,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 //RoterOS
 use PEAR2\Net\RouterOS;
-
 require_once '../PEAR2/Autoload.php';
 
 /*
@@ -129,8 +128,6 @@ if (!empty($data->jwt) and !empty($data->ppp_name)) {
                     $ppp_activity = "Online";
                     $uptime = $item->getProperty("uptime");
                     $caller_id = $item->getProperty("caller-id");
-                    $download = "0000";
-                    $upload = "0000";
                 }
             }
         } catch (\Throwable $th) {

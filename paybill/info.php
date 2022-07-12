@@ -96,8 +96,9 @@ $details = $client->client_details();
                             <div class="card-body">
                                 <img src="img/success.png" alt="" />
                                 <p style="color: green;">Congratulation</p>
-                                 <h3><?php echo $details['name'].", ".$details['area'].", ".$details['phone']; ?> <br> আপনার বিল <?php echo date_format($expiredate, "d F Y"); ?> পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ</h3>
-                                <div class="input-btn mt-3">
+                                 <h3><?php echo $details['name'].", ".$details['area'].", ".$details['phone']."<br> আপনি ".$details['title'].", ".$details['speed']." প্যাকেজটি ব্যবহার করছেন, মাসিক বিল ".$details['price']." টাকা এবং আপনার বিল ".date_format($expiredate, "d F Y")." পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ"; ?></h3>
+                                
+                                 <div class="input-btn mt-3">
                                     <a href="index.php" class="form-control btn btn-secondary">Exit</a>
                                 </div>
                             </div>

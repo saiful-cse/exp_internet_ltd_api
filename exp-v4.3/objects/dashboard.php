@@ -47,7 +47,7 @@ class Dashboard
     function count_total_disabled_client()
     {
         //query
-        $query = "SELECT COUNT(*) FROM clients WHERE mode = 'Disable'";
+        $query = "SELECT COUNT(*) FROM clients WHERE mode = 'Disable' AND registered = 1";
 
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -166,7 +166,7 @@ class Dashboard
 function count_monthly_client(){
 
         $query = "SELECT MONTHNAME(reg_date) AS month , COUNT(*) AS total FROM clients
-        WHERE YEAR(reg_date) = 2022 AND mode = 'Enable' AND registered = '1'
+        WHERE YEAR(reg_date) = 2020 AND mode = 'Enable' AND registered = '1'
         GROUP BY MONTH(reg_date)
         ORDER BY MONTH(reg_date) DESC LIMIT 8";
 

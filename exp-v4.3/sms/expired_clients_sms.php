@@ -26,7 +26,9 @@ use \Firebase\JWT\JWT;
 
 $data = json_decode(file_get_contents("php://input"));
 
-$message = "Dear subscriber, your wifi connection has been expired. Pay monthly bill to avoid auto disconnect. 01975-559161 (bKash, Nagod Marchant)";
+$message = "আপনার WiFi বিলের মেয়াদ শেষ। সংযোগ বিচ্ছিন্ন এড়াতে বিল পরিশোধ করুন।
+https://expert-internet.net/paybill
+01975-559161 (bKash Payment)";
 
 /*
 * Instance database and dashboard object
@@ -83,7 +85,6 @@ if (!empty($data->jwt)) {
 
             $p = explode("|", $smsresult);
             $sendstatus = $p[0];
-
 
             switch ($sendstatus) {
                 case '1000':
@@ -146,7 +147,9 @@ if (!empty($data->jwt)) {
                         ));
                     }
                     break;
+                    
             }
+            
         } else {
 
             echo json_encode(array(

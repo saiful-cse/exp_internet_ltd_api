@@ -72,7 +72,7 @@ if (!empty($jwt)) {
             array(
                 "status" => 200,
                 "total_expired_client" => $total_expired_client,
-                "monthly_client_count" => $data,
+                "monthly_client_count" => "hello",
                 "total_enabled_client" => $total_enabled_client,
                 "total_disabled_client" => $total_disabled_client,
                 "current_month_total_credit" => $current_month_total_credit,

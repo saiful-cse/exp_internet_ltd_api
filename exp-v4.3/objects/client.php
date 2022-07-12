@@ -12,7 +12,7 @@ class Client
     /*
      * Objects properties
      */
-    public $id, $registered, $mode, $payment_method, $name, $phone, $area,
+    public $id, $registered, $mode, $payment_method, $name, $phone, $area, $zone,
         $ppp_name, $ppp_pass,
         $pkg_id, $sms,
         $reg_date, $expire_date, $ppp_name_list;
@@ -120,7 +120,7 @@ class Client
     {
 
         //query
-        $query = "SELECT * FROM clients WHERE expire_date <= '$this->current_date' AND registered = '1' AND mode = 'Enable' ORDER BY reg_date ASC";
+        $query = "SELECT * FROM clients WHERE expire_date <= '$this->current_date' AND registered = '1' AND mode = 'Enable' ORDER BY reg_date DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -135,7 +135,7 @@ class Client
 
         $current_date =  date("Y-m-d H:i:s");
         //query
-        $query = "SELECT * FROM clients WHERE '$current_date' >= DATE_ADD(expire_date, INTERVAL 3 DAY) AND registered = '1' AND mode = 'Enable'";
+        $query = "SELECT * FROM clients WHERE '$current_date' >= DATE_ADD(expire_date, INTERVAL 3 DAY) AND registered = '1' AND mode = 'Enable' ORDER BY reg_date DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -287,7 +287,7 @@ class Client
         if ($current_mode == $this->mode) {
             $query = "UPDATE clients SET
             registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
-            ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
+            zone = :zone, expire_date = :expire_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
 
@@ -296,6 +296,8 @@ class Client
             $stmt->bindParam(":name", $this->name);
             $stmt->bindParam(":phone", $this->phone);
             $stmt->bindParam(":area", $this->area);
+            $stmt->bindParam(":zone", $this->zone);
+            $stmt->bindParam(":expire_date", $this->expire_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
             $stmt->bindParam(":ppp_pass", $this->ppp_pass);
             $stmt->bindParam(":pkg_id", $this->pkg_id);
@@ -311,7 +313,7 @@ class Client
             
             $query = "UPDATE clients SET
             registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
-            ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id, expire_date = :expire_date WHERE id = $this->id";
+            zone = :zone, expire_date = :expire_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id, expire_date = :expire_date WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
 
@@ -320,6 +322,8 @@ class Client
             $stmt->bindParam(":name", $this->name);
             $stmt->bindParam(":phone", $this->phone);
             $stmt->bindParam(":area", $this->area);
+            $stmt->bindParam(":zone", $this->zone);
+            $stmt->bindParam(":expire_date", $this->expire_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
             $stmt->bindParam(":ppp_pass", $this->ppp_pass);
             $stmt->bindParam(":pkg_id", $this->pkg_id);
@@ -333,7 +337,7 @@ class Client
         } else {
             $query = "UPDATE clients SET
             registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
-            ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
+            zone = :zone, expire_date = :expire_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
 
@@ -342,6 +346,8 @@ class Client
             $stmt->bindParam(":name", $this->name);
             $stmt->bindParam(":phone", $this->phone);
             $stmt->bindParam(":area", $this->area);
+            $stmt->bindParam(":zone", $this->zone);
+            $stmt->bindParam(":expire_date", $this->expire_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
             $stmt->bindParam(":ppp_pass", $this->ppp_pass);
             $stmt->bindParam(":pkg_id", $this->pkg_id);

@@ -4,7 +4,7 @@ class Database{
  
     // specify your own database credentials
     private $host = "localhost";
-    private $db_name = "exp-v4.3";
+    private $db_name = "exp";
     private $username = "root";
     private $password = "";
     public $conn;

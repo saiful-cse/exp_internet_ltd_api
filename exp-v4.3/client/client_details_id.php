@@ -23,6 +23,7 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
+
 $data = json_decode(file_get_contents("php://input"));
 
 if (!empty($data->jwt) and !empty($data->id)) {
@@ -31,15 +32,7 @@ if (!empty($data->jwt) and !empty($data->id)) {
         // decode jwt
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
-        //Default value set
-        $ppp_status = "Not entry";
-        $last_loged_out = "Not entry";
-        $ppp_activity = "Offline";
-        $uptime = "---";
-        $caller_id = "---";
-        $download = "---";
-        $upload = "---";
-
+        
         ////////////////////////////////////
         //Fetching client information form DB
         ////////////////////////////////////
@@ -64,7 +57,9 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 $name = $row['name'];
                 $phone = $row['phone'];
                 $area = $row['area'];
+                $zone = $row['zone'];
 
+                $expire_date = $row['expire_date'];
                 $ppp_name = $row['ppp_name'];
                 $ppp_pass = $row['ppp_pass'];
                
@@ -74,10 +69,6 @@ if (!empty($data->jwt) and !empty($data->id)) {
             }
         }
         else{
-
-            // default value set
-            $id = $registered = $name = $phone = $area = 
-            $ppp_name = $ppp_pass = $mode = $payment_method = $pkg_id = $reg_date = $expire_date = "";
 
             $message = "Not found client details via id";
             $status = 404;
@@ -101,6 +92,9 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 "name" => $name,
                 "phone" => $phone,
                 "area" => $area,
+                "zone" => $zone,
+                
+                "expire_date" => $expire_date,
                 "ppp_name" => $ppp_name,
                 "ppp_pass" => $ppp_pass,
                 "pkg_id" => $pkg_id,
