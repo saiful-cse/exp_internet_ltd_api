@@ -130,20 +130,7 @@ class Client
         return $stmt;
     }
 
-    function expired3day_client()
-    {
-
-        $current_date =  date("Y-m-d H:i:s");
-        //query
-        $query = "SELECT * FROM clients WHERE '$current_date' >= DATE_ADD(expire_date, INTERVAL 3 DAY) AND registered = '1' AND mode = 'Enable' ORDER BY reg_date DESC";
-
-        // prepare query statement
-        $stmt = $this->conn->prepare($query);
-
-        //query execute
-        $stmt->execute();
-        return $stmt;
-    }
+    
 
 
     function isExistPhoneToUpdate()
