@@ -23,6 +23,7 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
+
 $data = json_decode(file_get_contents("php://input"));
 
 if (!empty($data->jwt) and !empty($data->id)) {
@@ -31,7 +32,7 @@ if (!empty($data->jwt) and !empty($data->id)) {
         // decode jwt
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
-    
+        
         ////////////////////////////////////
         //Fetching client information form DB
         ////////////////////////////////////
@@ -42,7 +43,7 @@ if (!empty($data->jwt) and !empty($data->id)) {
         $client = new Client($db);
         $client->id = $data->id;
 
-        $stmt = $client->client_details();
+        $stmt = $client->client_details_id();
         $stmt2 = $client->all_packages();
 
         if($stmt->rowCount() > 0)
@@ -51,49 +52,54 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 $status = 200;
                 $message = "Client details fetched successfully";
                 $id = $row['id'];
-                $registered = $row['registered'];
+                $mode = $row['mode'];
+
                 $name = $row['name'];
                 $phone = $row['phone'];
                 $area = $row['area'];
+                $zone = $row['zone'];
+
+                $expire_date = $row['expire_date'];
+                $disable_date = $row['disable_date'];
                 $ppp_name = $row['ppp_name'];
                 $ppp_pass = $row['ppp_pass'];
-                $mode = $row['mode'];
+               
                 $payment_method = $row['payment_method'];
                 $pkg_id = $row['pkg_id'];
-                $reg_date = $row['reg_date'];
-                $expire_date = $row['expire_date'];
+                
             }
         }
         else{
 
-            $message = "Not found client";
+            $message = "Not found client details via id";
             $status = 404;
+
         }
 
         while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
             $packages[] = $row;
         }
         ///////////////// END //////////////////
-        
+
         //Printing data
         echo json_encode(
             array(
                 "status" => $status,
                 "message" => $message,
+                "payment_method" => $payment_method,
 
                 "id" => $id,
-                "registered" => $registered,
+                "mode" => $mode,
                 "name" => $name,
                 "phone" => $phone,
                 "area" => $area,
+                "zone" => $zone,
+                
+                "expire_date" => $expire_date,
+                "disable_date" => $disable_date,
                 "ppp_name" => $ppp_name,
                 "ppp_pass" => $ppp_pass,
-                "mode" => $mode,
-                "payment_method" => $payment_method,
                 "pkg_id" => $pkg_id,
-                "reg_date" => $reg_date,
-                "expire_date" => $expire_date,
-
                 "packages" => $packages
             )
         );

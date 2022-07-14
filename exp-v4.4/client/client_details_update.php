@@ -27,8 +27,8 @@ $data = json_decode(file_get_contents("php://input"));
 
 if (
     !empty($data->jwt) && !empty($data->id) && !empty($data->mode) && !empty($data->payment_method) &&
-    !empty($data->name) && !empty($data->phone) && !empty($data->area) &&
-    !empty($data->ppp_name) && !empty($data->ppp_pass) &&
+    !empty($data->name) && !empty($data->phone) && !empty($data->area) && !empty($data->zone) && !empty($data->expire_date) &&
+    !empty($data->disable_date) && !empty($data->ppp_name) && !empty($data->ppp_pass) &&
     !empty($data->pkg_id)
 
 ) {
@@ -51,6 +51,9 @@ if (
         $client->name = $data->name;
         $client->phone = $data->phone;
         $client->area = $data->area;
+        $client->zone = $data->zone;
+        $client->expire_date = $data->expire_date;
+        $client->disable_date = $data->disable_date;
         $client->ppp_name = $data->ppp_name;
         $client->ppp_pass = $data->ppp_pass;
         $client->pkg_id = $data->pkg_id;

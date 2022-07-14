@@ -26,10 +26,7 @@ use \Firebase\JWT\JWT;
 $data = json_decode(file_get_contents("php://input"));
 
 if (
-    !empty($data->jwt) && !empty($data->id) && !empty($data->mode) && !empty($data->payment_method) &&
-    !empty($data->name) && !empty($data->phone) && !empty($data->area) &&
-    !empty($data->ppp_name) && !empty($data->ppp_pass) &&
-    !empty($data->pkg_id)
+    !empty($data->jwt) && !empty($data->name) && !empty($data->phone) && !empty($data->area)
 
 ) {
 
@@ -45,34 +42,25 @@ if (
         $client = new Client($db);
 
         //Assing the value in client class
-        $client->id = $data->id;
-        $client->mode = $data->mode;
-        $client->payment_method = $data->payment_method;
+
         $client->name = $data->name;
         $client->phone = $data->phone;
         $client->area = $data->area;
-        $client->ppp_name = $data->ppp_name;
-        $client->ppp_pass = $data->ppp_pass;
-        $client->pkg_id = $data->pkg_id;
 
-        if ($client->isExistPPPname()) {
+        if ($client->isExistPhone()) {
             echo json_encode(array(
                 "status" => 207,
-                "message" => "আপনার দেওয়া PPP Name টি অন্য ক্লায়েন্টের জন্য ব্যবহার করা হয়েছে, আবার চেস্টা করুন।"
+                "message" => "এই Phone নাম্বারটি দিয়ে একবার রেজিস্ট্রেশন হয়ে গেছে।"
             ));
-        } else if ($client->isExistPhoneToUpdate()) {
-            echo json_encode(array(
-                "status" => 207,
-                "message" => "এই নাম্বারটি দিয়ে একবার রেজিস্ট্রেশন হয়ে গেছে।"
-            ));
+            
+        } else {
 
-        } else if($client->client_details_update()){
+            $client->clientRegistration();
             echo json_encode(array(
                 "status" => 200,
-                "message" => "Details Updated Successfully."
+                "message" => "Client Registration Successfully."
             ));
         }
-
     } catch (\Throwable $e) {
         // tell the user access denied  & show error message
         echo json_encode(array(

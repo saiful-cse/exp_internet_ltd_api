@@ -192,5 +192,42 @@ function count_monthly_client(){
         return $stmt;
     }
 
+    
+
+    function expired_cash()
+    {
+    
+        $current_date = date("Y-m-d H:i:s");
+        //query
+        $query = "SELECT COUNT(*) FROM clients WHERE expire_date <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Cash'";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        if ($stmt->execute())
+        {
+            return $stmt->fetchColumn();
+        }
+        return false;
+    }
+
+    function expired_mobile()
+    {
+    
+        $current_date = date("Y-m-d H:i:s");
+        //query
+        $query = "SELECT COUNT(*) FROM clients WHERE expire_date <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Mobile'";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        if ($stmt->execute())
+        {
+            return $stmt->fetchColumn();
+        }
+        return false;
+    }
+
+    //2022-07-12 17:17:59
 
 }

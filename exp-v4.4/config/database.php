@@ -4,9 +4,9 @@ class Database{
  
     // specify your own database credentials
     private $host = "localhost";
-    private $db_name = "creative_exp-v43";
-    private $username = "creative_exp-v43";
-    private $password = "creative_exp-v43";
+    private $db_name = "exp";
+    private $username = "root";
+    private $password = "";
     public $conn;
  
     // get the database connection
