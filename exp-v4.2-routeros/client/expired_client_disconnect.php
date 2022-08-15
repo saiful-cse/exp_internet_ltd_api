@@ -85,7 +85,6 @@ if (!empty($data->jwt)) {
                     $util2->disable(RouterOS\Query::where('name', $pppName[$i]));
                 }
 
-            
                 //SMS service
                 $url = "http://66.45.237.70/api.php";
                 $data = array(

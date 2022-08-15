@@ -57,7 +57,7 @@ class Admin
     function fetch_logs()
     {
         //query
-        $query = "SELECT * FROM logs ORDER BY time DESC LIMIT 5";
+        $query = "SELECT * FROM logs ORDER BY time DESC LIMIT 10";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

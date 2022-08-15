@@ -38,7 +38,7 @@ class Sms
     function getExpiredClientsPhone()
     {
 
-        $current_date =  date("Y-m-d H:i:s");
+        $current_date =  date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s"). '+3 days')); 
         $query = "SELECT phone FROM clients WHERE expire_date <= '$current_date' AND sms = 'unsent' AND registered = 1 AND mode = 'Enable' ";
         $stmt = $this->conn->prepare($query);
         //query execute

@@ -58,8 +58,9 @@ class Client
     function enabled_client()
     {
 
+        $current_date =  date("Y-m-d H:i:s");
         //query
-        $query = "SELECT * FROM clients WHERE registered = '1' AND mode = 'Enable' ORDER BY reg_date DESC";
+        $query = "SELECT * FROM clients WHERE '$current_date' >= DATE_ADD(expire_date, INTERVAL 3 DAY) AND registered = '1' AND mode = 'Enable' ORDER BY reg_date DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -216,7 +217,7 @@ class Client
     {
 
         //query
-        $query = "SELECT * FROM clients";
+        $query = "SELECT * FROM clients WHERE registered = 1 AND mode = 'Enable'";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

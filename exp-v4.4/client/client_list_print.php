@@ -60,11 +60,11 @@ $error = "";
 <body>
 
     <div id="company_header">
-        <strong>Expert Internet Ltd.</strong> <br>
+        <strong>Patoli Road Kharulia Bazar Customer List</strong> <br>
     </div>
     <span id="error"><?php echo $error ?></span>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
-        <label for="">Enter Password</label> <br>
+        <label for="">Enter PPP Password</label> <br>
         <input type="password" name="password">
         <input type="submit" name="view" value="View">
     </form>
@@ -80,17 +80,11 @@ $error = "";
             } else { ?>
 
                 <tr>
-                    <th>Client ID</th>
                     <th>Name</th>
                     <th>Phone</th>
-
-                    <th>Area</th>
                     <th>PPP Name</th>
-                    <th>Package</th>
-
-                    <th>Reg. Date</th>
-                    <th>Expire Date</th>
-
+                    <th>Area</th>
+                    <th>Reg Date</th>
                 </tr>
                 <?php
 
@@ -103,17 +97,13 @@ $error = "";
 
                 foreach ($stmt as $c) { ?>
                     <tr>
-                        <td><?php echo $c['id']; ?></td>
+                        
                         <td><?php echo $c['name']; ?></td>
                         <td><?php echo $c['phone']; ?></td>
-
-                        <td><?php echo $c['area']; ?></td>
                         <td><?php echo $c['ppp_name']; ?></td>
-                        <td><?php echo $c['pkg_id']; ?></td>
-
+                        <td><?php echo $c['area']; ?></td>
                         <td><?php echo $c['reg_date']; ?></td>
-                        <td><?php echo $c['expire_date']; ?></td>
-
+                    
                     </tr>
         <?php }
             }

@@ -165,10 +165,10 @@ class Dashboard
 
 function count_monthly_client(){
 
-        $query = "SELECT MONTHNAME(reg_date) AS month , COUNT(*) AS total FROM clients
-        WHERE YEAR(reg_date) = 2020 AND mode = 'Enable' AND registered = '1'
+        $query = "SELECT ANY_VALUE(MONTHNAME(reg_date)) AS month , COUNT(*) AS total FROM clients
+        WHERE YEAR(reg_date) = 2022 AND mode = 'Enable' AND registered = '1'
         GROUP BY MONTH(reg_date)
-        ORDER BY MONTH(reg_date) DESC LIMIT 8";
+        ORDER BY MONTH(reg_date) DESC";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -228,6 +228,29 @@ function count_monthly_client(){
         return false;
     }
 
-    //2022-07-12 17:17:59
+     function bKashCollection()
+    {
+
+        $current_date = date("Y-m-d H:i:s");
+        $query = "SELECT ANY_VALUE(MONTHNAME(date)) AS label, SUM(credit) AS y FROM txn_list
+        WHERE '2022-01-01 00:00:00' <= date AND '$current_date' >= date AND type = 'Bill' AND method = 'bKash'
+        GROUP BY MONTH(date)
+        ORDER BY MONTH(date)";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+        return $stmt;
+    }
+    
+    function packages()
+    {
+        $query = "SELECT * FROM packages";
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->execute();
+        return $stmt;
+    }
 
 }
