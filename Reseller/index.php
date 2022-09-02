@@ -16,6 +16,8 @@ if (isset($_POST['login'])) {
         $error = '<div class="alert alert-danger">Enter Correct Pin</div>';
     } else if($admin_id == 6606 && $admin_pin == 4563){
 
+        //Session time is stored in a session variable
+        $_SESSION['login_session_time'] = time() + 1200;
         $_SESSION['loged'] = 'loged';
         header('location: client_list.php');
         

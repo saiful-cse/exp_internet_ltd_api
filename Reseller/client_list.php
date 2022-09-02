@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['loged'])) {
+if (!isset($_SESSION['loged']) && $_SESSION['login_session_time'] > time()) {
     header('location: index.php');
     die();
     exit();
@@ -67,7 +67,7 @@ $client_list = $client->client_list();
 <body>
     <?php include('header.html') ?>
 
-    <h4 style="text-align: center;">PM Khali Customer List</h4> 
+    <h4 style="text-align: center;">PM Khali Customer List</h4>
     <h5 style="text-align: right; margin-right: 50px;"><a href="logout.php">Log Out</a></h5>
 
     <div style="overflow-x:auto;">
@@ -84,6 +84,7 @@ $client_list = $client->client_list();
 
             <?php
             foreach ($client_list as $item) { ?>
+
                 <tr>
                     <td><?php echo $item['name'] ?></td>
                     <td><?php echo $item['area'] ?></td>
@@ -95,8 +96,17 @@ $client_list = $client->client_list();
                     <?php } else if ($item['mode'] == "Enable") { ?>
                         <td style="text-align: center; color: green;">Enable</td>
                     <?php }  ?>
-                    
-                    <td><a href="http://localhost/api/expert_internet_api/paybill_new/reseller_info.php?mobile_no=<?php echo $item['phone'] ?>">Pay Bill</a></td>
+                    <?php
+                    $current_date = new DateTime(date('Y-m-d H:i:s'));
+                    $expiredate = new DateTime($item['expire_date']);
+
+                    if ($expiredate > $current_date) { ?>
+                        <td>Paid</a></td>
+
+                    <?php  } else { ?>
+                        <td><a href="http://localhost/api/expert_internet_api/paybill_new/reseller_info.php?mobile_no=<?php echo $item['phone'] ?>">Expired!! Pay Bill</a></td>
+
+                    <?php  } ?>
                 </tr>
             <?php } ?>
 

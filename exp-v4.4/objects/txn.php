@@ -69,7 +69,7 @@ class Txn
                   SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
                   type = :type, details = :details, method = :method, admin_id = :admin_id";
 
-                $query2 = "UPDATE clients SET expire_date = DATE_ADD(expire_date, INTERVAL 1 MONTH), sms = 'unsent'
+                $query2 = "UPDATE clients SET take_time = 0, expire_date = DATE_ADD(expire_date, INTERVAL 1 MONTH), sms = 'unsent'
                    WHERE id = '$this->client_id'";
 
                 //prepare query

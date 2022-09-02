@@ -27,13 +27,14 @@ use \Firebase\JWT\JWT;
 /*
  * Instance database and dashboard object
  */
+
 $data = json_decode(file_get_contents("php://input"));
 
 $database = new Database();
 $db = $database->getConnection();
 $sms = new Sms($db);
 
-if (!empty($data->jwt ) && !empty($data->ppp_name) && !empty($data->phone) && !empty($data->id)) {
+if (!empty($data->jwt) && !empty($data->ppp_name) && !empty($data->phone) && !empty($data->id)) {
 
     try {
 
@@ -42,7 +43,7 @@ if (!empty($data->jwt ) && !empty($data->ppp_name) && !empty($data->phone) && !e
 
         $message = "বকেয়া বিলের জন্য আপনার WiFi সংযোগটি অটো বন্ধ হয়েছে, পুনরায় চালু করতে বিল পরিশোধ করুন
 https://expert-internet.net/paybill
-01975-559161 (bKash Payment). Reference: ".$data->ppp_name;
+01975-559161 (bKash Payment). Reference: " . $data->ppp_name;
 
         //set the value
         $sms->msg_body = $message;

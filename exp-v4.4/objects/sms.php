@@ -23,6 +23,33 @@ class Sms
         $this->conn = $db;
     }
 
+    function getExpiredClientsPhonePPPname()
+    {
+        $current_date =  date("Y-m-d H:i:s");
+
+        $query = "SELECT id, ppp_name, phone FROM clients WHERE '$current_date' >= expire_date AND mode = 'Enable' AND payment_method = 'Mobile' ";
+        $stmt = $this->conn->prepare($query);
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function clientDisconnectModeUpdate()
+    
+    {
+        $current_date =  date("Y-m-d H:i:s");
+        $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', disable_date = '$current_date' WHERE id IN ($this->id_list) ";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        if ($stmt->execute()) {
+
+            return true;
+        }
+        return false;
+    }
+
     function getEnabledClientsPhone(){
         //query
         $query = "SELECT phone FROM clients WHERE mode = 'Enable' AND registered = 1";
