@@ -27,7 +27,7 @@ class Sms
     {
         $current_date =  date("Y-m-d H:i:s");
 
-        $query = "SELECT id, ppp_name, phone FROM clients WHERE '$current_date' >= expire_date AND mode = 'Enable' AND payment_method = 'Mobile' ";
+        $query = "SELECT id, ppp_name, phone FROM clients WHERE '$current_date' >= expire_date AND mode = 'Enable' AND take_time = 0 AND payment_method = 'Mobile' ";
         $stmt = $this->conn->prepare($query);
         //query execute
         $stmt->execute();
