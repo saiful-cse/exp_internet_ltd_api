@@ -61,7 +61,6 @@ if (!empty($data->jwt) and !empty($data->id)) {
 
                 $expire_date = $row['expire_date'];
                 $disable_date = $row['disable_date'];
-                $take_time = $row['take_time'];
                 $ppp_name = $row['ppp_name'];
                 $ppp_pass = $row['ppp_pass'];
                
@@ -98,7 +97,6 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 
                 "expire_date" => $expire_date,
                 "disable_date" => $disable_date,
-                "take_time" => $take_time,
                 "ppp_name" => $ppp_name,
                 "ppp_pass" => $ppp_pass,
                 "pkg_id" => $pkg_id,

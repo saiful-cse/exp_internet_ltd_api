@@ -12,7 +12,7 @@ class Client
     /*
      * Objects properties
      */
-    public $id, $registered, $mode, $payment_method, $name, $phone, $area, $zone,
+    public $id, $registered, $mode, $payment_method, $name, $phone, $take_time, $area, $zone,
         $ppp_name, $ppp_pass,
         $pkg_id, $sms,
         $reg_date, $expire_date, $disable_date, $ppp_name_list;
@@ -284,7 +284,7 @@ class Client
         if ($current_mode == $this->mode) {
 
             $query = "UPDATE clients SET
-            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
+            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, take_time = :take_time, area = :area,
             zone = :zone, expire_date = :expire_date, disable_date = :disable_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
@@ -295,6 +295,7 @@ class Client
             $stmt->bindParam(":phone", $this->phone);
             $stmt->bindParam(":area", $this->area);
             $stmt->bindParam(":zone", $this->zone);
+            $stmt->bindParam(":take_time", $this->take_time);
             $stmt->bindParam(":expire_date", $this->expire_date);
             $stmt->bindParam(":disable_date", $this->disable_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
@@ -310,7 +311,7 @@ class Client
             $current_date = date("Y-m-d H:i:s");
 
             $query = "UPDATE clients SET
-            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
+            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, take_time = :take_time, area = :area,
             zone = :zone, expire_date = :expire_date, disable_date = :disable_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id, expire_date = :expire_date WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
@@ -319,9 +320,9 @@ class Client
             $stmt->bindParam(":payment_method", $this->payment_method);
             $stmt->bindParam(":name", $this->name);
             $stmt->bindParam(":phone", $this->phone);
+            $stmt->bindParam(":take_time", $this->take_time);
             $stmt->bindParam(":area", $this->area);
             $stmt->bindParam(":zone", $this->zone);
-            $stmt->bindParam(":expire_date", $this->expire_date);
             $stmt->bindParam(":disable_date", $this->disable_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
             $stmt->bindParam(":ppp_pass", $this->ppp_pass);
@@ -332,9 +333,12 @@ class Client
                 return true;
             }
             return false;
-        } else {
+        } else if($current_mode == 'Enable' && $this->mode == 'Disable') {
+            
+            $current_date = date("Y-m-d H:i:s");
+
             $query = "UPDATE clients SET
-            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, area = :area,
+            registered = '1', mode = :mode, payment_method = :payment_method, name = :name, phone = :phone, take_time = 0, area = :area,
             zone = :zone, sms = 'unsent', expire_date = :expire_date, disable_date = :disable_date, ppp_name = :ppp_name, ppp_pass = :ppp_pass, pkg_id = :pkg_id WHERE id = $this->id";
 
             $stmt = $this->conn->prepare($query);
@@ -346,7 +350,7 @@ class Client
             $stmt->bindParam(":area", $this->area);
             $stmt->bindParam(":zone", $this->zone);
             $stmt->bindParam(":expire_date", $this->expire_date);
-            $stmt->bindParam(":disable_date", $this->disable_date);
+            $stmt->bindParam(":disable_date", $this->$current_date);
             $stmt->bindParam(":ppp_name", $this->ppp_name);
             $stmt->bindParam(":ppp_pass", $this->ppp_pass);
             $stmt->bindParam(":pkg_id", $this->pkg_id);

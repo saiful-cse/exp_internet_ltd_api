@@ -27,26 +27,37 @@ use \Firebase\JWT\JWT;
 /*
  * Instance database and dashboard object
  */
-$data = json_decode(file_get_contents("php://input"));
 
 $database = new Database();
 $db = $database->getConnection();
+
+$jwt = $_POST['jwt'];
+$message = $_POST['message'];
+$number = $_POST['phone'];
+$client_id = $_POST['client_id'];
+
+/*
+ * Instance database and dashboard object
+ */
+$database = new Database();
+$db = $database->getConnection();
+
+/*
+ * Initialize object
+ */
 $sms = new Sms($db);
 
-if (!empty($data->jwt ) && !empty($data->ppp_name) && !empty($data->phone) && !empty($data->id)) {
+//data check
+if (!empty($jwt) && !empty($message) && !empty($number) && !empty($client_id)) {
 
     try {
 
         // decode jwt
-        $decoded = JWT::decode($data->jwt, $key, array('HS256'));
-
-        $message = "বকেয়া বিলের জন্য আপনার WiFi সংযোগটি অটো বন্ধ হয়েছে, পুনরায় চালু করতে বিল পরিশোধ করুন
-https://expert-internet.net/paybill
-01975-559161 (bKash Payment). Reference: ".$data->ppp_name;
+        $decoded = JWT::decode($jwt, $key, array('HS256'));
 
         //set the value
         $sms->msg_body = $message;
-        $sms->client_id = $data->id;
+        $sms->client_id = $client_id;
         $sms->created_at = date("Y-m-d H:i:s");
 
         //SMS service
@@ -54,7 +65,7 @@ https://expert-internet.net/paybill
         $data = array(
             'username' => "01835559161",
             'password' => "saiful@#21490",
-            'number' => $data->phone,
+            'number' => $number,
             'message' => $message
         );
 

@@ -46,7 +46,7 @@ function pppAction($actionType, $pppName)
 
 if (
     !empty($data->jwt) && !empty($data->id) && !empty($data->mode) && !empty($data->payment_method) &&
-    !empty($data->name) && !empty($data->phone) && !empty($data->area) && !empty($data->zone) && !empty($data->expire_date) &&
+    !empty($data->name) && !empty($data->phone)  && !empty($data->area) && !empty($data->zone) && !empty($data->expire_date) &&
     !empty($data->disable_date) && !empty($data->ppp_name) && !empty($data->ppp_pass) &&
     !empty($data->pkg_id)
 
@@ -69,6 +69,7 @@ if (
         $client->payment_method = $data->payment_method;
         $client->name = $data->name;
         $client->phone = $data->phone;
+        $client->take_time = $data->take_time;
         $client->area = $data->area;
         $client->zone = $data->zone;
         $client->expire_date = $data->expire_date;

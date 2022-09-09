@@ -27,7 +27,7 @@ class Sms
     {
         $current_date =  date("Y-m-d H:i:s");
 
-        $query = "SELECT id, ppp_name, phone FROM clients WHERE '$current_date' >= expire_date AND mode = 'Enable' AND payment_method = 'Mobile' ";
+        $query = "SELECT id, ppp_name, phone FROM clients WHERE '$current_date' >= expire_date AND mode = 'Enable' AND payment_method = 'Mobile' AND take_time = 0";
         $stmt = $this->conn->prepare($query);
         //query execute
         $stmt->execute();
@@ -38,7 +38,7 @@ class Sms
     
     {
         $current_date =  date("Y-m-d H:i:s");
-        $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', disable_date = '$current_date' WHERE id IN ($this->id_list) ";
+        $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', take_time = 0, disable_date = '$current_date' WHERE id IN ($this->id_list) ";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
