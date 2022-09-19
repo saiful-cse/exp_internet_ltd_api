@@ -60,6 +60,7 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 $area = $row['area'];
                 $zone = $row['zone'];
 
+                $reg_date = $row['reg_date'];
                 $expire_date = $row['expire_date'];
                 $disable_date = $row['disable_date'];
                 $ppp_name = $row['ppp_name'];
@@ -96,7 +97,7 @@ if (!empty($data->jwt) and !empty($data->id)) {
                 "take_time" => $take_time,
                 "area" => $area,
                 "zone" => $zone,
-                
+                "reg_date" => $reg_date,
                 "expire_date" => $expire_date,
                 "disable_date" => $disable_date,
                 "ppp_name" => $ppp_name,

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['mobile']) || !isset($_SESSION['client_id']) || !isset($_SESSION['amount'])) {
+if (!isset($_SESSION['expire_date']) || !isset($_SESSION['client_id']) || !isset($_SESSION['amount'])) {
     header('location: index.php');
     die();
     exit();

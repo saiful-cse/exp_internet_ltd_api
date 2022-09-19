@@ -23,7 +23,7 @@ class Client
     {
 
         //query
-        $query = "SELECT * FROM clients WHERE registered = 1 AND zone = 'Osman' ORDER BY id DESC LIMIT 10";
+        $query = "SELECT * FROM clients WHERE registered = 1 AND zone = 'Osman' ORDER BY reg_date DESC";
 
         //query execute
         $stmt = $this->conn->prepare($query);

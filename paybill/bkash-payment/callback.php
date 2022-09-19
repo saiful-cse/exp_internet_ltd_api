@@ -5,8 +5,6 @@ date_default_timezone_set("Asia/Dhaka");
 $_SESSION['paymentID'] = $_GET['paymentID'];
 $_SESSION['status'] = $_GET['status'];
 
-// echo $_SESSION['creq'];
-// echo $_SESSION['cres'];
 
 if (
     !isset($_SESSION['paymentID']) || !isset($_SESSION['status']) || !isset($_SESSION['token']) ||
@@ -167,29 +165,25 @@ if (
                             $('#loader').show();
 
                             try {
+
+
                                 console.log("Calling Execute api....");
                                 const executePromiseData = await executeApiPromise;
-                                //-----/
-                                //var executeObj = JSON.parse(executePromiseData);
-                                // var queryPromiseData = await queryApiPromise;
-                               
-                                // console.log(executePromiseData);
-                                // console.log(queryPromiseData);
-                                //----------/
                                 
                                 if (executePromiseData) {
                                     var executeObj = JSON.parse(executePromiseData);
-                                    
+
                                     if (executeObj.transactionStatus === 'Completed') {
                                         try {
                                             var txnStorePromiseData = await txnStoreApiPromise(executeObj.trxID, executeObj.customerMsisdn);
+
                                             var txnStoreObj = JSON.parse(txnStorePromiseData);
 
                                             if (txnStoreObj.status === 200) {
                                                 console.log("Txn store success");
                                                 location.replace("../txnstatus.php?status=success");
                                             }
-                            
+
                                         } catch (error) {
                                             console.log(error);
 
@@ -197,9 +191,9 @@ if (
 
                                     } else {
                                         console.log(executeObj.statusMessage);
-                                        location.replace("../txnstatus.php?status="+executeObj.statusCode+": "+executeObj.statusMessage);
+                                        location.replace("../txnstatus.php?status=" + executeObj.statusCode + ": " + executeObj.statusMessage);
                                     }
-                                    
+
 
                                 } else {
 
@@ -226,7 +220,7 @@ if (
 
                                         } else {
                                             console.log(queryobj.statusMessage);
-                                            location.replace("../txnstatus.php?status="+queryobjs.statusCode+": "+queryobj.statusMessage);
+                                            location.replace("../txnstatus.php?status=" + queryobjs.statusCode + ": " + queryobj.statusMessage);
                                         }
 
                                     } catch (error) {
@@ -234,7 +228,7 @@ if (
                                     }
                                 }
 
-                                
+
 
                             } catch (error) {
                                 console.log(error);

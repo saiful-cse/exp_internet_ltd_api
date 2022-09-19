@@ -54,9 +54,12 @@ $details = $client->client_details();
             <?php
             if (!empty($details)) {
 
-                $current_date = new DateTime(date("Y-m-d H:i:s"));
+                $current_date = new DateTime(date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . '+3 days')));
                 $expiredate = new DateTime($details['expire_date']);
 
+                $_SESSION['name'] = $details['name'];
+                $_SESSION['client_id'] = $details['id'];
+                $_SESSION['ppp_name'] = $details['ppp_name'];
 
                 if ($details['mode'] == 'Enable') {
 
@@ -66,12 +69,11 @@ $details = $client->client_details();
                         $totalmonth = (float) $month->format('%m') + 1;
                         $totalamount = $totalmonth * $details['price'];
 
-                        $_SESSION['mobile'] = $_GET['mobile_no'];
-                        $_SESSION['client_id'] = $details['id'];
-                        $_SESSION['name'] = $details['name'];
                         $_SESSION['amount'] = $totalamount;
-                        $_SESSION['month'] = $totalmonth;
+                        $exp = new DateTime(date('Y-m-d H:i:s', strtotime($details['expire_date'] . '+' . $totalmonth . ' month')));
+                        $_SESSION['expire_date'] = $exp->format('Y-m-d H:i:s');
             ?>
+
                         <div class="card">
                             <p>
                                 <?php echo "<b>Name: </b>" . $details['name']; ?> <br>
@@ -82,7 +84,7 @@ $details = $client->client_details();
                                 <?php echo "<b>Month : </b>" . $totalmonth; ?> <br>
                                 <?php echo "<b>Package ID: </b>" . $details['pkg_id']; ?> <br>
                                 <?php echo "<b>Package Name: </b>" . $details['title']; ?> <br>
-                                <?php echo "<b>Package Price: </b>" . $details['price'] . " TK"; ?> <br>
+                                <?php echo "<b>Package Price: </b>" . $details['price'] . " TK (Monthly)"; ?> <br>
                                 <?php echo "<b>Payable amount: </b>" . $details['price'] . ' X ' . $totalmonth . ' = ' . $totalamount . " TK"; ?> <br>
                             </p>
                             <p class="text-center" style="color: red;"> <br> <br>*** সব তথ্য সঠিক থাকলে কনফার্ম করুন</p>
@@ -96,27 +98,39 @@ $details = $client->client_details();
                             <div class="card-body">
                                 <img src="img/success.png" alt="" />
                                 <p style="color: green;">Congratulation</p>
-                                 <h3><?php echo $details['name'].", ".$details['area'].", ".$details['phone']."<br> আপনি ".$details['title'].", ".$details['speed']." প্যাকেজটি ব্যবহার করছেন, মাসিক বিল ".$details['price']." টাকা এবং আপনার বিল ".date_format($expiredate, "d F Y")." পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ"; ?></h3>
-                                
-                                 <div class="input-btn mt-3">
+                                <h3><?php echo $details['name'] . ", " . $details['area'] . ", " . $details['phone'] . "<br> আপনি " . $details['title'] . ", " . $details['speed'] . " প্যাকেজটি ব্যবহার করছেন, মাসিক বিল " . $details['price'] . " টাকা এবং " . date_format($expiredate, "d F Y") . " পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ"; ?></h3>
+
+                                <div class="input-btn mt-3">
                                     <a href="index.php" class="form-control btn btn-secondary">Exit</a>
                                 </div>
                             </div>
                         </div>
                     <?php }
-                } else { ?>
+                } else if ($details['mode'] == 'Disable') {
 
-                    <div class="card messageCard">
-                        <div class="card-body">
-                            <img src="img/error.png" alt="" />
-                            <p style="color: red;">Error!!</p>
-                            <h3>আপনার কানেকশনটি বন্ধ আছে। পুনরায় চালু করতে নিচের হেল্পলাইনে যোগাযোগ করুন</h3>
-                            <div class="input-btn mt-3">
-                                <a href="index.php" class="form-control btn btn-secondary">Exit</a>
-                            </div>
+                    $expp = new DateTime(date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . '+1 month')));
+                    $_SESSION['amount'] = $details['price'];
+                    $_SESSION['expire_date'] = $expp->format('Y-m-d H:i:s');
+                    ?>
+
+                    <div class="card">
+                        <p>
+
+                            <?php echo "<b>Name: </b>" . $details['name']; ?> <br>
+                            <?php echo "<b>Phone: </b>" . $details['phone']; ?> <br>
+                            <?php echo "<b>Area: </b>" . $details['area']; ?> <br>
+                            <?php echo "<b>PPPoE: </b>" . $details['ppp_name']; ?> <br>
+                            <?php echo "<b>Next Expire Date: </b>" . date_format($expiredate, "d F Y"); ?> <br>
+                            <?php echo "<b>Package ID: </b>" . $details['pkg_id']; ?> <br>
+                            <?php echo "<b>Package Name: </b>" . $details['title']; ?> <br>
+                            <?php echo "<b>Package Price: </b>" . $details['price'] . " TK (Monthly)"; ?> <br>
+
+                        </p>
+                        <p class="text-center" style="color: red;"> <br> <br>*** সব তথ্য সঠিক থাকলে কনফার্ম করুন</p>
+                        <div class="input-btn">
+                            <a href="selectpayment.php" class="form-control btn btn-secondary">Confirm</a>
                         </div>
                     </div>
-
                 <?php }
             } else { ?>
 
@@ -134,6 +148,8 @@ $details = $client->client_details();
 
         </div>
     </div>
+    <p style="text-align: center; color: gray">An ISP of <br> Bay Communication, Cox's Bazar</p>
+
     <?php include('footer.html') ?>
 
     <!--card end here-->

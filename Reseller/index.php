@@ -56,9 +56,9 @@ if (isset($_POST['login'])) {
                 <span><?php echo $error; ?></span>
                 <form action="index.php" method="post">
                     <label>Admin ID</label>
-                    <input type="number" maxlength="4" name="admin_id" value="<?php echo $admin_id ?>" class="form-control input-btn mt-2"><br>
+                    <input type="tel" maxlength="4" name="admin_id" value="<?php echo $admin_id ?>" class="form-control input-btn mt-2"><br>
                     <label>Pin</label>
-                    <input type="pin" maxlength="4" name="admin_pin" value="<?php echo $admin_pin ?>" class="form-control input-btn mt-2"><br>
+                    <input type="tel" maxlength="4" name="admin_pin" value="<?php echo $admin_pin ?>" class="form-control input-btn mt-2"><br>
                     <div class="input-btn">
                         <button type="submit" name="login" class="form-control btn btn-secondary">Login</button>
                     </div>

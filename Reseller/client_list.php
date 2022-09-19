@@ -67,7 +67,7 @@ $client_list = $client->client_list();
 <body>
     <?php include('header.html') ?>
 
-    <h4 style="text-align: center;">PM Khali Customer List</h4>
+    <h4 style="text-align: center;">PM Khali Customer List</h4> 
     <h5 style="text-align: right; margin-right: 50px;"><a href="logout.php">Log Out</a></h5>
 
     <div style="overflow-x:auto;">
@@ -84,7 +84,6 @@ $client_list = $client->client_list();
 
             <?php
             foreach ($client_list as $item) { ?>
-
                 <tr>
                     <td><?php echo $item['name'] ?></td>
                     <td><?php echo $item['area'] ?></td>
@@ -101,11 +100,10 @@ $client_list = $client->client_list();
                     $expiredate = new DateTime($item['expire_date']);
 
                     if ($expiredate > $current_date) { ?>
-                        <td>Paid</a></td>
+                        <td><b style="text-align: center; color: blue;">Paid</b></a></td>
 
                     <?php  } else { ?>
-                        <td><a href="http://localhost/api/expert_internet_api/paybill_new/reseller_info.php?mobile_no=<?php echo $item['phone'] ?>">Expired!! Pay Bill</a></td>
-
+                        <td><a target="_blank" href="https://expert-internet.net/paybill/reseller_info.php?mobile_no=<?php echo $item['phone'] ?>">Pay Bill</a></td>
                     <?php  } ?>
                 </tr>
             <?php } ?>

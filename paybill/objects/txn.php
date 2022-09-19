@@ -12,7 +12,7 @@ class Txn
     /*
      * Objects properties
      */
-    public $details, $client_id, $month, $name, $amount, $txnid;
+    public $details, $client_id, $expire_date, $name, $amount, $txnid;
 
     /*
      * Constructor with $db as database connection
@@ -33,7 +33,7 @@ class Txn
               SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
               type = 'Bill', details = :details, method = 'bKash', admin_id = '9161'";
 
-            $query2 = "UPDATE clients SET expire_date = DATE_ADD(expire_date, INTERVAL $this->month MONTH), sms = 'unsent'
+            $query2 = "UPDATE clients SET mode = 'Enable', take_time = 0, expire_date = '$this->expire_date', sms = 'unsent'
                WHERE id = '$this->client_id'";
 
             //prepare query

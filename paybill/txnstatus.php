@@ -3,7 +3,7 @@ session_start();
 
 if (!isset($_GET['status'])) {
   $status = "wrong";
-}else{
+} else {
   $status = $_GET['status'];
 }
 
@@ -11,6 +11,7 @@ unset($_SESSION['client_id']);
 unset($_SESSION['amount']);
 unset($_SESSION['token']);
 unset($_SESSION['paymentID']);
+unset($_SESSION['expire_date']);
 
 ?>
 
@@ -59,6 +60,18 @@ unset($_SESSION['paymentID']);
       <?php
 
       if ($status === 'success') { ?>
+        <script type="text/javascript">
+          $.ajax({
+            type: "POST",
+            url: "http://mt.baycombd.com/expnet_api/pppAction.php",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: {
+              "ppp_name": '<?php echo $_SESSION['ppp_name']; ?>',
+              "action_type": 'enable'
+            }
+          })
+        </script>
         <div class="card messageCard">
           <div class="card-body">
             <img src="img/success.png" alt="" />
