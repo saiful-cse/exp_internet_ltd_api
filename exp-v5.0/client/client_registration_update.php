@@ -50,8 +50,12 @@ if (
         $client->mode = $data->mode;
         $client->name = $data->name;
         $client->phone = $data->phone;
+        $client->take_time = "0";
         $client->area = $data->area;
         $client->zone = $data->zone;
+        $client->reg_date = date("Y-m-d H:i:s");
+        $client->expire_date = date("Y-m-d H:i:s");
+        $client->disable_date = date("Y-m-d H:i:s");
         $client->ppp_name = $data->ppp_name;
         $client->ppp_pass = $data->ppp_pass;
         $client->pkg_id = $data->pkg_id;
