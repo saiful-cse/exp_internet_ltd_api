@@ -154,6 +154,28 @@ class Sms
         return false;
     }
 
+    function areawise_sms_store(){
+        //query
+        $query = "INSERT INTO messages 
+        SET msg_body = :msg_body, tag = :tag , created_at = :created_at";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //Bind value
+        $stmt->bindParam(":msg_body",$this->msg_body);
+        $stmt->bindParam(":tag",$this->tag);
+        $stmt->bindParam(":created_at",$this->created_at);
+
+        //execute query
+        if ($stmt->execute())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     //get client sms history
     function sms_history(){
         //query
@@ -185,7 +207,7 @@ class Sms
     //get client sms history
     function getting_areawise_client_phone(){
         //query
-        $query = "SELECT phone FROM client WHERE mode = 'active' AND area = :area";
+        $query = "SELECT phone FROM clients WHERE mode = 'Enable' AND registered = 1 AND area = :area";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
