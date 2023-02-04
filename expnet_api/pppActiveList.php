@@ -26,15 +26,12 @@ try {
 
     foreach ($util->getAll() as $item) {
 
-        if ($item->getProperty("comment") == "saiful") {
-            $ar = array(
-                "name" =>  "MAC: " . $item->getProperty("caller-id"),
-                "phone" => "Uptime: " . $item->getProperty("uptime"),
-                "ppp_name" => $item->getProperty("name"),
-                "registered" => 1
-            );
-            array_push($client_array["ar"], $ar);
-        }
+        $ar = array(
+            "name" =>  "MAC: " . $item->getProperty("caller-id"),
+            "phone" => "Uptime: " . $item->getProperty("uptime"),
+            "ppp_name" => $item->getProperty("name")
+        );
+        array_push($client_array["ar"], $ar);
     }
 
     if (!empty($client_array["ar"])) {

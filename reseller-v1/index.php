@@ -36,7 +36,7 @@ if (isset($_POST['login'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet Ltd.
+        Expert Internet
     </title>
 
     <!-- bootstrap linked-->

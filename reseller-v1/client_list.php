@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+date_default_timezone_set("Asia/Dhaka");
 if (!isset($_SESSION['loged']) && $_SESSION['login_session_time'] > time()) {
     header('location: index.php');
     die();
@@ -30,7 +30,7 @@ $client_list = $client->client_list();
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>
-        Expert Internet Ltd.
+        Expert Internet
     </title>
 
     <style>

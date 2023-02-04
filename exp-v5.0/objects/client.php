@@ -364,12 +364,10 @@ class Client
 
 
     //client search
-    function clientSearch()
+    function allClients()
     {
         //query
-        $query = "SELECT * FROM clients
-                    WHERE (id LIKE '%$this->search_key%' OR name LIKE '%$this->search_key%' OR phone LIKE '%$this->search_key%'
-            OR ppp_name LIKE '%$this->search_key%' OR area LIKE '%$this->search_key%' )";
+        $query = "SELECT * FROM clients";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

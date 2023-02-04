@@ -40,7 +40,7 @@ if (!empty($ppp_name)) {
         }
     } catch (\Throwable $th) {
         $router_status = 500;
-        $message = "Mikrotik connection error!!";
+        $message = "Mikrotik connection error!!".$th;
 
         echo json_encode(
             array(

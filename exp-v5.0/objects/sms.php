@@ -13,7 +13,7 @@ class Sms
      * Objects properties
      */
     public  $numbers, $msg_id, $client_id, $msg_body, 
-    $area, $created_at, $current_date, $id_list;
+    $area, $created_at, $current_date, $id_list, $ppp_list;
 
      /*
      * Constructor with $db as database connection
@@ -35,7 +35,6 @@ class Sms
     }
 
     function clientDisconnectModeUpdate()
-    
     {
         $current_date =  date("Y-m-d H:i:s");
         $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', take_time = 0, disable_date = '$current_date' WHERE id IN ($this->id_list) ";
@@ -120,6 +119,27 @@ class Sms
 
         //Bind value
         $stmt->bindParam(":msg_body",$this->msg_body);
+        $stmt->bindParam(":created_at",$this->created_at);
+
+        //execute query
+        if ($stmt->execute())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    function disconnectedPppNameStore(){
+        //query
+        $query = "INSERT INTO messages 
+        SET msg_body = :msg_body, tag = 'Diconnect PPP', created_at = :created_at";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //Bind value
+        $stmt->bindParam(":msg_body",$this->ppp_list+' PPP are diconnected');
         $stmt->bindParam(":created_at",$this->created_at);
 
         //execute query

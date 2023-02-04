@@ -1,0 +1,185 @@
+body {
+    background: #c8cac8;
+}
+
+h5 {
+    margin: 0px;
+    color: #097969;
+}
+
+.card-title {
+    margin-bottom: -2px;
+    
+}
+
+.row {
+    margin-left: -20px !important;
+    margin-right: -20px !important;
+}
+
+.col-sm {
+    margin: 0px !important;
+    margin-top: 1.5px !important;
+}
+
+.card {
+    width: 100%;
+    border-radius: 3%;
+}
+
+.card-body {
+    padding: 10px !important;
+}
+
+p {
+    margin: 0px !important;
+}
+
+.card_status {
+    display: inline;
+    float: right;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.card_phone {
+    display: inline;
+    font-size: 14px;
+}
+
+.card_enable {
+    display: inline;
+    float: right;
+    font-size: 14px;
+    color: #7CFC00;
+    font-weight: 500;
+}
+
+.card_ppp {
+    display: inline;
+    font-size: 14px;
+}
+
+.card_zone {
+    display: inline;
+    font-size: 14px;
+}
+
+.card_package {
+    display: inline;
+    float: right;
+    font-size: 14px;
+}
+
+.card_date {
+    display: inline;
+    color: #097969;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.card_payment {
+    display: inline;
+    margin-left: 10px !important;
+    font-size: 14px;
+    color: #097969;
+}
+
+.card_time {
+    display: inline;
+    float: right;
+    font-size: 14px;
+    color: #097969;
+}
+
+.header_card {
+    background: #097969;
+    ;
+}
+
+.header_card .nav .nav-link {
+    color: white;
+}
+
+.header_card .nav .nav-link {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.active {
+    border-bottom: 2px solid white;
+}
+
+h6 {
+    color: white;
+    padding-top: 10px;
+}
+
+p {
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.client_no {
+    color: white;
+    margin-left: 15px !important;
+}
+
+h3 {
+    text-align: center;
+    font-weight: bold;
+    color: #808080;
+}
+
+.logout_btn {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    color: white;
+    font-size: 14px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid white;
+}
+
+.login_main_div {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login_card {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+input {
+    width: 100%;
+    /* border: none; */
+    /* border-bottom: 1px solid #000; */
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom: 2px solid #808080;
+    background-color: transparent;
+    padding: 6px;
+    margin: 6px;
+    text-align: center;
+}
+
+.login_btn {
+    background: #097969;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+hr {
+    margin-bottom: 0px;
+    background: white;
+}

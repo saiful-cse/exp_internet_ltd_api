@@ -75,6 +75,7 @@ if (!empty($data->jwt)) {
             }
             $numbers =  implode(', ', $num);
             $sms->id_list = implode(', ', $id);
+            $sms->ppp_list = implode(', ', $pppName);
 
             //Disable and Remove form mikrotik server
             $data = json_decode(pppListDisable($pppName), true);
@@ -82,7 +83,7 @@ if (!empty($data->jwt)) {
             if ($data['status'] == 200) {
 
                 //after success disabled, send sms
-                 $message = "আপনার WiFi সংযোগের মেয়াদ শেষ, পুনরায় চালু করতে বিল পরিশোধ করুন।\n https://expert-internet.net/paybill \n01975-559161 (bKash Payment)";
+                $message = "আপনার WiFi সংযোগের মেয়াদ শেষ, পুনরায় চালু করতে বিল পরিশোধ করুন।\n https://expert-internet.net/paybill \n01975-559161 (bKash Payment)";
 
                 $url = "http://66.45.237.70/api.php";
                 $data = array(
@@ -112,8 +113,13 @@ if (!empty($data->jwt)) {
                         echo json_encode(array("message" => "Invalid message or empty message"));
                         break;
                     case '1004':
-                        echo json_encode(array("message" => "Invalid number"));
+                        echo json_encode(array(
+                            "status" => 1004,
+                            "message" => "Invalid number"
+
+                        ));
                         break;
+
                     case '1005':
                         echo json_encode(array("message" => "All Number is Invalid"));
                         break;
@@ -148,6 +154,7 @@ if (!empty($data->jwt)) {
 
                         //Update clients mode status on DB
                         if ($sms->clientDisconnectModeUpdate()) {
+                            $sms->disconnectedPppNameStore();
                             echo json_encode(array(
 
                                 "status" => 200,

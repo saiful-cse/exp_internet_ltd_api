@@ -8,7 +8,7 @@ $API = new RouterosAPI();
 
 $API->debug = true;
 
-if ($API->connect('103.134.39.242', 'admin', 'expnet@0011')) {
+if ($API->connect('103.132.248.129', 'apiuser', 'apiuser@753#&%')) {
 
    // $API->comm("/ppp/secret/add", array(
    //    "name"     => "user",
@@ -21,9 +21,7 @@ if ($API->connect('103.134.39.242', 'admin', 'expnet@0011')) {
     $API->write('/ppp/secret/getall');
     $READ = $API->read(false);
     $ARRAY = $API->parseResponse($READ);
-    echo json_encode($ARRAY);
-    //print_r($ARRAY);
+    //echo json_encode($ARRAY);
+    print_r($ARRAY);
     $API->disconnect();
-
-
 }
