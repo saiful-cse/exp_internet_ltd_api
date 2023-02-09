@@ -53,6 +53,7 @@ $client_list = $client->expired_client_list($zone);
       <div class="col-sm">
         <div class="header_card">
           <h6 class="text-center"><?php echo "Loged by " . $_SESSION['admin_id']; ?></h6>
+          <p style="color: white;"></p>
           <p class="client_no"><?php echo "Total Client: " . $client->count_total_client($zone); ?></p>
           <div>
             <p class="client_no" style="display: inline;"><?php echo "Expired Client: " . $client->count_total_expired_client($zone); ?></p>
@@ -64,6 +65,7 @@ $client_list = $client->expired_client_list($zone);
           <nav class="nav justify-content-center">
             <a class="nav-link active" href="expired.php">Expired</a>
             <a class="nav-link " href="registered.php">Registered</a>
+            <a class="nav-link " href="payment.php">Payments</a>
           </nav>
         </div>
       </div>
@@ -96,7 +98,7 @@ $client_list = $client->expired_client_list($zone);
               <div class="bottom_card">
                 <p class="card_date"><i class="fa fa-calendar" aria-hidden="true"></i>
                   <?php echo $item['expire_date'] ?></p>
-                <p class="card_payment"><a href="https://expert-internet.net/paybill/info.php?mobile_no=<?php echo $item['phone'] ?>">PayBill</a></p>
+                <p class="card_payment"><a target="_blank" href="https://expert-internet.net/paybill/info.php?mobile_no=<?php echo $item['phone'] ?>">PayBill</a></p>
                 <p class="card_time"><i class="fa fa-clock-o" aria-hidden="true"></i><?php echo " " . $item['take_time'] ?></p>
               </div>
             </div>

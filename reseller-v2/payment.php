@@ -64,61 +64,42 @@ $client_list = $client->registered_client($zone);
           <hr>
           <nav class="nav justify-content-center">
             <a class="nav-link" href="expired.php">Expired</a>
-            <a class="nav-link active" href="registered.php">Registered</a>
-            <a class="nav-link " href="payment.php">Payments</a>
+            <a class="nav-link " href="registered.php">Registered</a>
+            <a class="nav-link active" href="payment.php">Payments</a>
           </nav>
         </div>
       </div>
       <div class="col-sm"></div>
     </div>
     <!-- dashboard Card End -->
-    <?php
-    foreach ($client_list as $item) { ?>
+    
+    
       <!-- 1st Card Start -->
       <div class="row">
         <div class="col-sm"></div>
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title"><?php echo $item['name'] ?></h5>
+              <h5 class="card-title"></h5>
               <div>
-                <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>
-                <?php if ($item['mode'] == "Disable") { ?>
-                  <p style="color: red;" class="card_status"><?php echo $item['mode'] ?></p>
-                <?php } else if ($item['mode'] == "Enable") { ?>
-                  <p style="color: green;" class="card_status"><?php echo $item['mode'] ?></p>
-                <?php }  ?>
+                <p class="card_phone"></p>
+                
               </div>
               <div>
-                <p class="card_ppp"><?php echo "PPP: " . $item['ppp_name'] ?></p>
-                <!-- <p class="card_zone">Zone: Main</p> -->
-                <p class="card_package"><?php echo "Package: " . $item['pkg_id'] ?></p>
+                <p class="card_ppp"></p>
+                
+                <p class="card_package"></p>
               </div>
-              <p class="card_area"><?php echo "Area: " . $item['area'] ?></p>
+              <p class="card_area">Ongoing service....</p>
               <div class="bottom_card">
-                <p class="card_date"><i class="fa fa-calendar" aria-hidden="true"></i>
-                  <?php echo $item['expire_date'] ?></p>
-
-                  <?php
-                    $current_date = new DateTime(date('Y-m-d H:i:s'));
-                    $expiredate = new DateTime($item['expire_date']);
-
-                    if ($expiredate > $current_date) { ?>
-                        <p class="card_payment">PAID</p>
-
-                    <?php  } else { ?>
-                      <p class="card_payment"><a target="_blank" href="https://expert-internet.net/paybill/info.php?mobile_no=<?php echo $item['phone'] ?>">PayBill</a></p>
-                    <?php  } ?>
-                <p class="card_time"><i class="fa fa-clock-o" aria-hidden="true"></i><?php echo " " . $item['take_time'] ?></p>
+                
               </div>
             </div>
           </div>
         </div>
         <div class="col-sm"></div>
       </div>
-    <?php
-    }
-    ?>
+    
     <!-- 1st Card End -->
   </div>
 
