@@ -81,7 +81,7 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 			var bKashChart = new CanvasJS.Chart("bkashchartContainer", {
 				animationEnabled: true,
 				title: {
-					text: "bKash Bill Collection"
+					text: "bKash Collection"
 				},
 				axisY: {
 					title: "Revenue (in BDT)",
@@ -108,22 +108,20 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 
 <body>
 
-	<div class="card text-center">
-		<div class="card-header">
-			Notice
-		</div>
-		<div class="card-body">
+	<!--<div class="card text-center">-->
+	<!--	<div class="card-header">-->
+	<!--		Notice-->
+	<!--	</div>-->
+	<!--	<div class="card-body">-->
 
-			<p class="card-text">নতুন লাইন দেওয়ার সময় যাদের দায়িত্বঃ <br><br>
-				শাহরিয়াঃ কাস্টমারের মোবাইলে প্লে স্টোর থেকে এপ ডাউনলোড করে রেজিস্ট্রেশন করে দেয়া, PPPoE ও Packages কি দেওয়া হচ্চে সেটা এডমিন এপে আপডেট রাখা।
-				অনু ম্যাক আইডি ছবি তুলে গ্রুপে দেয়া। <br><br>
-				আরিফঃ পেমেন্ট কিভাবে করতে হয় এবং রাউটারের পাসওয়ার্ড কিভাবে চেঞ্জ করতে হয় সেটা কাস্টমারকে বুঝিয়ে দেয়া যাতে পরে বিল দেয়া ও পাসওয়ার্ড চেঞ্জের ব্যাপারে ফোন না করে।
-			</p>
+	<!--		<p class="card-text">---<br>-->
+			
+	<!--		</p>-->
 
-		</div>
+	<!--	</div>-->
 
-	</div>
-	<br>
+	<!--</div>-->
+	<!--<br>-->
 
 	<div id="expiredchartContainer" style="height: 370px; width: 100%;"></div> <br>
 	<div id="bkashchartContainer" style="height: 370px; width: 100%;"></div>

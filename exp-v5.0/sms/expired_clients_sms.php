@@ -28,7 +28,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 $message = "⚠️ Warning!! 
 আপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।
-https://expert-internet.net/paybill/
+https://baycombd.com/paybill/
 01975-559161 (bKash Payment)";
 
 /*

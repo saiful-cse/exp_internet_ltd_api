@@ -75,7 +75,7 @@ $error = "";
         if (isset($_POST['view'])) {
             if (empty($_POST['password'])) {
                 $error = "Enter correct password";
-            } else if ($_POST['password'] != "89919161") {
+            } else if ($_POST['password'] != "8919161") {
                 $error = "Enter correct password";
             } else { ?>
 
@@ -93,7 +93,7 @@ $error = "";
 
                 $client = new Client($db);
 
-                $stmt = $client->mobile_payment_clients();
+                $stmt = $client->registered_client();
 
                 foreach ($stmt as $c) { ?>
                     <tr>

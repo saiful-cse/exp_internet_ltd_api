@@ -80,19 +80,44 @@ if (!empty($jwt) && !empty($message) && !empty($number) && !empty($client_id)) {
 
         switch ($sendstatus) {
             case '1000':
-                echo json_encode(array("message" => "Invalid user or Password"));
+                //echo json_encode(array("message" => "Invalid user or Password"));
+                echo json_encode(array(
+                    "status" => 1000,
+                    "message" => "Invalid user or Password"
+
+                ));
                 break;
             case '1002':
-                echo json_encode(array("message" => "Empty Number"));
+                //echo json_encode(array("message" => "Empty Number"));
+                echo json_encode(array(
+                    "status" => 1002,
+                    "message" => "Empty Number"
+
+                ));
                 break;
             case '1003':
-                echo json_encode(array("message" => "Invalid message or empty message"));
+                //echo json_encode(array("message" => "Invalid message or empty message"));
+                echo json_encode(array(
+                    "status" => 1003,
+                    "message" => "Invalid message or empty message"
+
+                ));
                 break;
             case '1004':
-                echo json_encode(array("message" => "Invalid number"));
+                //echo json_encode(array("message" => "Invalid number"));
+                echo json_encode(array(
+                    "status" => 1004,
+                    "message" => "Invalid number"
+
+                ));
                 break;
             case '1005':
-                echo json_encode(array("message" => "All Number is Invalid"));
+                //echo json_encode(array("message" => "All Number is Invalid"));
+                echo json_encode(array(
+                    "status" => 1005,
+                    "message" => "All Number is Invalid"
+
+                ));
                 break;
             case '1006':
 
@@ -111,7 +136,13 @@ if (!empty($jwt) && !empty($message) && !empty($number) && !empty($client_id)) {
                 ));
                 break;
             case '1010':
-                echo json_encode(array("message" => "Max number limit exceeded"));
+                echo json_encode(array(
+
+                    "status" => 1010,
+                    "message" => "Max number limit exceeded"
+
+                ));
+                
                 break;
             case '1101':
 
