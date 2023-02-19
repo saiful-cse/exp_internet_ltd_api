@@ -1,4 +1,0 @@
-[24-Sep-2022 11:30:06 Asia/Dhaka] PHP Notice:  Undefined index: admin_id in /home/creative/public_html/api/exp-v5.0/admin/login.php on line 37
-[24-Sep-2022 11:30:06 Asia/Dhaka] PHP Notice:  Undefined index: pin in /home/creative/public_html/api/exp-v5.0/admin/login.php on line 38
-[24-Sep-2022 11:30:38 Asia/Dhaka] PHP Notice:  Undefined index: admin_id in /home/creative/public_html/api/exp-v5.0/admin/login.php on line 37
-[24-Sep-2022 11:30:38 Asia/Dhaka] PHP Notice:  Undefined index: pin in /home/creative/public_html/api/exp-v5.0/admin/login.php on line 38
