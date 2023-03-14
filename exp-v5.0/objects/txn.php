@@ -178,6 +178,64 @@ class Txn
         return $stmt;
     }
 
+    function upstream_bill()
+    {
+
+        $query = "SELECT * FROM upstream_bill ORDER BY date DESC";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+
+    function add_upstream_bill()
+    {
+
+        try {
+            $this->conn->beginTransaction();
+            $query1 = "INSERT INTO upstream_bill 
+                  SET month = :month, paid_by = :paid_by, amount = :amount, date = :date";
+
+            $query2 = "INSERT INTO txn_list 
+                  SET date = :date, debit = :debit, type = 'Upstrem_Bill', details = :details, method = :method, admin_id = :admin_id";
+
+            //prepare query
+            $stmt1 = $this->conn->prepare($query1);
+            $stmt2 = $this->conn->prepare($query2);
+
+            //Bind Value for query 1
+            $stmt1->bindParam(":month", $this->month);
+            $stmt1->bindParam(":paid_by", $this->admin_id);
+            $stmt1->bindParam(":amount", $this->amount);
+            $stmt1->bindParam(":date", $this->date);
+
+
+            //Bind Value for query 2
+            $stmt2->bindParam(":date", $this->date);
+            $stmt2->bindParam(":debit", $this->amount);
+            $stmt2->bindParam(":details", $this->details);
+            $stmt2->bindParam(":method", $this->method);
+            $stmt2->bindParam(":admin_id", $this->admin_id);
+
+            $stmt1->execute();
+            $stmt2->execute();
+
+            $this->conn->commit();
+            return true;
+
+
+        } catch (\Throwable $th) {
+            echo "Connection error: " . $th->getMessage();
+            $this->conn->rollBack();
+            return false;
+        }
+    }
+
+
+
     function salay_list()
     {
 
