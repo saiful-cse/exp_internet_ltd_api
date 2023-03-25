@@ -175,15 +175,11 @@ $details = $client->client_details();
                 <br>
                 <br>
                 <br>
-                <p style="text-align: center; color:  gray; font-size: 10px;">Internet Service Provider of</p>
-                <img src="img/bayicon.png" alt="" style="width:50px;height:28px; display: block; margin-left: auto; margin-right: auto;">
-                <h6 style="text-align: center; color: green;"><strong>BAY COMMUNICATION</strong></h6> <br>
-                <p style="text-align: center; color: black; font-size: 15px;">HELP LINE </br><strong> 01975-559161 </strong> (9AM to 6PM)</p>
+                <?php include('footer.html') ?>
             </div>
             <div class="col-sm"></div>
         </div>
     </div>
-
 
     <!--card end here-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">

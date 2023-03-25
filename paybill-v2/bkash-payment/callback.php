@@ -25,188 +25,146 @@ if (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet Ltd.
+        Expert Internet
     </title>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
-    </script>
+    <!-- add icon link -->
+    <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
+    <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
 
     <!-- bootstrap linked-->
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
-        .info_footer {
-            background: #F16521;
-        }
-    </style>
+
 </head>
 
 <body>
-    <div class="header">
-        <div class="d-flex justify-content-center mt-2">
-            <div class="site_logo">
-                <img src="../img/explogo.png" alt="">
-            </div>
-            <div class="site_info">
-                <h2>Expert Internet Ltd.</h2>
-                <p>A Qualified Internet Service Team</p>
-            </div>
-        </div>
-    </div>
-    <hr class="header_separator">
 
-    <div class="main_content">
-        <div class="container">
-
-            <?php
-            switch ($_SESSION['status']) {
-                case 'cancel':
-                    //View in design
-
-                    unset($_SESSION['client_id']);
-                    unset($_SESSION['amount']);
-                    unset($_SESSION['token']);
-                    unset($_SESSION['paymentID']);
-            ?>
-                    <div class="card messageCard">
-                        <div class="card-body">
-                            <img src="../img/error.png" alt="" />
-                            <p style="color: red;">Canceled!!</p>
-                            <h3>Payment has been canceled</h3>
-                            <div class="input-btn mt-3">
-                                <a href="../index.php" class="form-control btn btn-secondary">Try Again</a>
-                            </div>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">
+            <?php include('header.html') ?>
+            <br>
+            <br>
+            <div class="container">
                 <?php
-                    break;
+                switch ($_SESSION['status']) {
+                    case 'cancel':
+                        //View in design
 
-                case 'failure':
-                    //View in design
-                    //echo "Payment has been failed";
-                    unset($_SESSION['client_id']);
-                    unset($_SESSION['amount']);
-                    unset($_SESSION['token']);
-                    unset($_SESSION['paymentID']);
-
+                        unset($_SESSION['client_id']);
+                        unset($_SESSION['amount']);
+                        unset($_SESSION['token']);
+                        unset($_SESSION['paymentID']);
                 ?>
-                    <div class="card messageCard">
-                        <div class="card-body">
-                            <img src="../img/error.png" alt="" />
-                            <p style="color: red;">Failed!!</p>
-                            <h3>Payment has been failed</h3>
-                            <div class="input-btn mt-3">
-                                <a href="../index.php" class="form-control btn btn-secondary">Try Again</a>
+                        <div class="card messageCard">
+                            <div class="card-body">
+                                <img src="../img/error.png" alt="" />
+                                <p style="color: red;">Canceled!!</p>
+                                <h3>Payment has been canceled</h3>
+                                <div class="input-btn mt-3">
+                                    <a href="../index.php" class="form-control btn btn-secondary">Try Again</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php
+                    <?php
+                        break;
 
-                    break;
+                    case 'failure':
+                        //View in design
+                        //echo "Payment has been failed";
+                        unset($_SESSION['client_id']);
+                        unset($_SESSION['amount']);
+                        unset($_SESSION['token']);
+                        unset($_SESSION['paymentID']);
 
-                case 'success': ?>
+                    ?>
+                        <div class="card messageCard">
+                            <div class="card-body">
+                                <img src="../img/error.png" alt="" />
+                                <p style="color: red;">Failed!!</p>
+                                <h3>Payment has been failed</h3>
+                                <div class="input-btn mt-3">
+                                    <a href="../index.php" class="form-control btn btn-secondary">Try Again</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
 
-                    <div id='loader' style='display: none; text-align: center;'>
-                        <img src='../img/load.gif' width="100" height="100">
-                        <p style="text-align: center;">Please wait....Your payment is being process</p>
-                    </div>
+                        break;
 
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
-                    </script>
+                    case 'success': ?>
 
-                    <script type="text/javascript">
-                        const executeApiPromise = new Promise((resolve, reject) => {
-                            $.ajax({
-                                type: "POST",
-                                url: "executepayment.php",
-                                success: function(data) {
-                                    resolve(data)
-                                },
-                                error: function(error) {
-                                    reject(`executeApiPromise rejected: ${error}`)
-                                }
-                            })
-                        });
+                        <div id='loader' style='display: none; text-align: center;'>
+                            <img src='../img/load.gif' width="100" height="100">
+                            <p style="text-align: center;">Please wait....Your payment is being process</p>
+                        </div>
 
-                        const queryApiPromise = new Promise((resolve, reject) => {
-                            $.ajax({
-                                type: "POST",
-                                url: "querypayment.php",
-                                success: function(data) {
-                                    resolve(data)
-                                },
-                                error: function(error) {
-                                    reject(`queryApiPromise rejected: ${error}`)
-                                }
-                            })
-                        });
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+                        </script>
 
-                        const txnStoreApiPromise = (txnid, customerMsisdn) => {
-                            return new Promise((resolve, reject) => {
+                        <script type="text/javascript">
+                            const executeApiPromise = new Promise((resolve, reject) => {
                                 $.ajax({
                                     type: "POST",
-                                    url: "txn_store.php",
-                                    data: {
-                                        "txnid": txnid,
-                                        "customerMsisdn": customerMsisdn
-                                    },
+                                    url: "executepayment.php",
                                     success: function(data) {
                                         resolve(data)
-
                                     },
                                     error: function(error) {
-                                        reject(`txnStoreApiPromise rejected: ${error}`)
+                                        reject(`executeApiPromise rejected: ${error}`)
                                     }
                                 })
                             });
-                        }
 
-                        (handelApiPromise = async () => {
-                            $('#loader').show();
-
-                            try {
-
-
-                                console.log("Calling Execute api....");
-                                const executePromiseData = await executeApiPromise;
-                                
-                                if (executePromiseData) {
-                                    var executeObj = JSON.parse(executePromiseData);
-
-                                    if (executeObj.transactionStatus === 'Completed') {
-                                        try {
-                                            var txnStorePromiseData = await txnStoreApiPromise(executeObj.trxID, executeObj.customerMsisdn);
-
-                                            var txnStoreObj = JSON.parse(txnStorePromiseData);
-
-                                            if (txnStoreObj.status === 200) {
-                                                console.log("Txn store success");
-                                                location.replace("../txnstatus.php?status=success");
-                                            }
-
-                                        } catch (error) {
-                                            console.log(error);
-
-                                        }
-
-                                    } else {
-                                        console.log(executeObj.statusMessage);
-                                        location.replace("../txnstatus.php?status=" + executeObj.statusCode + ": " + executeObj.statusMessage);
+                            const queryApiPromise = new Promise((resolve, reject) => {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "querypayment.php",
+                                    success: function(data) {
+                                        resolve(data)
+                                    },
+                                    error: function(error) {
+                                        reject(`queryApiPromise rejected: ${error}`)
                                     }
+                                })
+                            });
+
+                            const txnStoreApiPromise = (txnid, customerMsisdn) => {
+                                return new Promise((resolve, reject) => {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "txn_store.php",
+                                        data: {
+                                            "txnid": txnid,
+                                            "customerMsisdn": customerMsisdn
+                                        },
+                                        success: function(data) {
+                                            resolve(data)
+
+                                        },
+                                        error: function(error) {
+                                            reject(`txnStoreApiPromise rejected: ${error}`)
+                                        }
+                                    })
+                                });
+                            }
+
+                            (handelApiPromise = async () => {
+                                $('#loader').show();
+
+                                try {
 
 
-                                } else {
+                                    console.log("Calling Execute api....");
+                                    const executePromiseData = await executeApiPromise;
 
-                                    try {
-                                        console.log("No response from execute api, calling Query api....");
-                                        var queryPromiseData = await queryApiPromise;
-                                        var queryobj = JSON.parse(queryPromiseData);
+                                    if (executePromiseData) {
+                                        var executeObj = JSON.parse(executePromiseData);
 
-                                        console.log(queryPromiseData);
-                                        if (queryobj.transactionStatus === 'Completed') {
-
+                                        if (executeObj.transactionStatus === 'Completed') {
                                             try {
-                                                var txnStorePromiseData = await txnStoreApiPromise(queryobj.trxID, queryobj.customerMsisdn);
+                                                var txnStorePromiseData = await txnStoreApiPromise(executeObj.trxID, executeObj.customerMsisdn);
+
                                                 var txnStoreObj = JSON.parse(txnStorePromiseData);
 
                                                 if (txnStoreObj.status === 200) {
@@ -216,46 +174,78 @@ if (
 
                                             } catch (error) {
                                                 console.log(error);
+
                                             }
 
                                         } else {
-                                            console.log(queryobj.statusMessage);
-                                            location.replace("../txnstatus.php?status=" + queryobjs.statusCode + ": " + queryobj.statusMessage);
+                                            console.log(executeObj.statusMessage);
+                                            location.replace("../txnstatus.php?status=" + executeObj.statusCode + ": " + executeObj.statusMessage);
                                         }
 
-                                    } catch (error) {
-                                        console.log(error);
+
+                                    } else {
+
+                                        try {
+                                            console.log("No response from execute api, calling Query api....");
+                                            var queryPromiseData = await queryApiPromise;
+                                            var queryobj = JSON.parse(queryPromiseData);
+
+                                            console.log(queryPromiseData);
+                                            if (queryobj.transactionStatus === 'Completed') {
+
+                                                try {
+                                                    var txnStorePromiseData = await txnStoreApiPromise(queryobj.trxID, queryobj.customerMsisdn);
+                                                    var txnStoreObj = JSON.parse(txnStorePromiseData);
+
+                                                    if (txnStoreObj.status === 200) {
+                                                        console.log("Txn store success");
+                                                        location.replace("../txnstatus.php?status=success");
+                                                    }
+
+                                                } catch (error) {
+                                                    console.log(error);
+                                                }
+
+                                            } else {
+                                                console.log(queryobj.statusMessage);
+                                                location.replace("../txnstatus.php?status=" + queryobjs.statusCode + ": " + queryobj.statusMessage);
+                                            }
+
+                                        } catch (error) {
+                                            console.log(error);
+                                        }
                                     }
+
+
+
+                                } catch (error) {
+                                    console.log(error);
                                 }
+                                $('#loader').hide();
+                            })()
+                        </script>
+                <?php
+                }
+                ?>
 
-
-
-                            } catch (error) {
-                                console.log(error);
-                            }
-                            $('#loader').hide();
-                        })()
-                    </script>
-            <?php
-            }
-            ?>
-        </div>
-    </div>
-    <footer>
-        <div class="container">
-            <div class="box1">
-                <img src="../img/phone_call.png">
-                <p>01975-559161</p>
+                <br>
+                <br>
+                <br>
+                <?php include('footer.html') ?>
             </div>
         </div>
+        <div class="col-sm"></div>
+    </div>
 
-    </footer>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
+
 </body>
 
 </html>
