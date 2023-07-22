@@ -26,7 +26,6 @@ use \Firebase\JWT\JWT;
 
 $jwt = $_POST['jwt'];
 $message = $_POST['message'];
-
 /*
 * Instance database and dashboard object
 */
@@ -38,15 +37,33 @@ $db = $database->getConnection();
 */
 $sms = new Sms($db);
 
-if (!empty($jwt)) {
+function sms_send($numbers)
+{
+    include '../config/url_config.php';
+    $data = [
+        "api_key" => $sms_api_key,
+        "senderid" => $sms_api_senderid,
+        "number" => $numbers,
+        "message" => $_POST['message']
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $sms_api_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+if (!empty($jwt) && !empty($message)) {
 
     try {
 
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
-
-        
-        $sms->current_date = date("Y-m-d H:i:s");
 
         $stmt = $sms->getEnabledClientsPhone();
         $data = $stmt->rowCount();
@@ -59,91 +76,19 @@ if (!empty($jwt)) {
             }
             $numbers =  implode(', ', $num);
 
-            //Set the value
-            $sms->numbers = $numbers;
-            $sms->msg_body = $message;
-            $sms->created_at = date("Y-m-d H:i:s");
+            $sms_send_response = json_decode(sms_send($numbers), true);
 
-            //SMS service
-            $url = "http://66.45.237.70/api.php";
-            $data = array(
-                'username' => "01835559161",
-                'password' => "saiful@#21490",
-                'number' => $numbers,
-                'message' => $message
-            );
-
-            $ch = curl_init(); // Initialize cURL
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $smsresult = curl_exec($ch);
-
-            $p = explode("|", $smsresult);
-            $sendstatus = $p[0];
-
-
-            switch ($sendstatus) {
-                case '1000':
-                    echo json_encode(array("message" => "Invalid user or Password"));
-                    break;
-                case '1002':
-                    echo json_encode(array("message" => "Empty Number"));
-                    break;
-                case '1003':
-                    echo json_encode(array("message" => "Invalid message or empty message"));
-                    break;
-                case '1004':
-                    echo json_encode(array("message" => "Invalid number"));
-                    break;
-                case '1005':
-                    echo json_encode(array("message" => "All Number is Invalid"));
-                    break;
-                case '1006':
-
-                    echo json_encode(array(
-                        "status" => 1006,
-                        "message" => "Insufficient Balance"
-
-                    ));
-
-                    break;
-
-                case '1009':
-
-                    echo json_encode(array(
-                        "status" => 1009,
-                        "message" => "Inactive Account, contact with software developer."
-
-                    ));
-                    break;
-                    
-                case '1010':
-
-                    echo json_encode(array(
-                        "status" => 1010,
-                        "message" => "Max number limit exceeded"
-
-                    ));
-                    break;
-
-                case '1101':
-
-                    if ($sms->enabledClientSmsStore()) {
-                        echo json_encode(array(
-
-                            "status" => 200,
-                            "message" => "SMS sent successfully"
-
-                        ));
-                    } else {
-
-                        echo json_encode(array(
-                            "status" => 201,
-                            "message" => "SMS sending error!!"
-                        ));
-                    }
-                    break;
+            if ($sms_send_response['response_code'] == 202) {
+                echo json_encode(array(
+                    "status" => 200,
+                    "message" => "SMS sent successfully"
+                ));
+            } else {
+                echo json_encode(array(
+                    "status" => 201,
+                    "message" => "[" . $sms_send_response['response_code'] . "]" .
+                        ", " . $sms_send_response['error_message']
+                ));
             }
         } else {
 
@@ -160,8 +105,6 @@ if (!empty($jwt)) {
         ));
     }
 } else {
-    
-    
     echo json_encode(array(
         "status" => 416,
         "message" => "Data Incomplete."

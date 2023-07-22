@@ -55,7 +55,7 @@ unset($_SESSION['expire_date']);
 
                 if ($status === 'success') {
 
-                    $url = 'http://mt.baycombd.com/expnet_api/pppAction.php';
+                    $url = 'http://103.134.39.238/pppAction.php';
                     $data = array(
                         'ppp_name' => $_SESSION['ppp_name'],
                         'action_type' => 'enable'

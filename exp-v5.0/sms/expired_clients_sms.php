@@ -26,11 +26,6 @@ use \Firebase\JWT\JWT;
 
 $data = json_decode(file_get_contents("php://input"));
 
-$message = "⚠️ Warning!! 
-আপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।
-https://baycombd.com/paybill/
-01975-559161 (bKash Payment)";
-
 /*
 * Instance database and dashboard object
 */
@@ -42,15 +37,35 @@ $db = $database->getConnection();
 */
 $sms = new Sms($db);
 
+function sms_send($numbers)
+{
+    require '../config/url_config.php';
+    $message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।\nhttps://expert-internet.net/paybill/\n01975-559161 (bKash Payment)";
+
+    $data = [
+        "api_key" => $sms_api_key,
+        "senderid" => $sms_api_senderid,
+        "number" => $numbers,
+        "message" => $message
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $sms_api_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
 if (!empty($data->jwt)) {
 
     try {
 
         // decode jwt
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
-
-        // decode jwt
-        $sms->current_date = date("Y-m-d H:i:s");
 
         //getting client before 3day expire
         $stmt = $sms->getExpiredClientsPhone();
@@ -66,91 +81,22 @@ if (!empty($data->jwt)) {
 
             //Set the value
             $sms->numbers = $numbers;
-            $sms->msg_body = $message;
-            $sms->created_at = date("Y-m-d H:i:s");
+            $sms_send_response = json_decode(sms_send($numbers), true);
 
-            //SMS service
-            $url = "http://66.45.237.70/api.php";
-            $data = array(
-                'username' => "01835559161",
-                'password' => "saiful@#21490",
-                'number' => $numbers,
-                'message' => $message
-            );
-
-            $ch = curl_init(); // Initialize cURL
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $smsresult = curl_exec($ch);
-
-            $p = explode("|", $smsresult);
-            $sendstatus = $p[0];
-
-            switch ($sendstatus) {
-                case '1000':
-                    echo json_encode(array("message" => "Invalid user or Password"));
-                    break;
-                case '1002':
-                    echo json_encode(array("message" => "Empty Number"));
-                    break;
-                case '1003':
-                    echo json_encode(array("message" => "Invalid message or empty message"));
-                    break;
-                case '1004':
-                    echo json_encode(array("message" => "Invalid number"));
-                    break;
-                case '1005':
-                    echo json_encode(array("message" => "All Number is Invalid"));
-                    break;
-                case '1006':
-
+            if ($sms_send_response['response_code'] == 202) {
+                if ($sms->expiredClientSmsUpdate()) {
                     echo json_encode(array(
-                        "status" => 1006,
-                        "message" => "Insufficient Balance"
-
+                        "status" => 200,
+                        "message" => "SMS sent successfully"
                     ));
-
-                    break;
-
-                case '1009':
-
-                    echo json_encode(array(
-                        "status" => 1009,
-                        "message" => "Inactive Account, contact with software developer."
-
-                    ));
-                    break;
-                    
-                case '1010':
-
-                    echo json_encode(array(
-                        "status" => 1010,
-                        "message" => "Max number limit exceeded"
-
-                    ));
-                    break;
-
-                case '1101':
-
-                    if ($sms->expiredClientSmsStoreUpdate()) {
-                        echo json_encode(array(
-
-                            "status" => 200,
-                            "message" => "SMS sent successfully"
-
-                        ));
-                    } else {
-
-                        echo json_encode(array(
-                            "status" => 201,
-                            "message" => "SMS sending error!!"
-                        ));
-                    }
-                    break;
-                    
+                }
+            } else {
+                echo json_encode(array(
+                    "status" => 201,
+                    "message" => "[" . $sms_send_response['response_code'] . "]" .
+                        ", " . $sms_send_response['error_message']
+                ));
             }
-            
         } else {
 
             echo json_encode(array(
@@ -165,6 +111,7 @@ if (!empty($data->jwt)) {
             "error" => $th->getMessage()
         ));
     }
+
 } else {
     echo json_encode(array(
         "status" => 416,

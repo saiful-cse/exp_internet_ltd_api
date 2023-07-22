@@ -25,11 +25,11 @@ if (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet
+        Expert Internet Ltd.
     </title>
-    <!-- add icon link -->
-    <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
-    <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+    </script>
 
     <!-- bootstrap linked-->
     <link rel="stylesheet" href="../style.css">
@@ -38,13 +38,23 @@ if (
 </head>
 
 <body>
-
     <div class="row">
         <div class="col-sm"></div>
         <div class="col-sm">
-            <?php include('header.html') ?>
-            <br>
-            <br>
+
+            <div class="header">
+                <div class="d-flex justify-content-center mt-2">
+                    <div class="site_logo">
+                        <img src="../img/explogo.png" alt="">
+                    </div>
+                    <div class="site_info">
+                        <h2>Expert Internet Ltd.</h2>
+                        <p>A Qualified Internet Service Team</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="header_separator">
+
             <div class="container">
                 <?php
                 switch ($_SESSION['status']) {
@@ -227,25 +237,40 @@ if (
                 <?php
                 }
                 ?>
-
-                <br>
-                <br>
-                <br>
-                <?php include('footer.html') ?>
             </div>
+
+            <br>
+            <br>
+            <br>
+            <p style="text-align: center; color:  gray; font-size: 10px;">Internet Service Provider of</p>
+            <img src="../img/bayicon.png" alt="" style="width:50px;height:28px; display: block; margin-left: auto; margin-right: auto;">
+            <p style="text-align: center; color: green; font-size: 20px;"><strong>BAY COMMUNICATION</strong></p> <br>
+            <p style="text-align: center; color: black; font-size: 15px;">HELP LINE </br><strong> 01975-559161 </strong> (9AM to
+                6PM)</p>
+
         </div>
         <div class="col-sm"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
+
+
+
+
+    <!-- <footer>
+        <div class="container">
+            <div class="box1">
+                <img src="../img/phone_call.png">
+                <p>01975-559161</p>
+            </div>
+        </div>
+
+    </footer> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
-
 </body>
 
 </html>

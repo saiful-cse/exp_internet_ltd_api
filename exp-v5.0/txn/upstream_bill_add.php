@@ -1,9 +1,23 @@
 <?php
 session_start();
+
 date_default_timezone_set("Asia/Dhaka");
 
-$message = $amount = $month = $method = "";
+include_once '../config/url_config.php';
+include_once '../config/url_config.php';
+include_once '../config/database.php';
+include_once  '../objects/txn.php';
 
+// generate json web token
+include_once '../config/core.php';
+include_once '../libs/php-jwt-master/src/BeforeValidException.php';
+include_once '../libs/php-jwt-master/src/ExpiredException.php';
+include_once '../libs/php-jwt-master/src/SignatureInvalidException.php';
+include_once '../libs/php-jwt-master/src/JWT.php';
+
+use \Firebase\JWT\JWT;
+
+$message = $amount = $month = $method = "";
 
 if (isset($_POST['add'])) {
 
@@ -15,37 +29,48 @@ if (isset($_POST['add'])) {
         $message = '<div class="alert alert-warning" role="alert">Enter bill amount</div>';
     } else if ($month == '---') {
         $message = '<div class="alert alert-warning" role="alert">Select month of bill</div>';
-    }else if ($method == '---') {
+    } else if ($method == '---') {
         $message = '<div class="alert alert-warning" role="alert">Select payment method</div>';
     } else {
-        include_once '../config/database.php';
-        include_once  '../objects/txn.php';
 
-        $database = new Database();
-        $db = $database->getConnection();
-        $txn = new Txn($db);
+        try {
+            $decoded = JWT::decode($_SESSION['jwt'], $key, array('HS256'));
 
-        $txn->month = $month;
-        $txn->admin_id = $_SESSION['admin_id'];
-        $txn->amount = $amount;
-        $txn->method = $method;
-        $txn->date = date("Y-m-d H:i:s");
-        $txn->details = $month . " upstream bill";
+            include_once '../config/database.php';
+            include_once  '../objects/txn.php';
 
-        if ($txn->add_upstream_bill()) {
+            $database = new Database();
+            $db = $database->getConnection();
+            $txn = new Txn($db);
 
-            $message = '<div class="alert alert-success" role="alert">Bill submited successfully</div>';
-            header('location: upstream_bill_list.php?admin_id='.$_SESSION['admin_id'].'&message='.$message);
-            die();
-            exit();
+            $txn->month = $month;
+            $txn->admin_id = $_SESSION['admin_id'];
+            $txn->amount = $amount;
+            $txn->method = $method;
+            $txn->date = date("Y-m-d H:i:s");
+            $txn->details = $month . " upstream bill";
 
-        } else {
-            $message = '<div class="alert alert-warning" role="alert">Something went wrong!</div>';
+            if ($txn->add_upstream_bill()) {
+
+                $message = '<div class="alert alert-success" role="alert">Bill submited successfully</div>';
+                
+                unset($_SESSION['admin_id']);
+                unset($_SESSION['jwt']);
+                
+                
+            } else {
+                $message = '<div class="alert alert-warning" role="alert">Something went wrong!</div>';
+            }
+            
+        } catch (\Throwable $th) {
+            // tell the user access denied  & show error message
+            echo json_encode(array(
+                "status" => 401,
+                "message" => "Access denied, login again\n" . $th->getMessage()
+            ));
         }
     }
 }
-
-
 
 ?>
 <!DOCTYPE HTML>

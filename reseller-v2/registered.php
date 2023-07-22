@@ -65,7 +65,7 @@ $client_list = $client->registered_client($zone);
           <nav class="nav justify-content-center">
             <a class="nav-link" href="expired.php">Expired</a>
             <a class="nav-link active" href="registered.php">Registered</a>
-            <a class="nav-link " href="payment.php">Payments</a>
+            
           </nav>
         </div>
       </div>
@@ -80,7 +80,8 @@ $client_list = $client->registered_client($zone);
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title"><?php echo $item['name'] ?></h5>
+              <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>"><?php echo $item['name'] ?></a> </h5>
+
               <div>
                 <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>
                 <?php if ($item['mode'] == "Disable") { ?>
@@ -127,7 +128,6 @@ $client_list = $client->registered_client($zone);
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
 </body>
 
 </html>

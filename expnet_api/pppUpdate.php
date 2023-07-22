@@ -15,7 +15,9 @@ require_once './PEAR2/Autoload.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
+
 $ppp_name = $data->ppp_name;
+$ppp_new_name = $data->ppp_new_name;
 $ppp_pass = $data->ppp_pass;
 $pkg_id = $data->pkg_id;
 $mode = $data->mode;
@@ -48,9 +50,10 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
                 break;
         }
 
-        if ($util->add(
+        if ($util->set(
+            $util->find($ppp_name),
             array(
-                'name' => $ppp_name,
+                'name' => $ppp_new_name,
                 'password' => $ppp_pass,
                 'profile' => $profile,
                 'disabled' => ($mode == 'Disable') ? "true" : "false",
@@ -59,14 +62,15 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
         )) {
             echo json_encode(array(
                 "status" => 200,
-                "message" => "PPP Created Successfully"
+                "message" => "PPP Updated Successfully"
             ));
         }
     } catch (\Throwable $th) {
         echo json_encode(
             array(
                 "status" => 500,
-                "message" => "Unable to connect mikrotik server, ".$th->getMessage()
+                "message" => "Unable to connect mikrotik server.",
+                "log" => $th->getMessage()
             )
         );
     }

@@ -9,9 +9,9 @@ class Database{
     // private $conn;
     
     private $host = "localhost";
-    private $db_name = "creative_exp-v43";
-    private $username = "creative_exp-v43";
-    private $password = "creative_exp-v43";
+    private $db_name = "u650347749_expert_int";
+    private $username = "u650347749_saif_ullah";
+    private $password = "Saiful@#21490";
     public $conn;
 
     //Get the database connection

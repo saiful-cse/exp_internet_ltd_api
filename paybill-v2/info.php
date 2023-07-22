@@ -34,7 +34,7 @@ $details = $client->client_details();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Intetnet
+        EXPERT INTERNET LTD.
     </title>
     <!-- add icon link -->
     <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
@@ -57,8 +57,7 @@ $details = $client->client_details();
         <div class="col-sm"></div>
         <div class="col-sm">
             <?php include('header.html') ?>
-            <br>
-            <br>
+            
             <div class="container">
                 <?php
                 if (!empty($details)) {

@@ -23,7 +23,7 @@ if (isset($_POST['next'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet
+        EXPERT INTERNET LTD.
     </title>
     <!-- add icon link -->
     <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
@@ -40,8 +40,7 @@ if (isset($_POST['next'])) {
             <div class="col-sm"></div>
             <div class="col-sm">
                 <?php include('header.html') ?>
-                <br>
-                <br>
+                
                 <div class="container">
                     <div class="card">
                         <h6 style="font-family: 'Bangla', sans-serif; font-size: 20px;">
@@ -54,6 +53,7 @@ if (isset($_POST['next'])) {
                                 <button type="submit" name="next" class="form-control btn btn-secondary">Next</button>
                             </div>
                         </form>
+                        
                     </div>
                     <br>
                     <br>

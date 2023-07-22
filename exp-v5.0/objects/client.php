@@ -31,7 +31,7 @@ class Client
     function registered_client()
     {
         //query
-        $query = "SELECT * FROM clients WHERE registered = 1 ORDER BY reg_date DESC";
+        $query = "SELECT * FROM clients WHERE registered = 1 AND mode = 'Enable' ORDER BY reg_date DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -269,6 +269,16 @@ class Client
         $stmt = $this->conn->query($query1);
         $f = $stmt->fetch();
         return $f['mode'];
+    }
+    
+    function currentPppName()
+    {
+        $query1 = "SELECT ppp_name FROM clients WHERE id = $this->id";
+
+        $stmt = $this->conn->query($query1);
+        $f = $stmt->fetch();
+        return $f['ppp_name'];
+       
     }
 
     function client_details_update()

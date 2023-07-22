@@ -24,7 +24,7 @@ class Admin
     function login()
     {
         //query
-        $query = "SELECT admin_id, pin FROM users 
+        $query = "SELECT * FROM users 
         WHERE admin_id = :admin_id AND pin = :pin";
 
         // prepare query statement

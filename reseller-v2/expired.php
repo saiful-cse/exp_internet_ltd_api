@@ -65,7 +65,7 @@ $client_list = $client->expired_client_list($zone);
           <nav class="nav justify-content-center">
             <a class="nav-link active" href="expired.php">Expired</a>
             <a class="nav-link " href="registered.php">Registered</a>
-            <a class="nav-link " href="payment.php">Payments</a>
+            
           </nav>
         </div>
       </div>
@@ -80,7 +80,8 @@ $client_list = $client->expired_client_list($zone);
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title"><?php echo $item['name'] ?></h5>
+                <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>"><?php echo $item['name'] ?></a> </h5>
+
               <div>
                 <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>
                 <?php if ($item['mode'] == "Disable") { ?>

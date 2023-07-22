@@ -29,7 +29,10 @@ and is wrapped around the whole page content, except for the footer in this exam
         <div class="w3-card-4 w3-margin w3-white">
             <div class="w3-container">
                 <h2 style="text-align: center;">About Us</h2> <br>
-                <h4 style="text-align: center;">'Expert Internet' is a non-competitive technical service team. We work to ensure digital services in rural areas. Our main goal is to deliver digital services at the customer level through our skilled technicians. Our services are, provide internet service through primary and secondary links for any organization, maintain optical fiber, wired and Wireless LAN services, CCTV setup and maintain etc.</h4>
+                <h4 style="text-align: center;">'Expert Internet' is a non-competitive technical service team. We work to ensure digital services in rural areas. Our main goal is to deliver digital services at the customer level through our skilled technicians. Our services are, provide boradband internet through primary and secondary links for any organization, maintain optical fiber, wired and wireless LAN, CCTV setup and maintain etc.
+
+
+</h4>
                 <br> <br>
                 <p style="text-align: center;">Contact our office at +88 01400 559161</p>
             </div>

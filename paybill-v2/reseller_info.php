@@ -58,8 +58,7 @@ $details = $client->client_details();
             <div class="col-sm"></div>
             <div class="col-sm">
                 <?php include('header.html') ?>
-                <br>
-                <br>
+                
                 <div class="container">
                     <?php
                     if (!empty($details)) {

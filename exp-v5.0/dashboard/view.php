@@ -1,5 +1,4 @@
 <?php
-session_start();
 date_default_timezone_set("Asia/Dhaka");
 include_once '../config/database.php';
 include_once  '../objects/dashboard.php';
@@ -8,36 +7,20 @@ include_once  '../objects/sms.php';
 
 $database = new Database();
 $db = $database->getConnection();
+$sms_expiring_3day_result = $sms_expired_client_disconnect_result = "";
 
-$_SESSION['msg'] = "";
-
-/*
- * Initialize object
- */
-$dashboard = new Dashboard($db);
-$admin = new Admin($db);
-$logs_stmt = $admin->fetch_logs();
-$packagesStmt = $dashboard->packages();
-$bKashCollection = $dashboard->bKashCollection();
-
-
-function expired_client_sms()
+function expipering_3day_client_sms_send()
 {
-
-	$sms_message = "⚠️ Warning!! 
-আপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।
-https://baycombd.com/paybill/
-01975-559161 (bKash Payment)";
-
+	include_once '../config/database.php';
+	include_once  '../objects/sms.php';
 	$database = new Database();
 	$db = $database->getConnection();
 	$sms = new Sms($db);
 
-	$sms->current_date = date("Y-m-d H:i:s");
-
-	//getting client before 3day expire
 	$stmt = $sms->getExpiredClientsPhone();
 	$data = $stmt->rowCount();
+
+	global $sms_expiring_3day_result;
 
 	if ($data > 0) {
 
@@ -47,95 +30,36 @@ https://baycombd.com/paybill/
 		}
 		$numbers =  implode(', ', $num);
 
+		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/\n01975-559161 (bKash Payment)";
+
 		//Set the value
 		$sms->numbers = $numbers;
-		$sms->msg_body = $sms_message;
-		$sms->created_at = date("Y-m-d H:i:s");
+		$sms_send_response = json_decode(sms_send($numbers, $expired_3day_message), true);
 
-		//SMS service
-		$url = "http://66.45.237.70/api.php";
-		$data = array(
-			'username' => "01835559161",
-			'password' => "saiful@#21490",
-			'number' => $numbers,
-			'message' => $sms_message
-		);
-
-		$ch = curl_init(); // Initialize cURL
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$smsresult = curl_exec($ch);
-
-		$p = explode("|", $smsresult);
-		$sendstatus = $p[0];
-
-		switch ($sendstatus) {
-			case '1000':
-				$_SESSION['msg']  = "Invalid user or Password";
-				break;
-			case '1002':
-				$_SESSION['msg'] = "Empty Number";
-				break;
-			case '1003':
-				$_SESSION['msg'] = "Invalid message or empty message";
-				break;
-			case '1004':
-				$_SESSION['msg'] = "Invalid number";
-				break;
-			case '1005':
-				$_SESSION['msg'] = "All Number is Invalid";
-				break;
-			case '1006':
-
-				$_SESSION['msg'] = '<div class="alert alert-danger" role="alert">Insufficient Balance</div>';
-
-				break;
-
-			case '1009':
-
-				$_SESSION['msg'] = "Inactive Account, contact with software developer.";
-
-				break;
-
-			case '1010':
-
-				$_SESSION['msg'] = "Max number limit exceeded";
-
-				break;
-
-			case '1101':
-
-				if ($sms->expiredClientSmsStoreUpdate()) {
-					$_SESSION['msg'] =
-						'<div class="alert alert-success" role="alert">
-					SMS sent successfully
-				  </div>';
-				} else {
-
-					$_SESSION['msg'] = "SMS sending error!!";
-				}
-				break;
+		if ($sms_send_response['response_code'] == 202) {
+			if ($sms->expiredClientSmsUpdate()) {
+				$sms_expiring_3day_result = "200, Expiring before 3 day Client SMS sent successfully";
+			}
+		} else {
+			$sms_expiring_3day_result = "[ 201, " . $sms_send_response['response_code'] . "]" .
+				", " . $sms_send_response['error_message'];
 		}
 	} else {
-
-		$_SESSION['msg'] =
-			'<div class="alert alert-success" role="alert">
-					Allready sent sms
-				  </div>';
+		$sms_expiring_3day_result = "404, No expiring client before 3 day";
 	}
 }
 
-function expired_client_disconnect()
+function expired_client_sms_send_disconnect()
 {
-
+	include_once '../config/database.php';
+	include_once  '../objects/sms.php';
 	$database = new Database();
 	$db = $database->getConnection();
 	$sms = new Sms($db);
-	
-	$sms->current_date = date("Y-m-d H:i:s");
 
 	$stmt = $sms->getExpiredClientsPhonePPPname();
+
+	global $sms_expired_client_disconnect_result;
 
 	if ($stmt->rowCount() > 0) {
 
@@ -144,119 +68,85 @@ function expired_client_disconnect()
 
 			$num[] = $row['phone'];
 			$pppName[] = $row['ppp_name'];
-			$id[] = $row['id'];
 		}
 		$numbers =  implode(', ', $num);
-		$sms->id_list = implode(', ', $id);
 
 		//Disable and Remove form mikrotik server
-		$data = json_decode(pppListDisable($pppName), true);
+		$mikrotik_response = json_decode(pppListDisable($pppName), true);
 
-		if ($data['status'] == 200) {
+		if ($mikrotik_response['status'] == 200) {
 
-			//after success disabled, send sms
-			$message = "আপনার WiFi সংযোগের মেয়াদ শেষ, পুনরায় চালু করতে বিল পরিশোধ করুন।\n https://baycombd.com/paybill/ \n01975-559161 (bKash Payment)";
+			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, পুনরায় চালু করতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill\n01975-559161(bKash Payment)";
 
-			$url = "http://66.45.237.70/api.php";
-			$data = array(
-				'username' => "01835559161",
-				'password' => "saiful@#21490",
-				'number' => $numbers,
-				'message' => $message
-			);
+			//Set the value
+			$sms->numbers = $numbers;
+			$sms_send_response = json_decode(sms_send($numbers, $expired_client_message), true);
 
-			$ch = curl_init(); // Initialize cURL
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			$smsresult = curl_exec($ch);
+			if ($sms_send_response['response_code'] == 202) {
+				if ($sms->clientDisconnectModeUpdate()) {
+					$sms_expired_client_disconnect_result = "202, Expired client disconnect and sms send succcessfully";
+				}
+			} else {
 
-			$p = explode("|", $smsresult);
-			$sendstatus = $p[0];
-
-			switch ($sendstatus) {
-				case '1000':
-					echo json_encode(array("message" => "Invalid user or Password"));
-					break;
-				case '1002':
-					echo json_encode(array("message" => "Empty Number"));
-					break;
-				case '1003':
-					echo json_encode(array("message" => "Invalid message or empty message"));
-					break;
-				case '1004':
-					echo json_encode(array("message" => "Invalid number"));
-					break;
-				case '1005':
-					echo json_encode(array("message" => "All Number is Invalid"));
-					break;
-				case '1006':
-
-					echo json_encode(array(
-						"status" => 1006,
-						"message" => "Insufficient Balance"
-
-					));
-					break;
-
-				case '1009':
-
-					echo json_encode(array(
-						"status" => 1009,
-						"message" => "Inactive Account, contact with software developer."
-
-					));
-					break;
-
-				case '1010':
-
-					echo json_encode(array(
-						"status" => 1010,
-						"message" => "Max number limit exceeded"
-
-					));
-					break;
-
-				case '1101':
-
-					//Update clients mode status on DB
-					if ($sms->clientDisconnectModeUpdate()) {
-						echo json_encode(array(
-
-							"status" => 200,
-							"message" => "SMS sent and disconnected successfully"
-
-						));
-					} else {
-
-						echo json_encode(array(
-							"status" => 201,
-							"message" => "SMS sending error!!"
-						));
-					}
-					break;
+				$sms_expired_client_disconnect_result = "[201, " . $sms_send_response['response_code'] . "]" .
+					", " . $sms_send_response['error_message'];
 			}
 		} else {
-			echo json_encode(array(
-				"status" => $data['status'],
-				"message" => $data['message']
-			));
+
+			$sms_expired_client_disconnect_result = $mikrotik_response['status'].", ".$mikrotik_response['message'];
 		}
 	} else {
 
-		echo json_encode(array(
-			"status" => 404,
-			"message" => "Not found expired clients in this time."
-		));
+		$sms_expired_client_disconnect_result = "404, Not found expired clients in this time.";
 	}
 }
 
+function sms_send($numbers, $message)
+{
+	include '../config/url_config.php';
 
-expired_client_sms();
-//sms service for expired clients
-if (strtotime(date("H:i:s")) >=  strtotime('09:00:00') and strtotime(date("H:i:s")) <=  strtotime('17:00:00')) {
-	expired_client_sms();
+	$data = [
+		"api_key" => $sms_api_key,
+		"senderid" => $sms_api_senderid,
+		"number" => $numbers,
+		"message" => $message
+	];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $sms_api_url);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$response = curl_exec($ch);
+	curl_close($ch);
+	return $response;
 }
+
+function pppListDisable($pppName)
+{
+    $url = 'http://103.134.39.238/pppListDisable.php';
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pppName));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    $result = curl_exec($ch);
+    curl_close($ch);
+    return $result;
+}
+
+if ("09:00" <= date("H:i") && "18:00" >= date("H:i")) {
+	expipering_3day_client_sms_send();
+	expired_client_sms_send_disconnect();
+}
+
+$dashboard = new Dashboard($db);
+$admin = new Admin($db);
+$logs_stmt = $admin->fetch_logs();
+$packagesStmt = $dashboard->packages();
+$bKashCollection = $dashboard->bKashCollection();
+
 
 $expiredDataPoints = array(
 	array("label" => "Expired", "y" => $dashboard->count_total_expired_client()),
@@ -350,19 +240,20 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 <body>
 
 	<div class="card text-center">
-		<!-- <div class="card-header">
-			Notice
-		</div> -->
+		<div class="card-header">
+			Message
+		</div>
 		<div class="card-body">
 
 			<p class="card-text">
-				<?php echo $_SESSION['msg']; ?>
+				<?php echo $sms_expiring_3day_result; ?> <br>
+				<?php echo $sms_expired_client_disconnect_result; ?>
 			</p>
 
 		</div>
 
 	</div>
-	<br>
+
 
 	<div id="expiredchartContainer" style="height: 370px; width: 100%;"></div> <br>
 	<div id="bkashchartContainer" style="height: 370px; width: 100%;"></div>

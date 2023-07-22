@@ -25,25 +25,6 @@ use \Firebase\JWT\JWT;
 
 $data = json_decode(file_get_contents("php://input"));
 
-function pppAction($actionType, $pppName)
-{
-    $url = 'http://mt.baycombd.com/expnet_api/pppAction.php';
-    $data = array(
-        'ppp_name' => $pppName,
-        'action_type' => $actionType
-    );
-    $postdata = json_encode($data);
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    $result = curl_exec($ch);
-    curl_close($ch);
-    return $result;
-}
-
 if (
     !empty($data->jwt) && !empty($data->id) && !empty($data->mode) && !empty($data->payment_method) &&
     !empty($data->name) && !empty($data->phone)  && !empty($data->area) && !empty($data->zone) && !empty($data->expire_date) &&
@@ -88,17 +69,30 @@ if (
                 "status" => 207,
                 "message" => "এই নাম্বারটি দিয়ে একবার রেজিস্ট্রেশন হয়ে গেছে।"
             ));
-        } else if ($client->current_mode() == $data->mode) {
-            if ($client->client_details_update()) {
-                echo json_encode(array(
-                    "status" => 200,
-                    "message" => "Details Updated Successfully."
-                ));
-            }
-        } else if ($client->current_mode() == 'Enable' && $data->mode == 'Disable') {
 
-            $data = json_decode(pppAction('disable', $data->ppp_name), true);
+        }  else {
 
+            // ------------Mikrotik Connection Start ---------
+            $url = $api_base_url . 'pppUpdate.php';
+            
+            $data = array(
+                'ppp_name' => $client->currentPppName(),
+                'ppp_new_name' => $data->ppp_name,
+                'ppp_pass' => $data->ppp_pass,
+                'pkg_id' => $data->pkg_id,
+                'mode' => $data->mode
+            );
+            $postdata = json_encode($data);
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            $result = curl_exec($ch);
+            curl_close($ch);
+            $data = json_decode($result, true);
+            
             if ($data['status'] == 200) {
                 if ($client->client_details_update()) {
                     echo json_encode(array(
@@ -108,24 +102,8 @@ if (
                 }
             } else {
                 echo json_encode(array(
-                    "status" => 500,
-                    "message" => "Unable to connect mikrotik server"
-                ));
-            }
-        } else if ($client->current_mode() == 'Disable' && $data->mode == 'Enable') {
-            $data = json_decode(pppAction('enable', $data->ppp_name), true);
-
-            if ($data['status'] == 200) {
-                if ($client->client_details_update()) {
-                    echo json_encode(array(
-                        "status" => 200,
-                        "message" => "Details Updated Successfully."
-                    ));
-                }
-            } else {
-                echo json_encode(array(
-                    "status" => 500,
-                    "message" => "Unable to connect mikrotik server"
+                    "status" => $data['status'],
+                    "message" => $data['message']
                 ));
             }
         }

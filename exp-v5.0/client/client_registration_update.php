@@ -27,7 +27,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 if (
     !empty($data->jwt) && !empty($data->id) && !empty($data->payment_method) &&
-    !empty($data->name) && !empty($data->phone) && !empty($data->area) && !empty($data->zone) && 
+    !empty($data->name) && !empty($data->phone) && !empty($data->area) && !empty($data->zone) &&
     !empty($data->ppp_name) && !empty($data->ppp_pass) &&
     !empty($data->pkg_id)
 
@@ -65,25 +65,49 @@ if (
                 "status" => 207,
                 "message" => "এই PPP Name টি অন্য ক্লায়েন্টের জন্য ব্যবহার করা হয়েছে।"
             ));
-
         } else if ($client->isExistPhoneToUpdate()) {
             echo json_encode(array(
                 "status" => 207,
                 "message" => "এই Phone নাম্বারটি দিয়ে একবার রেজিস্ট্রেশন হয়ে গেছে।"
             ));
+        } else {
+            // ------------Mikrotik Connection Start ---------
+            $url = $api_base_url.'pppCreate.php';
+            $data = array(
+                'ppp_name' => $data->ppp_name,
+                'ppp_pass' => $data->ppp_pass,
+                'pkg_id' => $data->pkg_id,
+                'mode' => $data->mode
+            );
+            $postdata = json_encode($data);
 
-        } else if($client->client_details_update()){
-            echo json_encode(array(
-                "status" => 200,
-                "message" => "Registration update Success"
-            ));
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            if ($client->client_details_update()) {
+                echo json_encode(array(
+                    "status" => 200,
+                    "message" => "Registration update Success"
+                ));
+
+            } else {
+                echo json_encode(array(
+                    "status" => 201,
+                    "message" => "Warning!! \nMikrotik updated but not updated in App info."
+                ));
+            }
         }
     } catch (\Throwable $e) {
         // tell the user access denied  & show error message
         echo json_encode(array(
             "status" => 401,
-            "message" => "Access denied, error: " . $e->getMessage(),
-            "error" => $e->getMessage()
+            "message" => "Access denied, error: " . $e->getMessage()
+
         ));
     }
 } else {

@@ -28,6 +28,7 @@ use \Firebase\JWT\JWT;
 /*
  * Instance database and dashboard object
  */
+
 $database = new Database();
 $db = $database->getConnection();
 /*
@@ -43,7 +44,7 @@ if (!empty($admin_id && !empty($pin))) {
     $admin = new Admin($db);
     $admin->admin_id = $admin_id;
     $admin->pin = $pin;
-    $admin->details = $admin_id." admin login successfully";
+    $admin->details = $admin_id . " admin login successfully";
 
     $stmt =  $admin->login();
     $num = $stmt->rowCount();
@@ -60,19 +61,30 @@ if (!empty($admin_id && !empty($pin))) {
 
         // generate jwt
         $jwt = JWT::encode($token, $key);
-        echo json_encode(
-            array(
-                "admin_id" => $admin_id,
-                "status" => 200,
-                "message" => "Login Successfully",
-                "jwt" => $jwt
-            )
-        );
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo json_encode(
+                array(
+                    "status" => 200,
+                    "message" => "Login Successfully",
+                    "admin_id" => $row['admin_id'],
+                    "jwt" => $jwt,
+                    "dashboard" => $row['dashboard'],
+                    "client_add" => $row['client_add'],
+                    "client_details_update" => $row['client_details_update'],
+                    "sms" => $row['sms'],
+                    "txn_summary" => $row['txn_summary'],
+                    "txn_edit" => $row['txn_edit'],
+                    "upstream_bill" => $row['upstream_bill'],
+                    "salary_add" => $row['salary_add']
+                )
+            );
+        }
     } else {
 
         echo json_encode(array(
             "status" => 404,
-            "message" => "User not exist."
+            "message" => "Admin ID or Pin Wrong!!"
         ));
     }
 } else {
