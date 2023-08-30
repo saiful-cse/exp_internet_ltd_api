@@ -2,7 +2,7 @@
 date_default_timezone_set("Asia/Dhaka");
 include_once '../config/database.php';
 include_once  '../objects/dashboard.php';
-include_once  '../objects/admin.php';
+include_once  '../objects/employee.php';
 include_once  '../objects/sms.php';
 
 $database = new Database();
@@ -125,7 +125,7 @@ function sms_send($numbers, $message)
 
 function pppListDisable($pppName)
 {
-    $url = 'http://103.134.39.238/pppListDisable.php';
+    $url = 'http://103.134.39.218/expnet_api/pppListDisable.php';
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pppName));
@@ -142,8 +142,8 @@ if ("09:00" <= date("H:i") && "18:00" >= date("H:i")) {
 }
 
 $dashboard = new Dashboard($db);
-$admin = new Admin($db);
-$logs_stmt = $admin->fetch_logs();
+$employee = new Employee($db);
+$logs_stmt = $employee->fetch_logs();
 $packagesStmt = $dashboard->packages();
 $bKashCollection = $dashboard->bKashCollection();
 

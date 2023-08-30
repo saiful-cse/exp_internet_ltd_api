@@ -13,6 +13,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
  */
 include_once '../config/database.php';
 include_once  '../objects/client.php';
+include_once  '../objects/device.php';
 
 // generate json web token
 include_once '../config/core.php';
@@ -72,33 +73,50 @@ if (
             ));
         } else {
             // ------------Mikrotik Connection Start ---------
-            $url = $api_base_url.'pppCreate.php';
-            $data = array(
+            $device = new Device($db);
+            $stmt = $device->get_device_url();
+
+            //retrieve the table contents
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $url = $row['api_base'] . "pppCreate.php";
+                $login_ip = $row['login_ip'];
+                $username = $row['username'];
+                $password = $row['password'];
+            }
+
+            $postdata = array(
                 'ppp_name' => $data->ppp_name,
                 'ppp_pass' => $data->ppp_pass,
                 'pkg_id' => $data->pkg_id,
-                'mode' => $data->mode
+                'mode' => $data->mode,
+
+                'login_ip' => $login_ip,
+                'username' => $username,
+                'password' => $password
             );
-            $postdata = json_encode($data);
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             $result = curl_exec($ch);
             curl_close($ch);
 
-            if ($client->client_details_update()) {
-                echo json_encode(array(
-                    "status" => 200,
-                    "message" => "Registration update Success"
-                ));
+            $mikrotik_response = json_decode($result, true);
 
+            if ($mikrotik_response['status'] == 200) {
+                if ($client->client_details_update()) {
+                    echo json_encode(array(
+                        "status" => 200,
+                        "message" => "Registration update Success"
+                    ));
+                }
             } else {
                 echo json_encode(array(
-                    "status" => 201,
-                    "message" => "Warning!! \nMikrotik updated but not updated in App info."
+                    "status" => $mikrotik_response['status'],
+                    "message" => $mikrotik_response['message']
                 ));
             }
         }

@@ -31,7 +31,7 @@ class Client
     function registered_client()
     {
         //query
-        $query = "SELECT * FROM clients WHERE registered = 1 AND mode = 'Enable' ORDER BY reg_date DESC";
+        $query = "SELECT * FROM clients WHERE registered = 1 ORDER BY reg_date DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

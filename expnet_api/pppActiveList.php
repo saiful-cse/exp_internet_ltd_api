@@ -1,5 +1,4 @@
 <?php
-include_once './config/router_config.php';
 // required headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -10,6 +9,10 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 //RoterOS
 use PEAR2\Net\RouterOS;
+
+$login_ip = $_POST['login_ip'];;
+$username = $_POST['username'];
+$password = $_POST['password'];
 
 require_once './PEAR2/Autoload.php';
 

@@ -24,7 +24,7 @@ try {
     $upstream_bill = $txn->upstream_bill();
 
     $_SESSION['jwt'] = $_GET['jwt'];
-    $_SESSION['admin_id'] = $_GET['admin_id'];
+    $_SESSION['emp_id'] = $_GET['emp_id'];
 
 } catch (\Throwable $th) {
     // tell the user access denied  & show error message

@@ -68,6 +68,7 @@ if (!empty($jwt) && !empty($message) && !empty($area)) {
         $decoded = JWT::decode($jwt, $key, array('HS256'));
 
         $sms->area = $area;
+        $sms->msg_body = $message;
         $stmt = $sms->getting_areawise_client_phone();
         $data = $stmt->rowCount();
 
@@ -82,10 +83,15 @@ if (!empty($jwt) && !empty($message) && !empty($area)) {
             $sms_send_response = json_decode(sms_send($numbers), true);
 
             if ($sms_send_response['response_code'] == 202) {
-                echo json_encode(array(
-                    "status" => 200,
-                    "message" => "SMS sent successfully"
-                ));
+                
+                if($sms->areawise_sms_store()){
+                    echo json_encode(array(
+                        "status" => 200,
+                        "message" => "SMS sent successfully"
+                    ));
+                }
+                
+                
             } else {
                 echo json_encode(array(
                     "status" => 201,

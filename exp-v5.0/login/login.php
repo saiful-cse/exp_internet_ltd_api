@@ -13,7 +13,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
  * include database and object files
  */
 include_once '../config/database.php';
-include_once  '../objects/admin.php';
+include_once  '../objects/employee.php';
+include_once  '../objects/device.php';
 
 
 // generate json web token
@@ -35,28 +36,39 @@ $db = $database->getConnection();
 * Initialize object
 */
 
-$admin_id = $_POST['admin_id'];
+$employee_id = $_POST['employee_id'];
 $pin = $_POST['pin'];
 
 
-if (!empty($admin_id && !empty($pin))) {
+if (!empty($employee_id && !empty($pin))) {
 
-    $admin = new Admin($db);
-    $admin->admin_id = $admin_id;
-    $admin->pin = $pin;
-    $admin->details = $admin_id . " admin login successfully";
+    $employee = new Employee($db);
+    $employee->employee_id = $employee_id;
+    $employee->pin = $pin;
+    $employee->details = $employee_id . " employee login successfully";
 
-    $stmt =  $admin->login();
+    $stmt =  $employee->login();
     $num = $stmt->rowCount();
+
+    $device = new Device($db);
+    $stmt2 = $device->get_device_url();
+    $api_base = $login_ip = $username = $password = "";
+
+    while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+        $api_base = $row['api_base'];
+        $login_ip = $row['login_ip'];
+        $username = $row['username'];
+        $password = $row['password'];
+    }
 
     if ($num > 0) {
 
-        $admin->login_record();
+        $employee->login_record();
         $token = array(
             "iat" => $issued_at,
             "exp" => $expiration_time,
             "iss" => $issuer,
-            "data" => $admin_id
+            "data" => $employee_id
         );
 
         // generate jwt
@@ -66,9 +78,10 @@ if (!empty($admin_id && !empty($pin))) {
             echo json_encode(
                 array(
                     "status" => 200,
-                    "message" => "Login Successfully",
-                    "admin_id" => $row['admin_id'],
                     "jwt" => $jwt,
+                    "message" => "Login Successfully",
+                    "employee_id" => $row['employee_id'],
+                    "super_admin" => $row['super_admin'],
                     "dashboard" => $row['dashboard'],
                     "client_add" => $row['client_add'],
                     "client_details_update" => $row['client_details_update'],
@@ -76,7 +89,14 @@ if (!empty($admin_id && !empty($pin))) {
                     "txn_summary" => $row['txn_summary'],
                     "txn_edit" => $row['txn_edit'],
                     "upstream_bill" => $row['upstream_bill'],
-                    "salary_add" => $row['salary_add']
+                    "salary_add" => $row['salary_add'],
+                    "device" => $row['device'],
+                    "note" => $row['note'],
+
+                    "api_base" => $api_base,
+                    "login_ip" => $login_ip,
+                    "username" => $username,
+                    "password" => $password
                 )
             );
         }
@@ -84,7 +104,7 @@ if (!empty($admin_id && !empty($pin))) {
 
         echo json_encode(array(
             "status" => 404,
-            "message" => "Admin ID or Pin Wrong!!"
+            "message" => "Employee ID or Pin Wrong!!"
         ));
     }
 } else {

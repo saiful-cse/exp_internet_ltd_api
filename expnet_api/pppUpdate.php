@@ -1,5 +1,4 @@
 <?php
-include_once './config/router_config.php';
 // required headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -15,12 +14,15 @@ require_once './PEAR2/Autoload.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-
 $ppp_name = $data->ppp_name;
 $ppp_new_name = $data->ppp_new_name;
 $ppp_pass = $data->ppp_pass;
 $pkg_id = $data->pkg_id;
 $mode = $data->mode;
+
+$login_ip = $data->login_ip;
+$username = $data->username;
+$password = $data->password;
 
 if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) {
 

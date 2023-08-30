@@ -1,5 +1,4 @@
 <?php
-include_once './config/router_config.php';
 // required headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -13,13 +12,14 @@ use PEAR2\Net\RouterOS;
 
 require_once './PEAR2/Autoload.php';
 
-$data = json_decode(file_get_contents("php://input"));
+$ppp_name = $_POST['ppp_name'];
+$login_ip = $_POST['login_ip'];
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-$ppp_name = $data->ppp_name;
+if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($password)) {
 
-if (!empty($ppp_name)) {
-
-    $router_status = $router_status = $ppp_status = $ppp_activity = $caller_id = $connected_ip = $last_loged_out = $last_log_in = $uptime = "---";
+    $status = $ppp_status = $ppp_activity = $caller_id = $connected_ip = $last_loged_out = $last_log_in = $uptime = "---";
     $download = $upload = 0;
 
     //Getting secret status 
@@ -29,8 +29,8 @@ if (!empty($ppp_name)) {
 
         foreach ($util->getAll() as $item) {
 
-            $router_status = 200;
-            if ($item->getProperty("name") == $data->ppp_name) {
+            $status = 200;
+            if ($item->getProperty("name") == $ppp_name) {
                 $last_loged_out = $item->getProperty("last-logged-out");
                 $ppp_status = $item->getProperty('disabled') == "true" ? "Disable" : "Enable";
                 break;
@@ -39,12 +39,12 @@ if (!empty($ppp_name)) {
             }
         }
     } catch (\Throwable $th) {
-        $router_status = 500;
+        $status = 500;
         $message = "Mikrotik connection error!!".$th;
 
         echo json_encode(
             array(
-                "router_status" => $router_status,
+                "status" => $status,
                 "message" => $message
             )
         );
@@ -58,7 +58,7 @@ if (!empty($ppp_name)) {
         $util2->setMenu('/ppp/active');
         foreach ($util2->getAll() as $item) {
 
-            if ($item->getProperty("name") == $data->ppp_name) {
+            if ($item->getProperty("name") == $ppp_name) {
                 $ppp_activity = "Online";
                 $uptime = $item->getProperty("uptime");
                 $caller_id = $item->getProperty("caller-id");
@@ -69,7 +69,7 @@ if (!empty($ppp_name)) {
             }
         }
     } catch (\Throwable $th) {
-        $router_status = 500;
+        $status = 500;
         $message = "Mikrotik connection error!!";
     }
 
@@ -80,7 +80,7 @@ if (!empty($ppp_name)) {
         foreach ($util3->getAll() as $item) {
 
             //var_dump($item);
-            if ($item->getProperty("name") == "<pppoe-".$data->ppp_name.">") {
+            if ($item->getProperty("name") == "<pppoe-".$ppp_name.">") {
                 $last_log_in = $item->getProperty("last-link-up-time");
                 $download =  $item->getProperty("tx-byte");
                 $upload = $item->getProperty("rx-byte");
@@ -88,16 +88,15 @@ if (!empty($ppp_name)) {
             } 
         }
 
-
     } catch (\Throwable $th) {
-        $router_status = 500;
+        $status = 500;
         $message = "Mikrotik connection error!!";
     }
 
     echo json_encode(
         array(
 
-            "router_status" => $router_status,
+            "status" => $status,
             "ppp_status" => $ppp_status,
             "ppp_activity" => $ppp_activity,
             "router_mac" => $caller_id,

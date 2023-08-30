@@ -8,15 +8,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
 /*
  * include database and object files
  */
-include_once '../config/database.php';
-include_once  '../objects/txn.php';
 
-
-// generate json web token
 include_once '../config/core.php';
 include_once '../libs/php-jwt-master/src/BeforeValidException.php';
 include_once '../libs/php-jwt-master/src/ExpiredException.php';
@@ -25,51 +20,38 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
+include_once '../config/database.php';
+include_once  '../objects/device.php';
 
-/*
- * Instance database and news object
- */
-
-$data = json_decode(file_get_contents("php://input"));
-
-if (
-    !empty($data->jwt) && !empty($data->super_admin_id) && !empty($data->employee_id) && !empty($data->amount) && !empty($data->month))
-{
+if (!empty($_POST['jwt'])) {
 
     try {
         // decode jwt
-        $decoded = JWT::decode($data->jwt, $key, array('HS256'));
-
+        $decoded = JWT::decode($_POST['jwt'], $key, array('HS256'));
         $database = new Database();
         $db = $database->getConnection();
-        $txn = new Txn($db);
+        $device = new Device($db);
 
-        $txn->super_admin_id = $data->super_admin_id;
-        $txn->employee_id = $data->employee_id;
-        $txn->details = $data->month." salary for ".$data->employee_id;
-        $txn->month = $data->month;
-        $txn->amount = $data->amount;
-        $txn->date = date("Y-m-d H:i:s");
+        $stmt = $device->get_device_url();
 
-        if ($txn->add_salary()) {
-            //if success
-            echo json_encode(array(
-                "status" => 200,
-                "message" => "Salary added successfully"
-            ));
-
-        } else {
-            echo json_encode(array(
-                "status" => 201,
-                "message" => "Salary not added"
-            ));
+        //retrieve the table contents
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo json_encode(
+                array(
+                    "id" => $row['id'],
+                    "api_base" => $row['api_base'],
+                    "login_ip" => $row['login_ip'],
+                    "username" => $row['username'],
+                    "password" => $row['password']
+                )
+            );
         }
     } catch (\Throwable $th) {
         // tell the user access denied  & show error message
         echo json_encode(array(
             "status" => 401,
-            "message" => "Login time expired!!",
-            "error" => $th->getMessage()
+            "message" => "Access denied",
+
         ));
     }
 } else {

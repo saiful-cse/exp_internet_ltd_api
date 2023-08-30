@@ -13,6 +13,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
  */
 include_once '../config/database.php';
 include_once  '../objects/client.php';
+include_once  '../objects/device.php';
+
 
 // generate json web token
 include_once '../config/core.php';
@@ -69,30 +71,43 @@ if (
                 "status" => 207,
                 "message" => "এই নাম্বারটি দিয়ে একবার রেজিস্ট্রেশন হয়ে গেছে।"
             ));
-
-        }  else {
+        } else {
 
             // ------------Mikrotik Connection Start ---------
-            $url = $api_base_url . 'pppUpdate.php';
+
+            $device = new Device($db);
+            $stmt = $device->get_device_url();
             
-            $data = array(
+            //retrieve the table contents
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $url = $row['api_base']."pppUpdate.php";
+                $login_ip = $row['login_ip'];
+                $username = $row['username'];
+                $password = $row['password'];
+            }
+
+            $postdata = array(
                 'ppp_name' => $client->currentPppName(),
                 'ppp_new_name' => $data->ppp_name,
                 'ppp_pass' => $data->ppp_pass,
                 'pkg_id' => $data->pkg_id,
-                'mode' => $data->mode
+                'mode' => $data->mode,
+
+                'login_ip' => $login_ip,
+                'username' => $username,
+                'password' => $password
             );
-            $postdata = json_encode($data);
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             $result = curl_exec($ch);
             curl_close($ch);
             $data = json_decode($result, true);
-            
+
             if ($data['status'] == 200) {
                 if ($client->client_details_update()) {
                     echo json_encode(array(

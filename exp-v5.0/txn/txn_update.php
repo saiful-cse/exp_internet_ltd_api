@@ -37,19 +37,19 @@ $txn = new Txn($db);
 $jwt = $_POST['jwt'];
 $txn_id = $_POST['txn_id'];
 $date = $_POST['date'];
-$admin_id = $_POST['admin_id'];
+$emp_id = $_POST['emp_id'];
 $details = $_POST['details'];
 $credit = $_POST['credit'];
 $debit = $_POST['debit'];
 
 if (
-    !empty($jwt) && !empty($txn_id) && !empty($date) && !empty($admin_id) && !empty($details)
+    !empty($jwt) && !empty($txn_id) && !empty($date) && !empty($emp_id) && !empty($details)
     && !empty($credit) && !empty($debit)
 ) {
 
     $txn->txn_id = $txn_id;
     $txn->date = $date;
-    $txn->admin_id = $admin_id;
+    $txn->emp_id = $emp_id;
     $txn->details = $details;
     $txn->credit = $credit;
     $txn->debit = $debit;

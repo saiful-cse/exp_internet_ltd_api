@@ -13,6 +13,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
  */
 include_once '../config/database.php';
 include_once  '../objects/sms.php';
+include_once  '../objects/device.php';
 
 
 // generate json web token
@@ -37,21 +38,6 @@ $db = $database->getConnection();
 */
 $sms = new Sms($db);
 
-function pppListDisable($pppName)
-{
-    require '../config/url_config.php';
-    $url = 'http://103.134.39.238/pppListDisable.php';
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pppName));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    $result = curl_exec($ch);
-    curl_close($ch);
-    return $result;
-}
-
 function sms_send($numbers)
 {
     require '../config/url_config.php';
@@ -75,7 +61,6 @@ function sms_send($numbers)
     return $response;
 }
 
-
 if (!empty($data->jwt)) {
 
     try {
@@ -94,9 +79,36 @@ if (!empty($data->jwt)) {
                 $pppName[] = $row['ppp_name'];
             }
             $numbers =  implode(', ', $num);
-           
+
+            $device = new Device($db);
+            $stmt = $device->get_device_url();
+
+            //retrieve the table contents
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $url = $row['api_base'] . "pppListDisable.php";
+                $login_ip = $row['login_ip'];
+                $username = $row['username'];
+                $password = $row['password'];
+            }
+
+            $postdata = array(
+                'login_ip' => $login_ip,
+                'username' => $username,
+                'password' => $password,
+                'ppp_names' => $pppName
+            );
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            $result = curl_exec($ch);
+            curl_close($ch);
+            
             //Disable and Remove form mikrotik server
-            $mikrotik_response = json_decode(pppListDisable($pppName), true);
+            $mikrotik_response = json_decode($result, true);
 
             if ($mikrotik_response['status'] == 200) {
 
@@ -124,6 +136,7 @@ if (!empty($data->jwt)) {
                     "message" => $mikrotik_response['message']
                 ));
             }
+            
         } else {
 
             echo json_encode(array(

@@ -49,7 +49,7 @@ if (!empty($txn_id))
                 "name" => $name,
                 "type" => $type,
                 "date" => $date,
-                "admin_id" =>$admin_id,
+                "emp_id" =>$emp_id,
                 "details" => $details,
                 "credit" => $credit,
                 "debit" => $debit

@@ -8,15 +8,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-
 /*
  * include database and object files
  */
-include_once '../config/database.php';
-include_once  '../objects/txn.php';
 
-
-// generate json web token
 include_once '../config/core.php';
 include_once '../libs/php-jwt-master/src/BeforeValidException.php';
 include_once '../libs/php-jwt-master/src/ExpiredException.php';
@@ -25,53 +20,28 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
-/*
- * Instance database and news object
- */
+include_once '../config/database.php';
+include_once  '../objects/device.php';
 
-$database = new Database();
-$db = $database->getConnection();
-
-/*
- * Initialize object
- */
-$txn = new Txn($db);
-
-$jwt = $_POST['jwt'];
-$admin_id = $_POST['admin_id'];
-$txn_type = $_POST['txn_type'];
-$method = $_POST['method'];
-$amount = $_POST['amount'];
-$details = $_POST['details'];
-
-if (
-     !empty($jwt) && !empty($amount) && !empty($details) && !empty($txn_type) &&
-    !empty($method) && !empty($admin_id)
-) {
+if (!empty($_POST['jwt'])) {
 
     try {
-
         // decode jwt
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
+        $decoded = JWT::decode($_POST['jwt'], $key, array('HS256'));
+        $database = new Database();
+        $db = $database->getConnection();
+        $device = new Device($db);
 
-        $txn->admin_id = $admin_id;
-        $txn->method = $method;
-        $txn->amount = $amount;
-        $txn->details = $details;
-       
-        $txn->date = date("Y-m-d H:i:s");
+        $device->id = $_POST['id'];
+        $device->api_base = $_POST['api_base'];
+        $device->login_ip = $_POST['login_ip'];
+        $device->username = $_POST['username'];
+        $device->password = $_POST['password'];
 
-        if ($txn->admin_make_txn($txn_type)) {
-            //if success
+        if($device->device_url_update()){
             echo json_encode(array(
                 "status" => 200,
-                "message" => "Transaction has been successfully"
-            ));
-
-        } else {
-            echo json_encode(array(
-                "status" => 201,
-                "message" => "Transaction not Success"
+                "message" => "URL updated successfully"
             ));
         }
 
@@ -79,8 +49,7 @@ if (
         // tell the user access denied  & show error message
         echo json_encode(array(
             "status" => 401,
-            "message" => "Login time expired!!",
-            "error" => $th->getMessage()
+            "message" => "Access denied, login again."
         ));
     }
 } else {

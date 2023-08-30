@@ -10,92 +10,46 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $data = json_decode(file_get_contents("php://input"));
 
-if (!empty($data->phone && $data->otp)) {
-  
-    $message = "Your 'Expert Internet' app verification code is: ".$data->otp;
-    //SMS service
-    $url = "http://66.45.237.70/api.php";
-    $data= array(
-    'username'=>"01835559161",
-    'password'=>"saiful@#21490",
-    'number'=>$data->phone,
-    'message'=>$message
-    );
+function sms_send($number, $message)
+{
+    include '../config/url_config.php';
+    $data = [
+        "api_key" => $sms_api_key,
+        "senderid" => $sms_api_senderid,
+        "number" => $number,
+        "message" => $message
+    ];
 
-    $ch = curl_init(); // Initialize cURL
-    curl_setopt($ch, CURLOPT_URL,$url);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $sms_api_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $smsresult = curl_exec($ch);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
 
-    $p = explode("|",$smsresult);
-    $sendstatus = $p[0];
 
-    switch ($sendstatus) {
-        case '1000':
-            echo json_encode(array(
-                "status" => 1000,
-                "message" => "Invalid user or Password"
-            ));
-            break;
+if (!empty($data->phone && $data->otp)) {
 
-        case '1002':
-            echo json_encode(array(
-                "status" => 1002,
-                "message" => "Empty Number"
-            ));
-            break;
+    $message = "Your 'EXPERT INTERNET' service app verification code is: " . $data->otp;
 
-        case '1003':
-            echo json_encode(array(
-                "status" => 1003,
-                "message" => "Invalid message or empty message"
-            ));
-            break;
+    $sms_send_response = json_decode(sms_send($data->phone, $message), true);
 
-        case '1004':
-            echo json_encode(array(
-                "status" => 1004,
-                "message" => "Invalid number"
-            ));
-            break;
-
-        case '1005':
-            echo json_encode(array(
-                "status" => 1005,
-                "message" => "All Number is Invalid"
-            ));
-            break;
-
-        case '1006':
-            echo json_encode(array(
-                "status" => 1006,
-                "message" => "Insufficient Balance"
-            ));
-            break;
-
-        case '1009':
-            echo json_encode(array(
-                "status" => 1009,
-                "message" => "Inactive Account"
-            ));
-            break;
-
-        case '1010':
-            echo json_encode(array(
-                "status" => 1010,
-                "message" => "Max number limit exceeded"
-            ));
-            break;
-
-        case '1101':
-            echo json_encode(array(
-                "status" => 1101,
-                "message" => "SMS sent successfylly"
-            ));
-            break;
+    if ($sms_send_response['response_code'] == 202) {
+        echo json_encode(array(
+            "status" => 200,
+            "message" => "SMS sent successfully"
+        ));
+    } else {
+        echo json_encode(array(
+            "status" => 201,
+            "message" => "[" . $sms_send_response['response_code'] . "]" .
+                ", " . $sms_send_response['error_message']
+        ));
     }
-
     
 } else {
     echo json_encode(array(

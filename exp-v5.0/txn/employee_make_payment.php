@@ -33,7 +33,7 @@ use \Firebase\JWT\JWT;
 $data = json_decode(file_get_contents("php://input"));
 
 if (
-    !empty($data->jwt) && !empty($data->client_id) && !empty($data->name) && !empty($data->admin_id) && 
+    !empty($data->jwt) && !empty($data->client_id) && !empty($data->name) && !empty($data->emp_id) && 
     !empty($data->txn_type) && !empty($data->method) &&
     !empty($data->details) && !empty($data->amount)
 ) {
@@ -47,7 +47,7 @@ if (
         $txn = new Txn($db);
 
         $txn->client_id = $data->client_id;
-        $txn->admin_id = $data->admin_id;
+        $txn->emp_id = $data->emp_id;
         $txn->name = $data->name;
         $txn->type = $data->txn_type;
         $txn->method = $data->method;
@@ -55,7 +55,7 @@ if (
         $txn->amount = $data->amount;
         $txn->date = date("Y-m-d H:i:s");
 
-        if ($txn->admin_make_payment()) {
+        if ($txn->employee_make_payment()) {
             //if success
             echo json_encode(array(
                 "status" => 200,

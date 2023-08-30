@@ -44,7 +44,7 @@ if (isset($_POST['add'])) {
             $txn = new Txn($db);
 
             $txn->month = $month;
-            $txn->admin_id = $_SESSION['admin_id'];
+            $txn->emp_id = $_SESSION['emp_id'];
             $txn->amount = $amount;
             $txn->method = $method;
             $txn->date = date("Y-m-d H:i:s");
@@ -54,7 +54,7 @@ if (isset($_POST['add'])) {
 
                 $message = '<div class="alert alert-success" role="alert">Bill submited successfully</div>';
                 
-                unset($_SESSION['admin_id']);
+                unset($_SESSION['emp_id']);
                 unset($_SESSION['jwt']);
                 
                 

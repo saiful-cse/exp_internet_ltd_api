@@ -12,8 +12,8 @@ class Sms
     /*
      * Objects properties
      */
-    public  $numbers, $msg_id, $client_id, $msg_body,
-        $area, $created_at, $current_date;
+    public  $numbers, $msg_id, $client_id, $msg_body, $tag,
+        $area, $last_id, $created_at, $current_date;
 
     /*
      * Constructor with $db as database connection
@@ -105,6 +105,29 @@ class Sms
         $stmt->bindParam(":msg_body", $this->msg_body);
         $stmt->bindParam(":client_id", $this->client_id);
         $stmt->bindParam(":created_at", $this->created_at);
+
+        //execute query
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function areawise_sms_store()
+    {
+        //query
+        $query = "INSERT INTO messages 
+        SET msg_body = :msg_body, client_id = '0', tag = :tag, created_at = :created_at";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //Bind value
+        $stmt->bindParam(":msg_body", $this->msg_body);
+        $stmt->bindParam(":created_at", $this->created_at);
+        $stmt->bindParam(":tag", $this->area);
+        
 
         //execute query
         if ($stmt->execute()) {

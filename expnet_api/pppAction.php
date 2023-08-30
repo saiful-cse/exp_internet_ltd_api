@@ -1,5 +1,4 @@
 <?php
-include_once './config/router_config.php';
 // required headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -13,10 +12,11 @@ use PEAR2\Net\RouterOS;
 
 require_once './PEAR2/Autoload.php';
 
-$data = json_decode(file_get_contents("php://input"));
-
-$ppp_name = $data->ppp_name;
-$action_type = $data->action_type;
+$ppp_name = $_POST['ppp_name'];
+$action_type = $_POST['action_type'];
+$login_ip = $_POST['login_ip'];
+$username = $_POST['username'];
+$password = $_POST['password'];
 
 if (!empty($ppp_name) && !empty($action_type)) {
 

@@ -1,5 +1,4 @@
 <?php
-include_once './config/router_config.php';
 // required headers
 date_default_timezone_set("Asia/Dhaka");
 header("Access-Control-Allow-Origin: *");
@@ -13,13 +12,11 @@ use PEAR2\Net\RouterOS;
 
 require_once './PEAR2/Autoload.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+$data = json_decode(file_get_contents("php://input"));
 
-$pppName = array();
-
-for($i = 0; $i < count($data); $i++){
-    $pppName[] = $data[$i];
-}
+$login_ip = $data->login_ip;
+$username = $data->username;
+$password = $data->password;
 
 try {
 
@@ -33,9 +30,9 @@ try {
     $util->setMenu('/ppp/active');
     $util2->setMenu('/ppp/secret');
 
-    for ($i = 0; $i < count($pppName); $i++) {
-        $util->remove(RouterOS\Query::where('name', $pppName[$i]));
-        $util2->disable(RouterOS\Query::where('name', $pppName[$i]));
+    foreach ($data->ppp_names as $pppName) {
+        $util->remove(RouterOS\Query::where('name', $pppName));
+        $util2->disable(RouterOS\Query::where('name', $pppName));
     }
 
     echo json_encode(array(
