@@ -53,6 +53,7 @@ function expired_client_sms_send_disconnect()
 {
 	include_once '../config/database.php';
 	include_once  '../objects/sms.php';
+	include_once  '../objects/device.php';
 	$database = new Database();
 	$db = $database->getConnection();
 	$sms = new Sms($db);
@@ -71,8 +72,35 @@ function expired_client_sms_send_disconnect()
 		}
 		$numbers =  implode(', ', $num);
 
+		$device = new Device($db);
+		$stmt = $device->get_device_url();
+
+		//retrieve the table contents
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+			$url = $row['api_base'] . "pppListDisable.php";
+			$login_ip = $row['login_ip'];
+			$username = $row['username'];
+			$password = $row['password'];
+		}
+
+		$postdata = array(
+			'login_ip' => $login_ip,
+			'username' => $username,
+			'password' => $password,
+			'ppp_names' => $pppName
+		);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		$result = curl_exec($ch);
+		curl_close($ch);
+
 		//Disable and Remove form mikrotik server
-		$mikrotik_response = json_decode(pppListDisable($pppName), true);
+		$mikrotik_response = json_decode($result, true);
 
 		if ($mikrotik_response['status'] == 200) {
 
@@ -93,7 +121,7 @@ function expired_client_sms_send_disconnect()
 			}
 		} else {
 
-			$sms_expired_client_disconnect_result = $mikrotik_response['status'].", ".$mikrotik_response['message'];
+			$sms_expired_client_disconnect_result = $mikrotik_response['status'] . ", " . $mikrotik_response['message'];
 		}
 	} else {
 
@@ -121,19 +149,6 @@ function sms_send($numbers, $message)
 	$response = curl_exec($ch);
 	curl_close($ch);
 	return $response;
-}
-
-function pppListDisable($pppName)
-{
-    $url = 'http://103.134.39.218/expnet_api/pppListDisable.php';
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pppName));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    $result = curl_exec($ch);
-    curl_close($ch);
-    return $result;
 }
 
 if ("09:00" <= date("H:i") && "18:00" >= date("H:i")) {

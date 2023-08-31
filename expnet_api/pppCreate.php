@@ -23,6 +23,7 @@ $login_ip = $data->login_ip;
 $username = $data->username;
 $password = $data->password;
 
+
 if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) {
 
     try {
@@ -69,7 +70,7 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
         echo json_encode(
             array(
                 "status" => 500,
-                "message" => "Unable to connect mikrotik server, ".$th->getMessage()
+                "message" => "500 Unable to connect mikrotik server, ".$th->getMessage()
             )
         );
     }
