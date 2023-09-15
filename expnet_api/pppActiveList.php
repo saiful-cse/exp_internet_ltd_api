@@ -10,9 +10,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 //RoterOS
 use PEAR2\Net\RouterOS;
 
-$login_ip = $_POST['login_ip'];;
-$username = $_POST['username'];
-$password = $_POST['password'];
+// $login_ip = $_POST['login_ip'];
+// $username = $_POST['username'];
+// $password = $_POST['password'];
+
+$login_ip = "103.134.39.234";
+$username = "api";
+$password = "Saiful@#21490";
 
 require_once './PEAR2/Autoload.php';
 

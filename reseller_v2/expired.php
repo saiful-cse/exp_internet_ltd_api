@@ -14,7 +14,7 @@ if (!isset($_SESSION['loged']) && $_SESSION['login_session_time'] > time() && !i
 }
 
 $zone = $error = "";
-if ($_SESSION['admin_id'] == '6606') {
+if ($_SESSION['employee_id'] == '6606') {
   $zone = 'osman';
 }
 
@@ -22,7 +22,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 $client = new Client($db);
-$client_list = $client->registered_client($zone);
+$client_list = $client->expired_client_list($zone);
 ?>
 
 
@@ -42,7 +42,6 @@ $client_list = $client->registered_client($zone);
   <title>EXPERT INTERNET</title>
   <!-- add icon link -->
   <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
-
 </head>
 
 <body>
@@ -53,7 +52,8 @@ $client_list = $client->registered_client($zone);
       <div class="col-sm"></div>
       <div class="col-sm">
         <div class="header_card">
-          <h6 class="text-center"><?php echo "Loged by " . $_SESSION['admin_id']; ?></h6>
+          <h6 class="text-center"><?php echo "Loged by " . $_SESSION['employee_id']; ?></h6>
+          <p style="color: white;"></p>
           <p class="client_no"><?php echo "Total Client: " . $client->count_total_client($zone); ?></p>
           <div>
             <p class="client_no" style="display: inline;"><?php echo "Expired Client: " . $client->count_total_expired_client($zone); ?></p>
@@ -63,8 +63,8 @@ $client_list = $client->registered_client($zone);
           </div>
           <hr>
           <nav class="nav justify-content-center">
-            <a class="nav-link" href="expired.php">Expired</a>
-            <a class="nav-link active" href="registered.php">Registered</a>
+            <a class="nav-link active" href="expired.php">Expired</a>
+            <a class="nav-link " href="registered.php">Registered</a>
             
           </nav>
         </div>
@@ -80,7 +80,7 @@ $client_list = $client->registered_client($zone);
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>"><?php echo $item['name'] ?></a> </h5>
+                <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>"><?php echo $item['name'] ?></a> </h5>
 
               <div>
                 <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>
@@ -99,17 +99,7 @@ $client_list = $client->registered_client($zone);
               <div class="bottom_card">
                 <p class="card_date"><i class="fa fa-calendar" aria-hidden="true"></i>
                   <?php echo $item['expire_date'] ?></p>
-
-                  <?php
-                    $current_date = new DateTime(date('Y-m-d H:i:s'));
-                    $expiredate = new DateTime($item['expire_date']);
-
-                    if ($expiredate > $current_date) { ?>
-                        <p class="card_payment">PAID</p>
-
-                    <?php  } else { ?>
-                      <p class="card_payment"><a target="_blank" href="https://expert-internet.net/paybill/info.php?mobile_no=<?php echo $item['phone'] ?>">PayBill</a></p>
-                    <?php  } ?>
+                <p class="card_payment"><a target="_blank" href="https://expert-internet.net/paybill/info.php?mobile_no=<?php echo $item['phone'] ?>">PayBill</a></p>
                 <p class="card_time"><i class="fa fa-clock-o" aria-hidden="true"></i><?php echo " " . $item['take_time'] ?></p>
               </div>
             </div>

@@ -13,7 +13,7 @@ class Admin
     /*
      * Objects properties
      */
-    public $admin_id, $name, $pin, $created_at, $details;
+    public $employee_id, $name, $pin, $created_at, $details;
     /*
      * Constructor with $db as database connection
      */
@@ -26,13 +26,13 @@ class Admin
     function login()
     {
         //query
-        $query = "SELECT admin_id, pin FROM users 
-        WHERE admin_id = :admin_id AND pin = :pin";
+        $query = "SELECT employee_id, pin FROM employees 
+        WHERE employee_id = :employee_id AND pin = :pin";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         
-        $stmt->bindParam(":admin_id", $this->admin_id);
+        $stmt->bindParam(":employee_id", $this->employee_id);
         $stmt->bindParam(":pin", $this->pin);
 
         $stmt->execute();

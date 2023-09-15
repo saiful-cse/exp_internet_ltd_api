@@ -44,14 +44,14 @@ if (
 
             <div class="header">
                 <div class="d-flex justify-content-center mt-2">
-                    <!-- <div class="site_logo">
-                        <img src="../img/explogo.png" alt="">
-                    </div>
-                    <div class="site_info">
-                        <h2>Expert Internet Ltd.</h2>
-                        <p>A Qualified Internet Service Team</p>
-                    </div> -->
-                    <img style="width: 350px; height: 50px;" src="img/lo.png" alt="">
+                    <!--<div class="site_logo">-->
+                    <!--    <img src="../img/explogo.png" alt="">-->
+                    <!--</div>-->
+                    <!--<div class="site_info">-->
+                    <!--    <h2>Expert Internet Ltd.</h2>-->
+                    <!--    <p>A Qualified Internet Service Team</p>-->
+                    <!--</div>-->
+                    <img style="width: 350px; height: 50px;" src="../img/lo.png" alt="">
                 </div>
             </div>
             <hr class="header_separator">

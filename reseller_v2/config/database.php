@@ -9,8 +9,8 @@ class Database{
     // private $conn;
     
     private $host = "localhost";
-    private $db_name = "u650347749_expert_int";
-    private $username = "u650347749_saif_ullah";
+    private $db_name = "u650347749_expert";
+    private $username = "u650347749_saif";
     private $password = "Saiful@#21490";
     public $conn;
 

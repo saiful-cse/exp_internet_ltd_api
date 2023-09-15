@@ -47,7 +47,7 @@ class Client
             $this->conn->beginTransaction();
             $query = "INSERT INTO txn_list 
               SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
-              type = :type, details = :details, method = :method, admin_id = :admin_id";
+              type = :type, details = :details, method = :method, emp_id = :emp_id";
 
             $query2 = "UPDATE clients SET expire_date = DATE_ADD(expire_date, INTERVAL 1 MONTH), sms = 'unsent'
                WHERE id = '$this->client_id'";
@@ -64,7 +64,7 @@ class Client
             $stmt->bindParam(":type", $this->type);
             $stmt->bindParam(":details", $this->details);
             $stmt->bindParam(":method", $this->method);
-            $stmt->bindParam(":admin_id", $this->admin_id);
+            $stmt->bindParam(":emp_id", $this->emp_id);
 
             $stmt->execute();
             $stmt2->execute();

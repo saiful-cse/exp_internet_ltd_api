@@ -2,16 +2,16 @@
 session_start();
 date_default_timezone_set("Asia/Dhaka");
 
-$error = $admin_id = $admin_pin = "";
+$error = $employee_id = $employee_id = "";
 
 if (isset($_POST['login'])) {
-  $admin_id = $_POST['admin_id'];
+  $employee_id = $_POST['employee_id'];
   $admin_pin = $_POST['admin_pin'];
 
-  if (!empty($admin_id && !empty($pin))) {
-    $error = '<div class="alert alert-danger">Enter Correct Admin ID</div>';
-  } else if (strlen($admin_id) != 4) {
-    $error = '<div class="alert alert-danger">Enter Correct Admin ID</div>';
+  if (!empty($employee_id && !empty($pin))) {
+    $error = '<div class="alert alert-danger">Enter Correct Employee ID</div>';
+  } else if (strlen($employee_id) != 4) {
+    $error = '<div class="alert alert-danger">Enter Correct Employee ID</div>';
   } else if (empty($admin_pin)) {
     $error = '<div class="alert alert-danger">Enter Correct Pin</div>';
   } else if (strlen($admin_pin) != 4) {
@@ -25,9 +25,9 @@ if (isset($_POST['login'])) {
     $db = $database->getConnection();
 
     $admin = new Admin($db);
-    $admin->admin_id = $admin_id;
+    $admin->employee_id = $employee_id;
     $admin->pin = $admin_pin;
-    $admin->details = $admin_id . " admin login successfully";
+    $admin->details = $employee_id . " admin login successfully";
 
     $stmt =  $admin->login();
     $num = $stmt->rowCount();
@@ -38,7 +38,7 @@ if (isset($_POST['login'])) {
       //Session time is stored in a session variable
       $_SESSION['login_session_time'] = time() + 1200;
       $_SESSION['loged'] = 'loged';
-      $_SESSION['admin_id'] = $admin_id;
+      $_SESSION['employee_id'] = $employee_id;
       header('location: expired.php');
     } else {
       $error = '<div class="alert alert-danger">Wrong ID or Pin</div>';
@@ -78,7 +78,7 @@ if (isset($_POST['login'])) {
             <div class="card-body">
               <form action="index.php" method="post">
                 <div class="input-group mb-3">
-                  <input type="tel" placeholder="ID" name="admin_id" value="<?php echo $admin_id ?>" class="form-control" maxlength="4" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                  <input type="tel" placeholder="ID" name="employee_id" value="<?php echo $employee_id ?>" class="form-control" maxlength="4" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                   <input type="tel" placeholder="Pin" name="admin_pin" value="<?php echo $admin_pin ?>" class="form-control" maxlength="4" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                 </div>
                 <center>

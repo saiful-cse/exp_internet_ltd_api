@@ -19,6 +19,41 @@ unset($_SESSION['token']);
 unset($_SESSION['paymentID']);
 unset($_SESSION['expire_date']);
 
+function ppp_enable()
+{
+    include_once './config/database.php';
+    include_once  './objects/device.php';
+
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $device = new Device($db);
+    $stmt = $device->get_device_url();
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        $url = $row['api_base'] . "pppAction.php";
+        $login_ip = $row['login_ip'];
+        $username = $row['username'];
+        $password = $row['password'];
+    }
+    $postdata = array(
+        'ppp_name' => $_SESSION['ppp_name'],
+        'action_type' => 'enable',
+        'login_ip' => $login_ip,
+        'username' => $username,
+        'password' => $password
+    );
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
+    curl_exec($ch);
+    curl_close($ch);
+}
+
 ?>
 
 
@@ -54,25 +89,9 @@ unset($_SESSION['expire_date']);
                 <?php
 
                 if ($status === 'success') {
-
-                    $url = 'http://103.134.39.238/pppAction.php';
-                    $data = array(
-                        'ppp_name' => $_SESSION['ppp_name'],
-                        'action_type' => 'enable'
-                    );
-                    $postdata = json_encode($data);
-
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-                    $result = curl_exec($ch);
-                    curl_close($ch);
-
+                    ppp_enable();
                     unset($_SESSION['ppp_name']);
                 ?>
-
                     <div class="card messageCard">
                         <div class="card-body">
                             <img src="img/success.png" alt="" />
@@ -136,7 +155,7 @@ unset($_SESSION['expire_date']);
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
-    
+
 </body>
 
 </html>
