@@ -23,7 +23,11 @@ class Client
     {
 
         //query
-        $query = "SELECT * FROM clients WHERE registered = 1 AND zone = '$zone' ORDER BY reg_date DESC";
+        $query = "SELECT clients.*, areas.area_name as area
+        FROM clients
+        INNER JOIN areas ON clients.area_id = areas.id
+        WHERE registered = '1' AND zone = '$zone'
+        ORDER BY reg_date DESC";
 
         //query execute
         $stmt = $this->conn->prepare($query);
@@ -38,8 +42,12 @@ class Client
 
         $current_date =  date("Y-m-d H:i:s");
         //query
-        $query = "SELECT * FROM clients WHERE expire_date <= '$current_date' AND registered = '1' AND zone = '$zone' ORDER BY reg_date DESC";
-
+        $query = "SELECT clients.*, areas.area_name as area
+        FROM clients
+        INNER JOIN areas ON clients.area_id = areas.id
+        WHERE expire_date <= '$current_date' AND registered = '1' AND zone = '$zone'
+        ORDER BY reg_date DESC";
+        
         //query execute
         $stmt = $this->conn->prepare($query);
 

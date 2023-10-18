@@ -65,7 +65,7 @@ function ppp_enable()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet
+        EXPERT INTERNET SOLUTION
     </title>
     <!-- add icon link -->
     <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">

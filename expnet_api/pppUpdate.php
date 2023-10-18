@@ -31,33 +31,18 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
             $client = new RouterOS\Client($login_ip, $username, $password)
         );
 
-        $util->setMenu('/ppp/secret');
-
-        //Assign Profile based on selected ppp_pacakge
-        switch ($pkg_id) {
-            case '101':
-                $profile = 'Standard';
-                break;
-
-            case '102':
-                $profile = 'Basic';
-                break;
-
-            case '103':
-                $profile = 'Professional';
-                break;
-
-            default:
-                $profile = 'Standard';
-                break;
+        if($pkg_id === 'Govt5'){
+            $pkg_id = 'Basic';
         }
+        
+        $util->setMenu('/ppp/secret');
 
         if ($util->set(
             $util->find($ppp_name),
             array(
                 'name' => $ppp_new_name,
                 'password' => $ppp_pass,
-                'profile' => $profile,
+                'profile' => $pkg_id,
                 'disabled' => ($mode == 'Disable') ? "true" : "false",
                 'service' => 'pppoe'
             )

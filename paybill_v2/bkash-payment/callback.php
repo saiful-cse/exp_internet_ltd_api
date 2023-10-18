@@ -25,12 +25,12 @@ if (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet Ltd.
+        EXPERT INTERNET SOLUTION
     </title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
     </script>
-
+    <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
     <!-- bootstrap linked-->
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -44,13 +44,6 @@ if (
 
             <div class="header">
                 <div class="d-flex justify-content-center mt-2">
-                    <!--<div class="site_logo">-->
-                    <!--    <img src="../img/explogo.png" alt="">-->
-                    <!--</div>-->
-                    <!--<div class="site_info">-->
-                    <!--    <h2>Expert Internet Ltd.</h2>-->
-                    <!--    <p>A Qualified Internet Service Team</p>-->
-                    <!--</div>-->
                     <img style="width: 350px; height: 50px;" src="../img/lo.png" alt="">
                 </div>
             </div>
@@ -107,7 +100,7 @@ if (
 
                         <div id='loader' style='display: none; text-align: center;'>
                             <img src='../img/load.gif' width="100" height="100">
-                            <p style="text-align: center;">Please wait....Your payment is being process</p>
+                            <p style="text-align: center, font-family: 'Bangla', sans-serif; font-size: 17px;">আপনার পেমেন্ট প্রসেস করা হচ্ছে, একটু অপেক্ষা করুন...</p>
                         </div>
 
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
