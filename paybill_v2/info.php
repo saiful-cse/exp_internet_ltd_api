@@ -87,7 +87,8 @@ $details = $client->client_details();
                     $_SESSION['name'] = $details['name'];
                     $_SESSION['client_id'] = $details['id'];
                     $_SESSION['ppp_name'] = $details['ppp_name'];
-
+                    $_SESSION['zone'] = $details['zone'];
+                    
 
                     if ($details['mode'] == 'Enable' && $details['registered'] == 1) {
 

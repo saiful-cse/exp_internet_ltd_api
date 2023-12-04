@@ -13,6 +13,7 @@ if (!isset($_GET['status'])) {
     $status = $_GET['status'];
 }
 
+unset($_SESSION['zone']);
 unset($_SESSION['client_id']);
 unset($_SESSION['amount']);
 unset($_SESSION['token']);

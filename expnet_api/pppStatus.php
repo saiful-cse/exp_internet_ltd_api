@@ -12,10 +12,15 @@ use PEAR2\Net\RouterOS;
 
 require_once './PEAR2/Autoload.php';
 
+// $ppp_name = $_POST['ppp_name'];
+// $login_ip = $_POST['login_ip'];
+// $username = $_POST['username'];
+// $password = $_POST['password'];
+
 $ppp_name = $_POST['ppp_name'];
-$login_ip = $_POST['login_ip'];
-$username = $_POST['username'];
-$password = $_POST['password'];
+$login_ip = "103.134.39.234";
+$username = "api";
+$password = "Saiful@#21490";
 
 if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($password)) {
 

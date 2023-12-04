@@ -14,7 +14,7 @@ class Client
      */
     public $id, $registered, $mode, $payment_method, $name, $document, $phone, $take_time, $area, $area_id, $zone,
         $ppp_name, $ppp_pass,
-        $pkg_id, $sms,
+        $pkg_id, $sms, $onu_mac,
         $reg_date, $expire_date, $disable_date, $ppp_name_list;
 
     public $search_key;
@@ -196,6 +196,20 @@ class Client
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":mode", $this->mode);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    function onuMacUpdate()
+    {
+        $query = "UPDATE clients SET
+        onu_mac = :onu_mac WHERE id = $this->id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":onu_mac", $this->onu_mac);
 
         if ($stmt->execute()) {
             return true;

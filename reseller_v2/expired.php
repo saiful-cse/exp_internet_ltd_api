@@ -15,7 +15,9 @@ if (!isset($_SESSION['loged']) && $_SESSION['login_session_time'] > time() && !i
 
 $zone = $error = "";
 if ($_SESSION['employee_id'] == '6606') {
-  $zone = 'osman';
+  $zone = 'OsmanPt';
+}else if($_SESSION['employee_id'] == '6607'){
+  $zone = 'OsmanMp';
 }
 
 $database = new Database();
@@ -64,8 +66,8 @@ $client_list = $client->expired_client_list($zone);
           <hr>
           <nav class="nav justify-content-center">
             <a class="nav-link active" href="expired.php">Expired</a>
-            <a class="nav-link " href="registered.php">Registered</a>
-            
+            <a class="nav-link" href="registered.php">Registered</a>
+            <a class="nav-link" href="transaction.php">Transaction</a>
           </nav>
         </div>
       </div>

@@ -34,6 +34,10 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
         if($pkg_id === 'Govt5'){
             $pkg_id = 'Basic';
         }
+
+        if($pkg_id === 'Professional'){
+            $pkg_id = 'Standard';
+        }
         
         $util->setMenu('/ppp/secret');
 

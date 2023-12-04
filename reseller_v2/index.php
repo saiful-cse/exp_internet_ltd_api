@@ -2,7 +2,7 @@
 session_start();
 date_default_timezone_set("Asia/Dhaka");
 
-$error = $employee_id = $employee_id = "";
+$error = $employee_id = $employee_id = $admin_pin = "";
 
 if (isset($_POST['login'])) {
   $employee_id = $_POST['employee_id'];

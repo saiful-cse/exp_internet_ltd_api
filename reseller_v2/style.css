@@ -4,7 +4,7 @@ body {
 
 h5 {
     margin: 0px;
-    color: #097969;
+    color: #EF6623;
 }
 
 .card-title {
@@ -30,6 +30,7 @@ h5 {
 .card-body {
     padding: 10px !important;
 }
+
 
 p {
     margin: 0px !important;
@@ -73,7 +74,7 @@ p {
 
 .card_date {
     display: inline;
-    color: #097969;
+    color: #EF6623;
     font-weight: bold;
     font-size: 13px;
 }
@@ -82,18 +83,18 @@ p {
     display: inline;
     margin-left: 10px !important;
     font-size: 14px;
-    color: #097969;
+    color: #EF6623;
 }
 
 .card_time {
     display: inline;
     float: right;
     font-size: 14px;
-    color: #097969;
+    color: #EF6623;
 }
 
 .header_card {
-    background: #097969;
+    background: #EF6623;
     ;
 }
 

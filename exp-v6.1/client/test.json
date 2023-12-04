@@ -1,0 +1,21 @@
+{
+    "status":200,
+    "olt_port": "8084",
+    "onu_id":"",
+    "onu_status":"",
+    "onu_mac":"",
+    "description":"",
+    "distance":"",
+    "last_reg_time":"",
+    "last_dreg_time":"",
+    "dreg_reason":"",
+    "uptime":""
+}
+
+
+
+
+{
+    "status":200,
+    "power":""
+}

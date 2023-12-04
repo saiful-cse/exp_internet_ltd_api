@@ -7,10 +7,9 @@ class Client
     /*
      * Database connection
      */
-    private $conn;
+    public $conn, $zone, $first_date, $last_date;
 
     
-
     /*
      * Constructor with $db as database connection
      */
@@ -35,6 +34,42 @@ class Client
         //query execute
         $stmt->execute();
         return $stmt;
+    }
+
+    function transaction()
+    {
+
+        //query
+        $query = "SELECT * FROM txn_list WHERE zone = :zone AND date >= :first_date AND date <= :last_date ORDER BY txn_id DESC";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //Bind Value
+        $stmt->bindParam(":zone", $this->zone);
+        $stmt->bindParam(":first_date", $this->first_date);
+        $stmt->bindParam(":last_date", $this->last_date);
+
+        //query execute
+        $stmt->execute();
+        return $stmt;
+    }
+    
+    function totalPayment()
+    {
+        $query = "SELECT SUM(credit) FROM txn_list WHERE zone = :zone AND date >= :first_date AND date <= :last_date";
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //Bind Value
+        $stmt->bindParam(":zone", $this->zone);
+        $stmt->bindParam(":first_date", $this->first_date);
+        $stmt->bindParam(":last_date", $this->last_date);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchColumn();
+        }
+        return false;
     }
 
     function expired_client_list($zone)
