@@ -82,7 +82,7 @@ $client_list = $client->expired_client_list($zone);
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>"><?php echo $item['name'] ?></a> </h5>
+                <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>&onu_mac=<?php echo $item['onu_mac'] ?>"><?php echo $item['name'] ?></a> </h5>
 
               <div>
                 <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>

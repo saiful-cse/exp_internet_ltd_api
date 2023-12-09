@@ -1,39 +1,48 @@
 <?php
-include_once './config/database.php';
-include_once  './objects/device.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$onu_mac = $olt_port = $onu_id = $onu_status = $drescrip = $distance = $last_login = $last_logout = $dreg_reason = $uptime = $power = "";
 
-$device = new Device($db);
-$stmt = $device->get_device_url();
+if ($_GET['router_mac'] != '---') {
+    $olt_url = "https://kgnet.xyz/business_api/apivsol.php?auth=Djt875hgKikhSf77fsjk98&action=macstatus&mac=" . $_GET['router_mac'];
+    $ch = curl_init($olt_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
+    $result = curl_exec($ch);
+    curl_close($ch);
+    $data = json_decode($result, true);
 
+    if($data['status'] == 404){
+        $olt_port = $onu_id = $onu_status = $drescrip = $distance = $last_login = $last_logout = $dreg_reason = $uptime = $power = "";
+        $onu_mac = "Not Updated in database.";
+    }
 
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-    $url = $row['api_base'] . "pppStatus.php";
-    $login_ip = $row['login_ip'];
-    $username = $row['username'];
-    $password = $row['password'];
+    $onu_mac = $data['onu_mac'];
+    $olt_port = $data['olt_port'];
+    $onu_id = $data['onu_id'];
+    $onu_status = $data['onu_status'];
+    $drescrip = $data['description'];
+    $distance = $data['distance'];
+    $last_login = $data['last_reg_time'];
+    $last_logout = $data['last_dreg_time'];
+    $dreg_reason = $data['dreg_reason'];
+    $uptime = $data['uptime'];
+    $power = $data['rx_power'];
 }
-$postdata = array(
-    'ppp_name' => $_GET['ppp_name'],
-    'login_ip' => $login_ip,
-    'username' => $username,
-    'password' => $password
-);
+//  else if ($_GET['onu_mac'] != '---') {
 
 
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
-$result = curl_exec($ch);
-curl_close($ch);
+//     $olt_url = "https://kgnet.xyz/business_api/apivsol.php?auth=Djt875hgKikhSf77fsjk98&action=macstatus&mac=" . $_GET['router_mac'];
+//     $ch = curl_init($olt_url);
+//     curl_setopt($ch, CURLOPT_POST, 1);
+//     curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
+//     $result = curl_exec($ch);
+//     curl_close($ch);
 
-$data = json_decode($result, true);
-
+//     $data = json_decode($result, true);
+// }
 
 ?>
 
@@ -66,8 +75,8 @@ $data = json_decode($result, true);
 
                     <nav class="nav justify-content-center">
 
-                        <a class="nav-link active" href="#">PPPoE Details</a>
-                        <a class="nav-link" href="onu_details.php?router_mac=<?php echo $data['router_mac'];?>&onu_mac=<?php echo $_GET['onu_mac'];?>&name=<?php echo $_GET['name'];?>">ONU Details</a>
+                        <a class="nav-link active" href="#">ONU Details</a>
+
                     </nav>
                 </div>
             </div>
@@ -90,50 +99,50 @@ $data = json_decode($result, true);
                                         <td><?php echo $_GET['name']; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>PPP Username</td>
-                                        <td><?php echo $_GET['ppp_name']; ?></td>
+                                        <td>ONU MAC</td>
+                                        <td><?php echo $onu_mac ?></td>
                                     </tr>
                                     <tr>
-                                        <td>PPP Status</td>
-                                        <?php echo ($data['ppp_status'] == 'Enable') ? '<td style="color: green;">Enable</td>' : '<td style="color: red;">Disable</td>' ?>
-
+                                        <td>OLT Port</td>
+                                        <td><?php echo $olt_port ?></td>
                                     </tr>
                                     <tr>
-                                        <td>PPP Activiy</td>
-                                        <?php echo ($data['ppp_activity'] == 'Online') ? '<td style="color: green;">Online</td>' : '<td style="color: red;">Offline</td>' ?>
+                                        <td>ONU ID</td>
+                                        <td><?php echo $onu_id ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Router MAC</td>
-                                        <td><?php echo $data['router_mac']; ?></td>
+                                        <td>ONU Status</td>
+                                        <?php echo ($onu_status == 'Online') ? '<td style="color: green;">Online</td>' : '<td style="color: red;">Offline</td>' ?>
                                     </tr>
                                     <tr>
-                                        <td>Last Log in</td>
-                                        <td><?php echo $data['last_log_in']; ?></td>
+                                        <td>Description</td>
+                                        <td><?php echo $drescrip; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Last Log out</td>
-                                        <td><?php echo $data['last_loged_out']; ?></td>
+                                        <td>Distance</td>
+                                        <td><?php echo $distance; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Login Time</td>
+                                        <td><?php echo $last_login ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Logout Time</td>
+                                        <td><?php echo $last_logout ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dereg. Reason</td>
+                                        <td><?php echo $dreg_reason ?></td>
                                     </tr>
                                     <tr>
                                         <td>Uptime</td>
-                                        <td><?php echo $data['uptime']; ?></td>
+                                        <td><?php echo $uptime ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Download</td>
-                                        <td><?php echo $data['download']; ?></td>
+                                        <td>Power</td>
+                                        <td><?php echo $power ?></td>
                                     </tr>
-                                    <tr>
-                                        <td>Upload</td>
-                                        <td><?php echo $data['upload']; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Connected IP</td>
-                                        <?php if ($data['ppp_activity'] == 'Online') { ?>
-                                            <td><?php echo $data['connected_ip']; ?> <a target="_blank" href="<?php echo "http://" . $data['connected_ip'] . ":8080" ?>"> Router Login</a></td>
-                                        <?php   } else {
-                                            echo "<td>" . $data['connected_ip'] . "</td>";
-                                        } ?>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
