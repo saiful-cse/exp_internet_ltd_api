@@ -30,7 +30,7 @@ function expipering_3day_client_sms_send()
 		}
 		$numbers =  implode(', ', $num);
 
-		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি সচল রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/\n01975-559161 (bKash Payment)";
+		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
 		//Set the value
 		$sms->numbers = $numbers;
@@ -104,7 +104,7 @@ function expired_client_sms_send_disconnect()
 
 		if ($mikrotik_response['status'] == 200) {
 
-			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, পুনরায় চালু করতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill\n01975-559161(bKash Payment)";
+			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
 			//Set the value
 			$sms->numbers = $numbers;
@@ -128,6 +128,8 @@ function expired_client_sms_send_disconnect()
 		$sms_expired_client_disconnect_result = "404, Not found expired clients in this time.";
 	}
 }
+
+
 
 function sms_send($numbers, $message)
 {

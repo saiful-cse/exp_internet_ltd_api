@@ -16,7 +16,7 @@ if (!isset($_SESSION['loged']) && $_SESSION['login_session_time'] > time() && !i
 $zone = $error = "";
 if ($_SESSION['employee_id'] == '6606') {
   $zone = 'OsmanPt';
-}else if($_SESSION['employee_id'] == '6607'){
+} else if ($_SESSION['employee_id'] == '6607') {
   $zone = 'OsmanMp';
 }
 
@@ -82,8 +82,11 @@ $client_list = $client->expired_client_list($zone);
         <div class="col-sm">
           <div class="card">
             <div class="card-body">
+              <?php if ($item['mode'] == "Enable") { ?>
                 <h5 class="card-title"><a href="ppp_details.php?name=<?php echo $item['name'] ?>&ppp_name=<?php echo $item['ppp_name'] ?>&onu_mac=<?php echo $item['onu_mac'] ?>"><?php echo $item['name'] ?></a> </h5>
-
+              <?php } else { ?>
+                <h5 class="card-title"><?php echo $item['name'] ?></h5>
+              <?php } ?>
               <div>
                 <p class="card_phone"><?php echo "Phone: " . $item['phone'] ?></p>
                 <?php if ($item['mode'] == "Disable") { ?>
