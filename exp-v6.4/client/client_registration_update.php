@@ -110,7 +110,7 @@ if (
 
             if ($mikrotik_response['status'] == 200) {
 
-                $file_name = zuniqid() . '.jpeg';
+                $file_name = $data->ppp_name.'-'.$data->id . '.jpeg';
                 $client->document =  $file_name;
 
                 if ($client->client_details_update() && file_put_contents("../documents/" . $file_name, base64_decode($data->document))) {
