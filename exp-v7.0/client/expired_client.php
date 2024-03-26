@@ -38,6 +38,7 @@ if (!empty($data->jwt)) {
         $client = new Client($db);
 
         $client->current_date = date("Y-m-d H:i:s");
+        $client->zone = $data->zone;
 
         $stmt = $client->expired_client();
         $num = $stmt->rowCount();

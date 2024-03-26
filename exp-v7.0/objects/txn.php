@@ -12,7 +12,7 @@ class Txn
     /*
      * Objects properties
      */
-    public $client_id, $txn_id, $name, $date, $amount, $details, $first_date, $last_date,
+    public $client_id, $txn_id, $name, $date, $amount, $details, $first_date, $last_date, $zone,
         $type, $txn_type, $emp_id, $employee_id, $super_admin_id, $month, $method, $debit, $credit;
 
     /*
@@ -120,7 +120,6 @@ class Txn
                 return true;
             }
             return false;
-
         } else if ($txn_type == "Debit") {
             $query = "INSERT INTO txn_list 
                   SET date = :date, debit = :debit, details = :details, method = :method, emp_id = :emp_id";
@@ -163,8 +162,18 @@ class Txn
      */
     function all_txn()
     {
+        $query = "";
+        if ($this->zone === 'All') {
+            $query = "SELECT * FROM txn_list 
+            WHERE date >= :first_date AND date <= :last_date
+            ORDER BY txn_id DESC";
 
-        $query = "SELECT * FROM txn_list WHERE date >= :first_date AND date <= :last_date ORDER BY txn_id DESC";
+        } else {
+            $query = "SELECT * FROM txn_list 
+            WHERE date >= :first_date AND date <= :last_date AND zone = '$this->zone'
+            ORDER BY txn_id DESC";
+        }
+
 
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -225,8 +234,6 @@ class Txn
 
             $this->conn->commit();
             return true;
-
-
         } catch (\Throwable $th) {
             echo "Connection error: " . $th->getMessage();
             $this->conn->rollBack();
@@ -285,8 +292,6 @@ class Txn
 
             $this->conn->commit();
             return true;
-
-
         } catch (\Throwable $th) {
             echo "Connection error: " . $th->getMessage();
             $this->conn->rollBack();
@@ -389,9 +394,18 @@ class Txn
     function datewise_and_empwise_total_credit_debit()
     {
         //query
-        $query = "SELECT emp_id, SUM(credit) - SUM(debit) as cash 
-        FROM txn_list WHERE date >= :first_date AND date <= :last_date
-        GROUP BY emp_id";
+
+        $query = "";
+        if ($this->zone === 'All') {
+            $query = "SELECT emp_id, SUM(credit) - SUM(debit) as cash 
+            FROM txn_list WHERE date >= :first_date AND date <= :last_date AND zone = '$this->zone'
+            GROUP BY emp_id";
+        }else{
+            $query = "SELECT emp_id, SUM(credit) - SUM(debit) as cash 
+            FROM txn_list WHERE date >= :first_date AND date <= :last_date
+            GROUP BY emp_id";
+        }
+        
 
         //prepare query
         $stmt = $this->conn->prepare($query);

@@ -11,7 +11,7 @@ class Employee
     /*
      * Objects properties
      */
-    public $id, $employee_id, $name, $address, $mobile, $about, $pin, $super_admin, $dashboard,
+    public $id, $employee_id, $name, $address, $mobile, $about, $pin, $super_admin, $zone, $dashboard,
         $client_add, $client_details_update, $sms, $txn_summary, $txn_edit, $upstream_bill,
         $salary_add, $device, $note, $created_at, $details;
     /*
@@ -112,7 +112,7 @@ class Employee
     {
         $query = "UPDATE employees SET employee_id = :employee_id, name = :name, address = :address, mobile = :mobile, about = :about, 
         pin = :pin, super_admin = :super_admin,
-        dashboard = :dashboard, client_add = :client_add, client_details_update = :client_details_update, 
+        dashboard = :dashboard, zone = :zone, client_add = :client_add, client_details_update = :client_details_update, 
         sms = :sms, txn_summary = :txn_summary, txn_edit = :txn_edit, upstream_bill = :upstream_bill, 
         salary_add = :salary_add, device = :device, note = :note
         WHERE id = :id";
@@ -126,6 +126,7 @@ class Employee
         $stmt->bindParam(":about", $this->about);
         $stmt->bindParam(":pin", $this->pin);
         $stmt->bindParam(":super_admin", $this->super_admin);
+        $stmt->bindParam(":zone", $this->zone);
         $stmt->bindParam(":dashboard", $this->dashboard);
         $stmt->bindParam(":client_add", $this->client_add);
         $stmt->bindParam(":client_details_update", $this->client_details_update);

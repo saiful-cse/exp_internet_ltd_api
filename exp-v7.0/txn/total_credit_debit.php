@@ -20,6 +20,7 @@ $db = $database->getConnection();
 
 $get_first_date = $_GET['first_date'];
 $get_last_date = $_GET['last_date'];
+$get_zone = $_GET['zone'];
 
 /*
  * Initialize object
@@ -28,6 +29,7 @@ $txn = new Txn($db);
 
 $txn->first_date = $get_first_date;
 $txn->last_date = $get_last_date;
+$txn->zone = $get_zone;
 
 //Getting counted value form database
 $total_credit = $txn->datewise_total_credit();

@@ -28,6 +28,7 @@ $employee->mobile = $_POST['mobile'];
 $employee->about = $_POST['about'];
 $employee->pin = $_POST['pin'];
 $employee->super_admin = $_POST['super_admin'];
+$employee->zone = $_POST['zone'];
 $employee->dashboard = $_POST['dashboard'];
 $employee->client_add = $_POST['client_add'];
 $employee->client_details_update = $_POST['client_details_update'];

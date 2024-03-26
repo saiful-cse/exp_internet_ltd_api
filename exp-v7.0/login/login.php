@@ -82,6 +82,7 @@ if (!empty($employee_id && !empty($pin))) {
                     "message" => "Login Successfully",
                     "employee_id" => $row['employee_id'],
                     "super_admin" => $row['super_admin'],
+                    "zone" => $row['zone'],
                     "dashboard" => $row['dashboard'],
                     "client_add" => $row['client_add'],
                     "client_details_update" => $row['client_details_update'],

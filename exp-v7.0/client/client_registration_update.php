@@ -51,7 +51,7 @@ if (
         $client->mode = $data->mode;
         $client->name = $data->name;
         $client->phone = $data->phone;
-        $client->take_time = "0";
+        $client->take_time = "1";
         $client->area_id = $data->area_id;
         $client->zone = $data->zone;
         $client->reg_date = date("Y-m-d H:i:s");

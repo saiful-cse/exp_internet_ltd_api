@@ -37,6 +37,7 @@ if (!empty($data->jwt)) {
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
         $client = new Client($db);
 
+        $client->zone = $data->zone;
         $stmt = $client->allClients();
 
         $client_arr["ar"] = array();

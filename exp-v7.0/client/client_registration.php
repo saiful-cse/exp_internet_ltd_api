@@ -26,7 +26,7 @@ use \Firebase\JWT\JWT;
 $data = json_decode(file_get_contents("php://input"));
 
 if (
-    !empty($data->jwt) && !empty($data->name) && !empty($data->phone) && !empty($data->area_id)
+    !empty($data->jwt) &&  !empty($data->zone) && !empty($data->name) && !empty($data->phone) && !empty($data->area_id)
 
 ) {
 
@@ -46,6 +46,7 @@ if (
         $client->name = $data->name;
         $client->phone = $data->phone;
         $client->area_id = $data->area_id;
+        $client->zone = $data->zone;
 
         if ($client->isExistPhone()) {
             echo json_encode(array(

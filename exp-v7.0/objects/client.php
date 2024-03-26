@@ -29,10 +29,19 @@ class Client
     function registered_client()
     {
         //query
-        $query = "SELECT clients.*, areas.area_name as area
-        FROM clients
-        INNER JOIN areas ON clients.area_id = areas.id
-        WHERE registered = 1 ORDER BY reg_date DESC";
+        $query = "";
+        if ($this->zone === 'All') {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id
+            WHERE registered = 1 ORDER BY reg_date DESC";
+        } else {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id
+            WHERE registered = 1 AND zone = '$this->zone' ORDER BY reg_date DESC ";
+        }
+
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -78,13 +87,20 @@ class Client
     function expired_client()
     {
 
-        //query
-        $query = "SELECT clients.*, areas.area_name as area
-        FROM clients
-        INNER JOIN areas ON clients.area_id = areas.id
-        WHERE date(expire_date) <= '$this->current_date' AND registered = '1' AND mode = 'Enable' 
-        ORDER BY reg_date DESC";
-
+        $query = "";
+        if ($this->zone === 'All') {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id
+            WHERE date(expire_date) <= '$this->current_date' AND registered = '1' AND mode = 'Enable'
+            ORDER BY reg_date DESC";
+        } else {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id
+            WHERE date(expire_date) <= '$this->current_date' AND registered = '1' AND mode = 'Enable' AND zone = '$this->zone'
+            ORDER BY reg_date DESC";
+        }
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
@@ -202,7 +218,7 @@ class Client
         }
         return false;
     }
-    
+
     function onuMacUpdate()
     {
         $query = "UPDATE clients SET
@@ -223,13 +239,14 @@ class Client
 
         $current_date =  date("Y-m-d H:i:s");
         $query = "INSERT INTO clients 
-        SET registered = '0', name = :name, phone = :phone, area_id = :area_id, reg_date = :reg_date";
+        SET registered = '0', name = :name, phone = :phone, area_id = :area_id, zone = :zone, reg_date = :reg_date";
 
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":phone", $this->phone);
         $stmt->bindParam(":area_id", $this->area_id);
+        $stmt->bindParam(":zone", $this->zone);
         $stmt->bindParam(":reg_date", $current_date);
 
         if ($stmt->execute()) {
@@ -364,9 +381,17 @@ class Client
     function allClients()
     {
         //query
-        $query = "SELECT clients.*, areas.area_name as area
-        FROM clients
-        INNER JOIN areas ON clients.area_id = areas.id";
+        $query = "";
+        if ($this->zone === 'All') {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id";
+        } else {
+            $query = "SELECT clients.*, areas.area_name as area
+            FROM clients
+            INNER JOIN areas ON clients.area_id = areas.id
+            WHERE zone = '$this->zone'";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

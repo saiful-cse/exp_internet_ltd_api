@@ -20,9 +20,10 @@ $db = $database->getConnection();
 
 $get_first_date = $_GET['first_date'];
 $get_last_date = $_GET['last_date'];;
+$get_zone = $_GET['zone'];
 
 
-if (!empty($get_first_date) && !empty($get_last_date))
+if (!empty($get_first_date) && !empty($get_last_date) && !empty($get_zone))
 {
 
     /*
@@ -32,7 +33,7 @@ if (!empty($get_first_date) && !empty($get_last_date))
 
     $txn->first_date = $get_first_date;
     $txn->last_date = $get_last_date;
-
+    $txn->zone = $get_zone;
 
     $stmt = $txn->all_txn();
     $num = $stmt->rowCount();

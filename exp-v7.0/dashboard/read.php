@@ -37,6 +37,7 @@ $db = $database->getConnection();
 $dashboard = new Dashboard($db);
 
 $jwt = $_POST['jwt'];
+$zone = $_POST['zone'];
 
 if (!empty($jwt)) {
 
@@ -45,7 +46,9 @@ if (!empty($jwt)) {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
 
+
         //Getting counted value form database
+        $dashboard->zone = $zone;
         $total_expired_client = $dashboard->count_total_expired_client();
         $total_enabled_client = $dashboard->count_total_enabled_client();
         $total_disabled_client = $dashboard->count_total_disabled_client();
@@ -60,12 +63,20 @@ if (!empty($jwt)) {
             $data[] = $row;
         }
 
+        $pkg_usages = $dashboard->package_usage();
+        while ($row = $pkg_usages->fetch(PDO::FETCH_ASSOC)) {
+
+            $pkg_ussages_data[] = $row;
+        }
+
+
         //JSON encode
         echo json_encode(
             array(
                 "status" => 200,
                 "total_expired_client" => $total_expired_client,
                 "monthly_client_count" => $data,
+                "pkg_usages" => $pkg_ussages_data,
                 "total_enabled_client" => $total_enabled_client,
                 "total_disabled_client" => $total_disabled_client,
                 "current_month_total_credit" => $current_month_total_credit,
