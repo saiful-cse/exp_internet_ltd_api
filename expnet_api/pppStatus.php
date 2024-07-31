@@ -18,9 +18,9 @@ require_once './PEAR2/Autoload.php';
 // $password = $_POST['password'];
 
 $ppp_name = $_POST['ppp_name'];
-$login_ip = "103.134.39.234";
+$login_ip = "103.134.39.233";
 $username = "api";
-$password = "Saiful@#21490";
+$password = "sAiful@#21490";
 
 if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($password)) {
 
@@ -37,6 +37,7 @@ if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($passw
             $status = 200;
             if ($item->getProperty("name") == $ppp_name) {
                 $last_loged_out = $item->getProperty("last-logged-out");
+                $caller_id = $item->getProperty("last-caller-id");
                 $ppp_status = $item->getProperty('disabled') == "true" ? "Disable" : "Enable";
                 break;
             }else{
@@ -53,8 +54,7 @@ if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($passw
                 "message" => $message
             )
         );
-        //if the router is connecting error, next code will not execute.
-        exit();
+       
     }
 
     try {
@@ -66,7 +66,6 @@ if (!empty($ppp_name) && !empty($login_ip) && !empty($username) && !empty($passw
             if ($item->getProperty("name") == $ppp_name) {
                 $ppp_activity = "Online";
                 $uptime = $item->getProperty("uptime");
-                $caller_id = $item->getProperty("caller-id");
                 $connected_ip = $item->getProperty("address");
                 break;
             } else {

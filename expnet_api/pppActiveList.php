@@ -16,7 +16,7 @@ use PEAR2\Net\RouterOS;
 
 $login_ip = "103.134.39.233";
 $username = "api";
-$password = "Saiful@#21490";
+$password = "sAiful@#21490";
 
 require_once './PEAR2/Autoload.php';
 

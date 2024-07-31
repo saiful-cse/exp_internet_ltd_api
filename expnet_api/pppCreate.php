@@ -31,13 +31,19 @@ if (!empty($ppp_name) && !empty($ppp_pass) && !empty($pkg_id) && !empty($mode)) 
             $client = new RouterOS\Client($login_ip, $username, $password)
         );
 
-        if($pkg_id === 'Govt5'){
+        if($pkg_id === 'Mini'){
             $pkg_id = 'Basic';
         }
 
-        if($pkg_id === 'Professional'){
-            $pkg_id = 'Standard';
+        if($pkg_id === 'Regular'){
+            $pkg_id = 'Basic';
         }
+
+        if($pkg_id === 'Economy'){
+            $pkg_id = 'Professional';
+        }
+
+        
         
         $util->setMenu('/ppp/secret');
 
