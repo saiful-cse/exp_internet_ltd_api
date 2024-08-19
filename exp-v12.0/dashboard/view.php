@@ -8,7 +8,7 @@ include_once  '../objects/sms.php';
 $database = new Database();
 $db = $database->getConnection();
 $sms_expiring_3day_result = $sms_expired_client_disconnect_result = $expired_take_time_client_disconnect_result = "";
-$emp_id = $_GET['emp_id'];
+$zone = $_GET['zone'];
 
 function expipering_3day_client_sms_send()
 {
@@ -27,11 +27,11 @@ function expipering_3day_client_sms_send()
 
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
-                $num[] = $row['phone'];
-                $id[] = $row['id'];
-            }
-        $ids =  implode(', ', $id);
-        $numbers =  implode(', ', $num);
+			$num[] = $row['phone'];
+			$id[] = $row['id'];
+		}
+		$ids =  implode(', ', $id);
+		$numbers =  implode(', ', $num);
 
 		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
@@ -63,7 +63,7 @@ function expired_client_sms_send_disconnect()
 	$sms = new Sms($db);
 
 	$stmtppp = $sms->expiredClientsPPPname();
-    $stmtphone = $sms->expiredClientsPhone();
+	$stmtphone = $sms->expiredClientsPhone();
 
 	global $sms_expired_client_disconnect_result;
 
@@ -128,6 +128,56 @@ function expired_client_sms_send_disconnect()
 
 				$sms_expired_client_disconnect_result = "[201, " . $sms_send_response['response_code'] . "]" .
 					", " . $sms_send_response['error_message'];
+			}
+		} else {
+
+			$sms_expired_client_disconnect_result = $mikrotik_response['status'] . ", " . $mikrotik_response['message'];
+		}
+	} else if ($stmtppp->rowCount() > 0) {
+
+		while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
+
+			$pppName[] = $row['ppp_name'];
+			$id[] = $row['id'];
+		}
+		$ids =  implode(', ', $id);
+
+		$device = new Device($db);
+		$stmt = $device->get_device_url();
+
+
+		//retrieve the table contents
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+			$url = $row['api_base'] . "pppListDisable.php";
+			$login_ip = $row['login_ip'];
+			$username = $row['username'];
+			$password = $row['password'];
+		}
+
+		$postdata = array(
+			'login_ip' => $login_ip,
+			'username' => $username,
+			'password' => $password,
+			'ppp_names' => $pppName
+		);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		$result = curl_exec($ch);
+		curl_close($ch);
+
+		$mikrotik_response = json_decode($result, true);
+
+		if ($mikrotik_response['status'] == 200) {
+
+			$sms->ids = $ids;
+
+			if ($sms->clientDisconnectModeUpdate()) {
+				$sms_expired_client_disconnect_result = "202, PPP disconnected successfully";
 			}
 		} else {
 
@@ -220,6 +270,55 @@ function expired_take_time_client_sms_send_disconnect()
 
 			$expired_take_time_client_disconnect_result = $mikrotik_response['status'] . ", " . $mikrotik_response['message'];
 		}
+	} else if ($stmtppp->rowCount() > 0) {
+		while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
+
+			$pppName[] = $row['ppp_name'];
+			$id[] = $row['id'];
+		}
+		$ids =  implode(', ', $id);
+
+		$device = new Device($db);
+		$stmt = $device->get_device_url();
+
+
+		//retrieve the table contents
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+			$url = $row['api_base'] . "pppListDisable.php";
+			$login_ip = $row['login_ip'];
+			$username = $row['username'];
+			$password = $row['password'];
+		}
+
+		$postdata = array(
+			'login_ip' => $login_ip,
+			'username' => $username,
+			'password' => $password,
+			'ppp_names' => $pppName
+		);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		$result = curl_exec($ch);
+		curl_close($ch);
+
+		$mikrotik_response = json_decode($result, true);
+
+		if ($mikrotik_response['status'] == 200) {
+
+			$sms->ids = $ids;
+
+			if ($sms->clientDisconnectModeUpdate()) {
+				$expired_take_time_client_disconnect_result = "202, Take time PPP disconnected successfully";
+			}
+		} else {
+
+			$expired_take_time_client_disconnect_result = $mikrotik_response['status'] . ", " . $mikrotik_response['message'];
+		}
 	} else {
 
 		$expired_take_time_client_disconnect_result = "404, Not found take time expired clients in this time.";
@@ -248,7 +347,7 @@ function sms_send($numbers, $message)
 	return $response;
 }
 
-if ("10:00" <= date("H:i") && "15:00" >= date("H:i")) {
+if ("00:00" <= date("H:i") && "03:00" >= date("H:i")) {
 	expipering_3day_client_sms_send();
 	expired_client_sms_send_disconnect();
 	expired_take_time_client_sms_send_disconnect();
@@ -257,21 +356,13 @@ if ("10:00" <= date("H:i") && "15:00" >= date("H:i")) {
 $dashboard = new Dashboard($db);
 $employee = new Employee($db);
 $logs_stmt = $employee->fetch_logs();
-$packagesStmt = $dashboard->packages();
-$bKashCollection = $dashboard->bKashCollection();
-
+$dashboard->zone = $zone;
 
 $expiredDataPoints = array(
 	array("label" => "Expired", "y" => $dashboard->count_total_expired_client()),
 	array("label" => "Mobile", "y" => $dashboard->expired_mobile()),
 	array("label" => "Cash", "y" => $dashboard->expired_cash()),
 );
-
-
-while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
-	$bKashdataPoints[] = $row;
-}
-
 
 ?>
 <!DOCTYPE HTML>
@@ -320,30 +411,6 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 				}]
 			});
 			expiredcChart.render();
-
-
-			var bKashChart = new CanvasJS.Chart("bkashchartContainer", {
-				animationEnabled: true,
-				title: {
-					text: "bKash Collection"
-				},
-				axisY: {
-					title: "Revenue (in BDT)",
-					includeZero: true,
-					prefix: "৳",
-					suffix: ""
-				},
-				data: [{
-					type: "bar",
-					yValueFormatString: "৳#,##0",
-					indexLabel: "{y}",
-					indexLabelPlacement: "inside",
-					indexLabelFontWeight: "bolder",
-					indexLabelFontColor: "white",
-					dataPoints: <?php echo json_encode($bKashdataPoints, JSON_NUMERIC_CHECK); ?>
-				}]
-			});
-			bKashChart.render();
 		}
 	</script>
 
@@ -353,26 +420,38 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 <body>
 
 	<div class="card text-center">
-		<div class="card-header">
-			Message
-		</div>
-		<div class="card-body">
-		    
-		    <p class="card-text">
-				
-				Username: test <br>
-				Password: 12345678 <br>
-				# BTRC নির্দেশনা অনুযায়ী কাস্টমার থেকে ID Card এর ফটো আপলোড করা বাধ্যতামুলক।
-				# প্রতিদিন সকাল ১০ টা হতে বিলে ৩ টার মধ্যে যাদের বিলের মেয়াদ শেষ তাদের লাইন অফ হবে। 
-				# Take time 1 নিলে পরের দিন সকাল ১০ টার আগে বিল লিংকে দেওয়ার জন্য বলে দিও এনং অন্যথায় অটো অফ হবে সেটা জানিয়ে দিও।
-			
-			</p>
 
-			<p class="card-text">
-				<?php echo $sms_expiring_3day_result; ?> <br>
-				<?php echo $sms_expired_client_disconnect_result; ?> <br>
+		<div class="card-body">
+
+			<div class="alert alert-warning" role="alert">
+				<h4 class="alert-heading">Notice</h4>
+				<p> # প্রতিদিন সকাল ১০ টা হতে বিলে ৩ টার মধ্যে যাদের বিলের মেয়াদ শেষ তাদের লাইন অফ হবে এবং অগ্রীম ৩ দিন আগে ওয়ার্নিং SMS যাবে।
+				</p>
+				<hr>
+				<p># Take time 1 ছাড়া লাইন Enable করলে সকাল ১০ টা হতে বিলে ৩ টার মধ্যে অফ হয়ে যাবে।</p>
+				<hr>
+				<p># সর্বদা কাস্টমারদেরকে লিংক দিয়ে বিলে দিতে অবহিত করুন এবং বিলের লিংক SMS করে দিন।</p>
+			</div>
+
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<?php echo $sms_expiring_3day_result; ?>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<?php echo $sms_expired_client_disconnect_result; ?>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
 				<?php echo $expired_take_time_client_disconnect_result; ?>
-			</p>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
 
 		</div>
 
@@ -380,48 +459,24 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 
 
 	<div id="expiredchartContainer" style="height: 370px; width: 100%;"></div> <br>
-	<!--<div id="bkashchartContainer" style="height: 370px; width: 100%;"></div>-->
-
-	<br>
-
 
 	<div style="overflow-x: auto;">
+		<?php if ($zone == 'All') { ?>
+			<strong>Recent login details</strong>
+			<table>
+				<tr>
+					<th>Time</th>
+					<th>Details</th>
+				</tr>
 
-		<strong>Package List</strong>
-		<table>
-			<tr>
-				<th>Package ID</th>
-				<th>Title</th>
-				<th>Speed</th>
-				<th>Price</th>
-			</tr>
-			<?php
-			foreach ($packagesStmt as $pkg) { ?>
-				<tr>
-					<td><?php echo $pkg['pkg_id'] ?></td>
-					<td><?php echo $pkg['title'] ?></td>
-					<td><?php echo $pkg['speed'] ?></td>
-					<td><?php echo $pkg['price'] . " TK" ?></td>
-				</tr>
-			<?php } ?>
-		</table>
-		<br>
-		<strong>Recent login details</strong>
-		<table>
-			<tr>
-				<th>SL</th>
-				<th>Time</th>
-				<th>Details</th>
-			</tr>
-			<?php
-			foreach ($logs_stmt as $logs) { ?>
-				<tr>
-					<td><?php echo $logs['id'] ?></td>
-					<td><?php echo $logs['time'] ?></td>
-					<td><?php echo $logs['details'] ?></td>
-				</tr>
-			<?php } ?>
-		</table>
+				<?php foreach ($logs_stmt as $logs) { ?>
+					<tr>
+						<td><?php echo $logs['time'] ?></td>
+						<td><?php echo $logs['details'] ?></td>
+					</tr>
+			<?php }
+			} ?>
+			</table>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

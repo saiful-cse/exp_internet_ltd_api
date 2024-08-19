@@ -180,12 +180,12 @@ class Dashboard
         if ($this->zone === 'All') {
             $query = "SELECT SUM(credit) FROM txn_list WHERE type = 'Bill' AND MONTH(date) = MONTH('$current_date') AND 
             YEAR(date) = YEAR('$current_date') ";
-        }else{
+        } else {
             $query = "SELECT SUM(credit) FROM txn_list WHERE type = 'Bill' AND MONTH(date) = MONTH('$current_date') AND 
             YEAR(date) = YEAR('$current_date') AND zone = '$this->zone'";
         }
         //query
-       
+
 
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -304,7 +304,12 @@ class Dashboard
 
         $current_date = date("Y-m-d H:i:s");
         //query
-        $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Cash'";
+
+        if ($this->zone === 'All') {
+            $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Cash'";
+        }else{
+            $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Cash' AND zone = '$this->zone'";
+        }
 
         //prepare query
         $stmt = $this->conn->prepare($query);
@@ -320,8 +325,12 @@ class Dashboard
 
         $current_date = date("Y-m-d H:i:s");
         //query
-        $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Mobile'";
-
+        if($this->zone === 'All'){
+            $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Mobile'";
+        }else{
+            $query = "SELECT COUNT(*) FROM clients WHERE date(expire_date) <= '$current_date' AND registered = 1 AND mode = 'Enable' AND payment_method = 'Mobile' AND zone = '$this->zone'";
+        }
+        
         //prepare query
         $stmt = $this->conn->prepare($query);
 
