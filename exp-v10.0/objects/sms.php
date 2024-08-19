@@ -12,7 +12,7 @@ class Sms
     /*
      * Objects properties
      */
-    public  $area_id, $ids, $msg_id, $client_id, $msg_body, $tag,
+    public  $area_id, $numbers, $msg_id, $client_id, $msg_body, $tag,
         $area, $last_id, $created_at, $current_date;
 
     /*
@@ -23,50 +23,25 @@ class Sms
         $this->conn = $db;
     }
 
-    function expiredClientsPPPname()
+    function getExpiredClientsPhonePPPname()
     {
         $current_date =  date("Y-m-d H:i:s");
 
-        $query = "SELECT id, ppp_name FROM clients WHERE '$current_date' >= date(expire_date) AND mode = 'Enable' AND payment_method = 'Mobile' AND take_time = 0";
-        $stmt = $this->conn->prepare($query);
-        //query execute
-        $stmt->execute();
-        return $stmt;
-    }
-
-    function expiredClientsPhone()
-    {
-        $current_date =  date("Y-m-d H:i:s");
-
-        $query = "SELECT phone FROM clients WHERE '$current_date' >= date(expire_date) AND mode = 'Enable' AND payment_method = 'Mobile' AND take_time = 0 AND zone != 'Osman'";
+        $query = "SELECT ppp_name, phone FROM clients WHERE '$current_date' >= date(expire_date) AND mode = 'Enable' AND payment_method = 'Mobile' AND take_time = 0";
         $stmt = $this->conn->prepare($query);
         //query execute
         $stmt->execute();
         return $stmt;
     }
     
-    function getExpiredTakeTimeClientsPPPname()
+    function getExpiredTakeTimeClientsPhonePPPname()
     {
         $current_date =  date("Y-m-d H:i:s");
 
-        $query = "SELECT id, ppp_name FROM clients WHERE  
+        $query = "SELECT ppp_name, phone FROM clients WHERE  
         '$current_date' >= date(expire_date) AND mode = 'Enable' AND 
         payment_method = 'Mobile' AND
         DATEDIFF('$current_date', date(expire_date)) >= take_time";
-        $stmt = $this->conn->prepare($query);
-        //query execute
-        $stmt->execute();
-        return $stmt;
-    }
-
-    function getExpiredTakeTimeClientsPhone()
-    {
-        $current_date =  date("Y-m-d H:i:s");
-
-        $query = "SELECT phone FROM clients WHERE  
-        '$current_date' >= date(expire_date) AND mode = 'Enable' AND 
-        payment_method = 'Mobile' AND
-        DATEDIFF('$current_date', date(expire_date)) >= take_time AND zone != 'Osman'";
         $stmt = $this->conn->prepare($query);
         //query execute
         $stmt->execute();
@@ -77,7 +52,7 @@ class Sms
 
     {
         $current_date =  date("Y-m-d H:i:s");
-        $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', take_time = 0, disable_date = '$current_date' WHERE id IN ($this->ids) ";
+        $query = "UPDATE clients SET mode = 'Disable', sms = 'unsent', take_time = 0, disable_date = '$current_date' WHERE phone IN ($this->numbers) ";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
@@ -102,12 +77,12 @@ class Sms
         return $stmt;
     }
 
-    function getExpiredbefore3dayClientsPhone()
+    function getExpiredClientsPhone()
     {
 
         $current_date =  date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . '+3 days'));
         
-        $query = "SELECT id, phone FROM clients WHERE date(expire_date) <= '$current_date' AND sms = 'unsent' AND take_time = 0 AND registered = 1 AND mode = 'Enable' AND zone != 'Osman'";
+        $query = "SELECT phone FROM clients WHERE date(expire_date) <= '$current_date' AND sms = 'unsent' AND take_time = 0 AND registered = 1 AND mode = 'Enable' ";
         $stmt = $this->conn->prepare($query);
         //query execute
         $stmt->execute();
@@ -120,7 +95,7 @@ class Sms
     {
         //query
         $query = "UPDATE clients SET sms = 'sent'
-            WHERE id IN ($this->ids)";
+            WHERE phone IN ($this->numbers)";
 
         //prepare query
         $stmt = $this->conn->prepare($query);

@@ -413,13 +413,12 @@ class Client
         $stmt->execute();
         return $stmt;
     }
-
-
+    
     function getPppNameToPackListUpdate()
     {
         //query
         $query = "SELECT ppp_name FROM clients WHERE registered = 1 AND mode = 'Enable' AND pkg_id = 'Standard' 
-        AND expire_date > '2024-08-08 00:00:00' 
+        AND expire_date > '2024-08-05 00:00:00' 
         AND ppp_name NOT IN ('ss-expnet-113', 'ss-expnet-97',
         'ss-expnet-133', 'ss-expnet-4', 
         'ss-expnet-5', 'ss-expnet-101', 
@@ -436,7 +435,7 @@ class Client
         'ss-expnet-52', 'saiful-17',
         'ss-expnet-53', 'ss-expnet-98',
         'ss-expnet-172', 'ss-expnet-343',
-        'ss-expnet-133') LIMIT 60";
+        'ss-expnet-133') LIMIT 55";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

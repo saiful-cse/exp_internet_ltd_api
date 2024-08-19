@@ -52,8 +52,8 @@ if ($stmt2->rowCount() > 0) {
         'ppp_names' => $pppName
     );
 
-    // var_dump($postdata);
-    // exit;
+    var_dump($postdata);
+    exit;
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);

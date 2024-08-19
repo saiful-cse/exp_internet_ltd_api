@@ -10,7 +10,7 @@ class Database{
     // public $conn;
 
     private $host = "localhost";
-    private $db_name = "exp_app";
+    private $db_name = "expert";
     private $username = "root";
     private $password = "";
     private $conn;

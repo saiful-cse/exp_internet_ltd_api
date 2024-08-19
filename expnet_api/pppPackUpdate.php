@@ -30,7 +30,7 @@ try {
         $util2->set(
             $util2->find($pppName),
             array(
-                'profile' => 'Basic'
+                'profile' => 'Standard'
             )
         );
        

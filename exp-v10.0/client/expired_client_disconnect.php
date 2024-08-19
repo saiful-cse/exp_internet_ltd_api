@@ -68,22 +68,16 @@ if (!empty($data->jwt)) {
         // decode jwt
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
-        $stmtppp = $sms->expiredClientsPPPname();
-        $stmtphone = $sms->expiredClientsPhone();
+        $stmt = $sms->getExpiredClientsPhonePPPname();
 
-        if ($stmtppp->rowCount() > 0 && $stmtphone->rowCount() > 0) {
+        if ($stmt->rowCount() > 0) {
 
             //Collecting phone numbers and ppp name
-            while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
-
-                $pppName[] = $row['ppp_name'];
-                $id[] = $row['id'];
-            }
-            while ($row = $stmtphone->fetch(PDO::FETCH_ASSOC)) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
                 $num[] = $row['phone'];
+                $pppName[] = $row['ppp_name'];
             }
-            $ids =  implode(', ', $id);
             $numbers =  implode(', ', $num);
 
             $device = new Device($db);
@@ -112,15 +106,16 @@ if (!empty($data->jwt)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             $result = curl_exec($ch);
             curl_close($ch);
-
+            
             //Disable and Remove form mikrotik server
             $mikrotik_response = json_decode($result, true);
 
             if ($mikrotik_response['status'] == 200) {
 
+                //Set the value
+                $sms->numbers = $numbers;
                 $sms_send_response = json_decode(sms_send($numbers), true);
 
-                $sms->ids = $ids;
                 if ($sms_send_response['response_code'] == 202) {
                     if ($sms->clientDisconnectModeUpdate()) {
                         echo json_encode(array(
@@ -141,63 +136,9 @@ if (!empty($data->jwt)) {
                     "message" => $mikrotik_response['message']
                 ));
             }
-        } else if ($stmtppp->rowCount() > 0) {
-
-
-            while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
-
-                $pppName[] = $row['ppp_name'];
-                $id[] = $row['id'];
-            }
-            $ids =  implode(', ', $id);
-
-            $device = new Device($db);
-            $stmt = $device->get_device_url();
-
-            //retrieve the table contents
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-                $url = $row['api_base'] . "pppListDisable.php";
-                $login_ip = $row['login_ip'];
-                $username = $row['username'];
-                $password = $row['password'];
-            }
-
-            $postdata = array(
-                'login_ip' => $login_ip,
-                'username' => $username,
-                'password' => $password,
-                'ppp_names' => $pppName
-            );
-
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-            //Disable and Remove form mikrotik server
-            $mikrotik_response = json_decode($result, true);
-
-            if ($mikrotik_response['status'] == 200) {
-
-                $sms->ids = $ids;
-                if ($sms->clientDisconnectModeUpdate()) {
-                    echo json_encode(array(
-                        "status" => 200,
-                        "message" => "PPP disconnected successfully"
-                    ));
-                }
-
-            } else {
-                echo json_encode(array(
-                    "status" => $mikrotik_response['status'],
-                    "message" => $mikrotik_response['message']
-                ));
-            }
+            
         } else {
+
             echo json_encode(array(
                 "status" => 404,
                 "message" => "Not found expired clients in this time."

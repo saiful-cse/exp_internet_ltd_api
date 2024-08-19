@@ -24,7 +24,9 @@ include_once '../libs/php-jwt-master/src/JWT.php';
 
 use \Firebase\JWT\JWT;
 
-$data = json_decode(file_get_contents("php://input"));
+$jwt = $_POST['jwt'];
+$message = $_POST['message'];
+$area_id = $_POST['area_id'];
 
 /*
 * Instance database and dashboard object
@@ -39,14 +41,12 @@ $sms = new Sms($db);
 
 function sms_send($numbers)
 {
-    require '../config/url_config.php';
-    $message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
-
+    include '../config/url_config.php';
     $data = [
         "api_key" => $sms_api_key,
         "senderid" => $sms_api_senderid,
         "number" => $numbers,
-        "message" => $message
+        "message" => $_POST['message']
     ];
 
     $ch = curl_init();
@@ -60,15 +60,16 @@ function sms_send($numbers)
     return $response;
 }
 
-if (!empty($data->jwt)) {
+if (!empty($jwt) && !empty($message) && !empty($area_id)) {
 
     try {
 
         // decode jwt
-        $decoded = JWT::decode($data->jwt, $key, array('HS256'));
+        $decoded = JWT::decode($jwt, $key, array('HS256'));
 
-        //getting client before 3day expire
-        $stmt = $sms->getExpiredbefore3dayClientsPhone();
+        $sms->area_id = $area_id;
+        $sms->msg_body = $message;
+        $stmt = $sms->getting_areawise_client_phone();
         $data = $stmt->rowCount();
 
         if ($data > 0) {
@@ -76,23 +77,21 @@ if (!empty($data->jwt)) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
                 $num[] = $row['phone'];
-                $id[] = $row['id'];
-                
             }
-            $ids =  implode(', ', $id);
             $numbers =  implode(', ', $num);
 
-            //Set the value
-            $sms->ids = $ids;
             $sms_send_response = json_decode(sms_send($numbers), true);
 
             if ($sms_send_response['response_code'] == 202) {
-                if ($sms->expiredClientSmsUpdate()) {
+                
+                if($sms->areawise_sms_store()){
                     echo json_encode(array(
                         "status" => 200,
                         "message" => "SMS sent successfully"
                     ));
                 }
+                
+                
             } else {
                 echo json_encode(array(
                     "status" => 201,
@@ -100,11 +99,11 @@ if (!empty($data->jwt)) {
                         ", " . $sms_send_response['error_message']
                 ));
             }
-        } else {
 
+        } else {
             echo json_encode(array(
                 "status" => 404,
-                "message" => "Allready sent sms"
+                "message" => "Nothing areawise client to send SMS"
             ));
         }
     } catch (\Throwable $th) {
@@ -114,8 +113,9 @@ if (!empty($data->jwt)) {
             "error" => $th->getMessage()
         ));
     }
-
 } else {
+    
+    
     echo json_encode(array(
         "status" => 416,
         "message" => "Data Incomplete."

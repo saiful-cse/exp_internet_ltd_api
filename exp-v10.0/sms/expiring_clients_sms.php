@@ -68,7 +68,7 @@ if (!empty($data->jwt)) {
         $decoded = JWT::decode($data->jwt, $key, array('HS256'));
 
         //getting client before 3day expire
-        $stmt = $sms->getExpiredbefore3dayClientsPhone();
+        $stmt = $sms->getExpiredClientsPhone();
         $data = $stmt->rowCount();
 
         if ($data > 0) {
@@ -76,14 +76,11 @@ if (!empty($data->jwt)) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
                 $num[] = $row['phone'];
-                $id[] = $row['id'];
-                
             }
-            $ids =  implode(', ', $id);
             $numbers =  implode(', ', $num);
 
             //Set the value
-            $sms->ids = $ids;
+            $sms->numbers = $numbers;
             $sms_send_response = json_decode(sms_send($numbers), true);
 
             if ($sms_send_response['response_code'] == 202) {

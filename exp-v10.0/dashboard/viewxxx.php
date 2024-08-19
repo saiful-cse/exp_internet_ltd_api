@@ -18,7 +18,7 @@ function expipering_3day_client_sms_send()
 	$db = $database->getConnection();
 	$sms = new Sms($db);
 
-	$stmt = $sms->getExpiredbefore3dayClientsPhone();
+	$stmt = $sms->getExpiredClientsPhone();
 	$data = $stmt->rowCount();
 
 	global $sms_expiring_3day_result;
@@ -27,17 +27,15 @@ function expipering_3day_client_sms_send()
 
 		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
-                $num[] = $row['phone'];
-                $id[] = $row['id'];
-            }
-        $ids =  implode(', ', $id);
-        $numbers =  implode(', ', $num);
+			$num[] = $row['phone'];
+		}
+		$numbers =  implode(', ', $num);
 
 		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
 
 		//Set the value
-		$sms->ids = $ids;
+		$sms->numbers = $numbers;
 		$sms_send_response = json_decode(sms_send($numbers, $expired_3day_message), true);
 
 		if ($sms_send_response['response_code'] == 202) {
@@ -62,24 +60,18 @@ function expired_client_sms_send_disconnect()
 	$db = $database->getConnection();
 	$sms = new Sms($db);
 
-	$stmtppp = $sms->expiredClientsPPPname();
-    $stmtphone = $sms->expiredClientsPhone();
+	$stmt = $sms->getExpiredClientsPhonePPPname();
 
 	global $sms_expired_client_disconnect_result;
 
-	if ($stmtppp->rowCount() > 0 && $stmtphone->rowCount() > 0) {
+	if ($stmt->rowCount() > 0) {
 
 		//Collecting phone numbers and ppp name
-		while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
-
-			$pppName[] = $row['ppp_name'];
-			$id[] = $row['id'];
-		}
-		while ($row = $stmtphone->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 			$num[] = $row['phone'];
+			$pppName[] = $row['ppp_name'];
 		}
-		$ids =  implode(', ', $id);
 		$numbers =  implode(', ', $num);
 
 		$device = new Device($db);
@@ -117,7 +109,7 @@ function expired_client_sms_send_disconnect()
 			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
 			//Set the value
-			$sms->ids = $ids;
+			$sms->numbers = $numbers;
 			$sms_send_response = json_decode(sms_send($numbers, $expired_client_message), true);
 
 			if ($sms_send_response['response_code'] == 202) {
@@ -149,24 +141,18 @@ function expired_take_time_client_sms_send_disconnect()
 	$db = $database->getConnection();
 	$sms = new Sms($db);
 
-	$stmtppp = $sms->getExpiredTakeTimeClientsPPPname();
-	$stmtphone = $sms->getExpiredTakeTimeClientsPhone();
+	$stmt = $sms->getExpiredTakeTimeClientsPhonePPPname();
 
 	global $expired_take_time_client_disconnect_result;
 
-	if ($stmtppp->rowCount() > 0 && $stmtphone->rowCount() > 0) {
+	if ($stmt->rowCount() > 0) {
 
 		//Collecting phone numbers and ppp name
-		while ($row = $stmtppp->fetch(PDO::FETCH_ASSOC)) {
-
-			$pppName[] = $row['ppp_name'];
-			$id[] = $row['id'];
-		}
-		while ($row = $stmtphone->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 			$num[] = $row['phone'];
+			$pppName[] = $row['ppp_name'];
 		}
-		$ids =  implode(', ', $id);
 		$numbers =  implode(', ', $num);
 
 		$device = new Device($db);
@@ -204,7 +190,7 @@ function expired_take_time_client_sms_send_disconnect()
 			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
 
 			//Set the value
-			$sms->ids = $ids;
+			$sms->numbers = $numbers;
 			$sms_send_response = json_decode(sms_send($numbers, $expired_client_message), true);
 
 			if ($sms_send_response['response_code'] == 202) {
@@ -362,11 +348,8 @@ while ($row = $bKashCollection->fetch(PDO::FETCH_ASSOC)) {
 				
 				Username: test <br>
 				Password: 12345678 <br>
-				# BTRC নির্দেশনা অনুযায়ী কাস্টমার থেকে ID Card এর ফটো আপলোড করা বাধ্যতামুলক।
-				# প্রতিদিন সকাল ১০ টা হতে বিলে ৩ টার মধ্যে যাদের বিলের মেয়াদ শেষ তাদের লাইন অফ হবে। 
-				# Take time 1 নিলে পরের দিন সকাল ১০ টার আগে বিল লিংকে দেওয়ার জন্য বলে দিও এনং অন্যথায় অটো অফ হবে সেটা জানিয়ে দিও।
-			
-			</p>
+				এই PPP কাস্টামার রাউটারে বসিয়ে ইন্টারনেট এক্সেস করে নতুন PPP রেজিস্ট্রেশন করে পুনরায় রাউটারে নতুনটা বসিয়ে দিন।
+			</p> <br>
 
 			<p class="card-text">
 				<?php echo $sms_expiring_3day_result; ?> <br>
