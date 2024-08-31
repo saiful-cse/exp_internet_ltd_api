@@ -25,7 +25,7 @@ if (
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        EXPERT INTERNET SOLUTION
+        BAY COMMUNICATION
     </title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
@@ -44,17 +44,23 @@ if (
 
             <div class="header">
                 <div class="d-flex justify-content-center mt-2">
-                    <img style="width: 350px; height: 50px;" src="../img/lo.png" alt="">
+                    <img style="width: 350px; height: 50px;" src="../img/baycom_banner.png" alt="">
                 </div>
             </div>
             <hr class="header_separator">
+
+            <p style="text-align: left; color:  gray; font-size: 15px; margin-left: 15px;">PACKAGES: <br>
+                >> Basic, 20Mbps, 800 Tk Monthly <br> >>
+                Standard/Regular, 30Mbps, 1000 Tk Monthly
+                <br> >> Professional, 35Mbps, 1200 Tk
+                Monthly <br> >> Economy, 50Mbps, 1500 Tk Monthly <br>
+            </p>
 
             <div class="container">
                 <?php
                 switch ($_SESSION['status']) {
                     case 'cancel':
                         //View in design
-
                         unset($_SESSION['client_id']);
                         unset($_SESSION['amount']);
                         unset($_SESSION['token']);
@@ -100,7 +106,7 @@ if (
 
                         <div id='loader' style='display: none; text-align: center;'>
                             <img src='../img/load.gif' width="100" height="100">
-                            <p style="text-align: center, font-family: 'Bangla', sans-serif; font-size: 17px;">আপনার পেমেন্ট প্রসেস করা হচ্ছে, একটু অপেক্ষা করুন...</p>
+                            <p style="text-align: center; font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার পেমেন্ট প্রসেস করা হচ্ছে, একটু অপেক্ষা করুন...</p>
                         </div>
 
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
@@ -133,14 +139,16 @@ if (
                                 })
                             });
 
-                            const txnStoreApiPromise = (txnid, customerMsisdn) => {
+                            const txnStoreApiPromise = (trxID, customerMsisdn, completedTime) => {
                                 return new Promise((resolve, reject) => {
                                     $.ajax({
                                         type: "POST",
                                         url: "txn_store.php",
                                         data: {
-                                            "txnid": txnid,
-                                            "customerMsisdn": customerMsisdn
+                                            "trxID": trxID,
+                                            "customerMsisdn": customerMsisdn,
+                                            "completedTime": completedTime
+
                                         },
                                         success: function(data) {
                                             resolve(data)
@@ -166,7 +174,8 @@ if (
 
                                         if (executeObj.transactionStatus === 'Completed') {
                                             try {
-                                                var txnStorePromiseData = await txnStoreApiPromise(executeObj.trxID, executeObj.customerMsisdn);
+                                                
+                                                var txnStorePromiseData = await txnStoreApiPromise(executeObj.trxID, executeObj.customerMsisdn, executeObj.paymentExecuteTime);
 
                                                 var txnStoreObj = JSON.parse(txnStorePromiseData);
 
@@ -193,11 +202,10 @@ if (
                                             var queryPromiseData = await queryApiPromise;
                                             var queryobj = JSON.parse(queryPromiseData);
 
-                                            console.log(queryPromiseData);
                                             if (queryobj.transactionStatus === 'Completed') {
 
                                                 try {
-                                                    var txnStorePromiseData = await txnStoreApiPromise(queryobj.trxID, queryobj.customerMsisdn);
+                                                    var txnStorePromiseData = await txnStoreApiPromise(queryobj.trxID, queryobj.customerMsisdn, queryobj.paymentExecuteTime);
                                                     var txnStoreObj = JSON.parse(txnStorePromiseData);
 
                                                     if (txnStoreObj.status === 200) {
@@ -235,9 +243,7 @@ if (
             <br>
             <br>
             <br>
-            <p style="text-align: center; color:  gray; font-size: 10px;">Internet Service Provider of</p>
-            <img src="../img/bayicon.png" alt="" style="width:50px;height:28px; display: block; margin-left: auto; margin-right: auto;">
-            <p style="text-align: center; color: green; font-size: 20px;"><strong>BAY COMMUNICATION</strong></p> <br>
+
             <p style="text-align: center; color: black; font-size: 15px;">HELP LINE </br><strong> 01975-559161 </strong> (9AM to
                 6PM)</p>
 

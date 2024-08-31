@@ -34,10 +34,10 @@ $details = $client->client_details();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        EXPERT INTERNET SOLUTION
+        BAY COMMUNICATION
     </title>
     <!-- add icon link -->
-    <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
+    <link rel="icon" href="img/bayicon.png" type="image/x-icon">
 
     <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
 
@@ -63,17 +63,23 @@ $details = $client->client_details();
                 if (!empty($details)) {
 
                     switch ($details['pkg_id']) {
-                        case 'Govt5':
+                        case 'Mini':
                             $pkg_price = 600;
                             break;
                         case 'Basic':
                             $pkg_price = 800;
                             break;
                         case 'Standard':
+                            $pkg_price = 10;
+                            break;
+                        case 'Regular':
                             $pkg_price = 1000;
                             break;
                         case 'Professional':
                             $pkg_price = 1200;
+                            break;
+                        case 'Economy':
+                            $pkg_price = 1500;
                             break;
 
                         default:
@@ -85,10 +91,10 @@ $details = $client->client_details();
                     $expiredate = new DateTime($details['expire_date']);
 
                     $_SESSION['name'] = $details['name'];
+                    $_SESSION['phone'] = $details['phone'];
                     $_SESSION['client_id'] = $details['id'];
                     $_SESSION['ppp_name'] = $details['ppp_name'];
                     $_SESSION['zone'] = $details['zone'];
-                    
 
                     if ($details['mode'] == 'Enable' && $details['registered'] == 1) {
 
@@ -108,7 +114,6 @@ $details = $client->client_details();
                                     <?php echo "<b>Name: </b>" . $details['name']; ?> <br>
                                     <?php echo "<b>Phone: </b>" . $details['phone']; ?> <br>
                                     <?php echo "<b>Area: </b>" . $details['area']; ?> <br>
-                                    <?php echo "<b>PPPoE: </b>" . $details['ppp_name']; ?> <br>
                                     <?php echo "<b>Expire Date: </b>" . date_format($expiredate, "d F Y"); ?> <br>
                                     <?php echo "<b>Month : </b>" . $totalmonth; ?> <br>
                                     <?php echo "<b>Package Name: </b>" . $details['pkg_id']; ?> <br>
@@ -126,8 +131,7 @@ $details = $client->client_details();
                                 <div class="card-body">
                                     <img src="img/success.png" alt="" />
                                     <p style="color: green;">Congratulation</p>
-                                    <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;"><?php echo $details['name'] . ", " . $details['area'] . ", " . $details['phone'] . "<br> আপনি " . $details['pkg_id'] . ", " . $details['speed'] . " প্যাকেজটি ব্যবহার করছেন, মাসিক বিল " . $pkg_price . " টাকা এবং " . date_format($expiredate, "d F Y") . " পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ"; ?></h3>
-
+                                    <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;"><?php echo $details['name'] . ", " . $details['area'] . ", " . $details['phone'] . "<br> আপনি " . $details['pkg_id'] . " প্যাকেজটি ব্যবহার করছেন, মাসিক বিল " . $pkg_price . " টাকা এবং " . date_format($expiredate, "d F Y") . " পর্যন্ত পরিশোধ করা আছে। <br> ধন্যবাদ"; ?></h3>
                                     <div class="input-btn mt-3">
                                         <a href="index.php" class="form-control btn btn-secondary">Exit</a>
                                     </div>
@@ -139,7 +143,6 @@ $details = $client->client_details();
                         $nextExpDate = new DateTime(date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . '+1 month')));
                         $_SESSION['amount'] = $pkg_price;
                         $_SESSION['expire_date'] = $nextExpDate->format('Y-m-d H:i:s');
-                        
                         ?>
 
                         <div class="card">
@@ -160,9 +163,10 @@ $details = $client->client_details();
                     <?php } else if ($details['registered'] == 0) { ?>
                         <div class="card messageCard">
                             <div class="card-body">
-                                <img src="img/error.png" alt="" />
-                                <p style="color: red;">Error!!</p>
-                                <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার দেওয়া মোবাইল নাম্বারটি দিয়ে ইন্টারনেট প্যাকেজ রেজিস্ট্রশন করা হয়নি। হেল্প লাইনে যোগাযোগ করুন।</h3>
+                                <img src="img/warning.png" alt="" />
+                               <br>
+                               <br>
+                                <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার দেওয়া মোবাইল নাম্বারটি দিয়ে ইন্টারনেট প্যাকেজ রেজিস্ট্রশন করা হয়নি। </h3>
                                 <div class="input-btn mt-3">
                                     <a href="index.php" class="form-control btn btn-secondary">Try Again</a>
                                 </div>
@@ -173,9 +177,10 @@ $details = $client->client_details();
 
                     <div class="card messageCard">
                         <div class="card-body">
-                            <img src="img/error.png" alt="" />
-                            <p style="color: red;">Error!!</p>
-                            <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার দেওয়া মোবাইল নাম্বারটি দিয়ে রেজিস্ট্রশন করা হয়নি। সঠিক মোবাইল নাম্বার দিয়ে আবার চেস্টা করুন।</h3>
+                            <img src="img/warning.png" alt="" />
+                            <br>
+                            <br>
+                            <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার দেওয়া মোবাইল নাম্বারটি দিয়ে রেজিস্ট্রশন করা হয়নি।</h3>
                             <div class="input-btn mt-3">
                                 <a href="index.php" class="form-control btn btn-secondary">Try Again</a>
                             </div>
@@ -191,7 +196,6 @@ $details = $client->client_details();
         </div>
         <div class="col-sm"></div>
     </div>
-
 
     <!--card end here-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">

@@ -1,0 +1,16 @@
+{
+    
+    "primary": {
+        "status":"up",
+        "notify":"yes",
+        "up_time": "10.30",
+        "down_time":"09.30"
+    },
+    "secondery":{
+        "status":"up",
+        "notify":"yes",
+        "up_time": "10.30",
+        "down_time":"09.30"
+    }
+    
+}

@@ -3,17 +3,17 @@
 class Database{
     //Specify the own database credentials
     
-    // private $host = "localhost";
-    // private $db_name = "exp";
-    // private $username = "root";
-    // private $password = "";
-    // public $conn;
-    
     private $host = "localhost";
-    private $db_name = "u650347749_expert";
-    private $username = "u650347749_saif";
-    private $password = "Saiful@#21490";
+    private $db_name = "exp_app";
+    private $username = "root";
+    private $password = "";
     public $conn;
+    
+    // private $host = "localhost";
+    // private $db_name = "u530925762_expapp";
+    // private $username = "u530925762_saifulexp";
+    // private $password = "Saiful@#21490";
+    // public $conn;
 
     //Get the database connection
     public function getConnection(){

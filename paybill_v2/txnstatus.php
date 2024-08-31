@@ -12,18 +12,12 @@ if (!isset($_GET['status'])) {
 } else {
     $status = $_GET['status'];
 }
-
-unset($_SESSION['zone']);
-unset($_SESSION['client_id']);
-unset($_SESSION['amount']);
 unset($_SESSION['token']);
-unset($_SESSION['paymentID']);
-unset($_SESSION['expire_date']);
 
 function ppp_enable()
 {
     include_once './config/database.php';
-    include_once  './objects/device.php';
+    include_once './objects/device.php';
 
     $database = new Database();
     $db = $database->getConnection();
@@ -66,7 +60,7 @@ function ppp_enable()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        EXPERT INTERNET SOLUTION
+        BAY COMMUNICATION
     </title>
     <!-- add icon link -->
     <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
@@ -85,7 +79,6 @@ function ppp_enable()
         <div class="col-sm">
             <?php include('header.html') ?>
             <br>
-            <br>
             <div class="container">
                 <?php
 
@@ -96,10 +89,21 @@ function ppp_enable()
                     <div class="card messageCard">
                         <div class="card-body">
                             <img src="img/success.png" alt="" />
-                            <p style="color: green;">
-                                Success
+                            <p style="color: green; font-size: 15px;">
+                                <strong> Payment has been completed</strong>
                             </p>
-                            <h3>Payment has been completed</h3>
+                            <p style="font-size: 12px;">
+                                <?php echo "Name: " . $_SESSION['name']; ?> <br>
+                                <?php echo "Reg. Phone: " . $_SESSION['phone']; ?> <br>
+                                <?php echo "Sender: " . $_SESSION['customerMsisdn']; ?> <br>
+                                <?php echo "Receiver: 018XXXXXXX44"; ?> <br>
+                                <?php echo "bKash Txn Id: " . $_SESSION['trxID']; ?> <br>
+                                <?php echo "Time: " . $_SESSION['completedTime']; ?> <br>
+                                <?php echo "Amount: " . $_SESSION['amount'] . " TK"; ?>
+                            </p>
+
+                            <h3 style="font-family: 'Bangla', sans-serif; font-size: 12px; color:gray">আপনার ওয়াইফাই কানেকশনটি চালু করা হয়েছে, <br>লিংক দিয়ে বিল পেমেন্ট করার জন্য ধন্যবাদ</h3>
+
                             <div class="input-btn mt-3">
                                 <a href="index.php" class="form-control btn btn-secondary">Exit</a>
                             </div>
@@ -111,9 +115,7 @@ function ppp_enable()
                     <div class="card messageCard">
                         <div class="card-body">
                             <img src="img/error.png" alt="" />
-                            <p style="color: red;">
-                                Error!!
-                            </p>
+                            <br> <br>
                             <h3>Something went wrong!!</h3>
                             <div class="input-btn mt-3">
                                 <a href="index.php" class="form-control btn btn-secondary">Try again</a>
@@ -125,10 +127,9 @@ function ppp_enable()
                 ?>
                     <div class="card messageCard">
                         <div class="card-body">
+
                             <img src="img/error.png" alt="" />
-                            <p style="color: red;">
-                                Error!!
-                            </p>
+                            <br> <br>
                             <h3> <?php echo $status; ?></h3>
                             <div class="input-btn mt-3">
                                 <a href="index.php" class="form-control btn btn-secondary">Try again</a>
@@ -139,7 +140,7 @@ function ppp_enable()
                 } ?>
 
                 <br>
-                <br>
+
                 <br>
                 <?php include('footer.html') ?>
             </div>

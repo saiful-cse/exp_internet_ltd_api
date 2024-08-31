@@ -11,6 +11,7 @@ $txn = new Txn($db);
 
 $txn->client_id = $_SESSION['client_id'];
 $txn->name = $_SESSION['name'];
+$txn->zone = $_SESSION['zone'];
 $txn->amount = $_SESSION['amount'];
 $txn->expire_date = $_SESSION['expire_date'];
 $txn->details = $_SESSION['name'].", ".$_SESSION['ppp_name'].", Bill, bKash, ".$_POST['txnid'].", ".$_POST['customerMsisdn'];

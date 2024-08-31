@@ -23,10 +23,10 @@ if (isset($_POST['next'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        EXPERT INTERNET SOLUTION
+        BAY COMMUNICATION
     </title>
     <!-- add icon link -->
-    <link rel="icon" href="https://expert-internet.net/logo/expert_internet.png" type="image/x-icon">
+    <link rel="icon" href="img/bayicon.png" type="image/x-icon">
     <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
 
     <!-- bootstrap linked-->
@@ -36,34 +36,33 @@ if (isset($_POST['next'])) {
 </head>
 
 <body>
-        <div class="row">
-            <div class="col-sm"></div>
-            <div class="col-sm">
-                <?php include('header.html') ?>
-                
-                <div class="container">
-                    <div class="card">
-                        <h6 style="font-family: 'Bangla', sans-serif; font-size: 20px;">
-                            রেজিস্ট্রেশনকৃত মোবাইল নাম্বারটি দিন
-                        </h6>
-                        <span><?php echo $error; ?></span>
-                        <form action="index.php" method="post">
-                            <input type="tel" maxlength="20" name="mobile_no" value="<?php echo $mobile_no ?>" class="form-control input-btn mt-2"><br>
-                            <div class="input-btn">
-                                <button type="submit" name="next" class="form-control btn btn-secondary">Next</button>
-                            </div>
-                        </form>
-                        
-                    </div>
-                    <br>
-                    <br>
-                    <br>
-                    <?php include('footer.html') ?>
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">
+            <?php include('header.html') ?>
+            <div class="container">
+                <div class="card">
+                    <h6 style="font-family: 'Bangla', sans-serif; font-size: 20px;">
+                        রেজিস্ট্রেশনকৃত মোবাইল নাম্বারটি দিন
+                    </h6>
+                    <span><?php echo $error; ?></span>
+                    <form action="index.php" method="post">
+                        <input type="tel" maxlength="20" name="mobile_no" value="<?php echo $mobile_no ?>" class="form-control input-btn mt-2"><br>
+                        <div class="input-btn">
+                            <button type="submit" name="next" class="form-control btn btn-secondary">Next</button>
+                        </div>
+                    </form>
+
                 </div>
+                <br>
+                <br>
+                <br>
+                <?php include('footer.html') ?>
             </div>
-            <div class="col-sm"></div>
         </div>
-    
+        <div class="col-sm"></div>
+    </div>
+
     <!--card end here-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>

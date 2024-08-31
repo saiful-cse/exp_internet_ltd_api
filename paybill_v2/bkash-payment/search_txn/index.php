@@ -1,6 +1,6 @@
 <?php
 
-$error = $txn_id = $pin = $response = "";
+$error = $txn_id = $response = "";
 
 $request_token = bkash_Get_Token();
 
@@ -10,13 +10,12 @@ if (isset($request_token['id_token'])) {
 
     if (isset($_POST['search'])) {
         $txn_id = $_POST['txn_id'];
-        $pin = $_POST['pin'];
         if (empty($txn_id)) {
             $error = '<div class="alert alert-danger">Please enter bKash transaction ID</div>';
         } else {
 
-            $response = 
-            '<div class="card">
+            $response =
+                '<div class="card">
             <h5 class="card-title text-center">
                 Result <br>
             </h5>
@@ -102,62 +101,46 @@ function searchTxn($txn_id)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Expert Internet Ltd.
+        BAY COMMUNICATION
     </title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
-    </script>
+    <link href="https://fonts.maateen.me/bangla/font.css" rel="stylesheet">
 
     <!-- bootstrap linked-->
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
-        .info_footer {
-            background: #F16521;
-        }
-    </style>
+
 </head>
 
 <body>
-    <div class="header">
-        <div class="d-flex justify-content-center mt-2">
-            <div class="site_logo">
-                <img src="./img/explogo.png" alt="">
-            </div>
-            <div class="site_info">
-                <h2>Expert Internet Ltd.</h2>
-                <p>A Qualified internet service team</p>
-            </div>
-        </div>
-    </div>
-    <hr class="header_separator">
-    <div class="main_content">
-        <div class="container">
-            <div class="card">
-                <span><?php echo $error; ?></span>
-                <form action="index.php" method="post">
-
-                    <input style="text-align:center;" type="text" name="txn_id" maxlength="30" placeholder="bKash transactin ID" value="<?php echo $txn_id ?>" class="form-control input-btn mt-2"><br>
-
-                    <div class="input-btn">
-                        <button type="submit" name="search" class="form-control btn btn-secondary">Search</button>
-                    </div>
-                </form>
-            </div>
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">
             <br>
-            <?php echo $response; ?>
+            <br>
+            <br>
+            <div class="container">
+                <div class="card">
+                    <h6 style="font-family: 'Bangla', sans-serif; font-size: 20px;">
+                        বিকাশ ট্রানজেকশন নাম্বারটি দিন
+                    </h6>
+                    <span><?php echo $error; ?></span>
+                    <form action="index.php" method="post">
 
-        </div>
-    </div>
+                        <input style="text-align:center;" type="text" name="txn_id" maxlength="30" placeholder="bKash transactin ID" value="<?php echo $txn_id ?>" class="form-control input-btn mt-2"><br>
 
-    <footer>
-        <div class="container">
-            <div class="box1">
-                <img src="img/phone_call.png" />
-                <p>01975-559161</p>
+                        <div class="input-btn">
+                            <button type="submit" name="search" class="form-control btn btn-secondary">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <?php echo $response; ?>
+
             </div>
         </div>
-    </footer>
+        <div class="col-sm"></div>
+    </div>
     <!--card end here-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>
@@ -167,6 +150,7 @@ function searchTxn($txn_id)
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
+
 </body>
 
 </html>

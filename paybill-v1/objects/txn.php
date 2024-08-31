@@ -12,7 +12,7 @@ class Txn
     /*
      * Objects properties
      */
-    public $details, $client_id, $expire_date, $name, $amount, $txnid;
+    public $details, $client_id, $expire_date, $name, $zone, $amount, $txnid;
 
     /*
      * Constructor with $db as database connection
@@ -30,8 +30,8 @@ class Txn
             
             $this->conn->beginTransaction();
             $query = "INSERT INTO txn_list 
-              SET client_id = :client_id, name = :name, date = :date, credit = :credit, 
-              type = 'Bill', details = :details, method = 'bKash', admin_id = '9588'";
+              SET client_id = :client_id, name = :name, zone = :zone, date = :date, credit = :credit, 
+              type = 'Bill', details = :details, method = 'bKash', emp_id = '9161'";
 
             $query2 = "UPDATE clients SET mode = 'Enable', take_time = 0, expire_date = '$this->expire_date', sms = 'unsent'
                WHERE id = '$this->client_id'";
@@ -43,6 +43,7 @@ class Txn
             //Bind Value
             $stmt->bindParam(":client_id", $this->client_id);
             $stmt->bindParam(":name", $this->name);
+            $stmt->bindParam(":zone", $this->zone);
             $stmt->bindParam(":date", $date);
             $stmt->bindParam(":credit", $this->amount);
             $stmt->bindParam(":details", $this->details);

@@ -85,7 +85,7 @@ function createPaymentAPI()
         'currency' => 'BDT',
         'merchantInvoiceNumber' => $invoice,
         'intent' => 'sale',
-        'callbackURL' => "https://expert-internet.net/paybill/bkash-payment/callback.php"
+        'callbackURL' => "http://localhost/api/expert_internet_api/paybill_v2/bkash-payment/callback.php"
     );
     $url = curl_init($createURL);
 

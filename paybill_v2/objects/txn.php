@@ -31,7 +31,7 @@ class Txn
             $this->conn->beginTransaction();
             $query = "INSERT INTO txn_list 
               SET client_id = :client_id, name = :name, zone = :zone, date = :date, credit = :credit, 
-              type = 'Bill', details = :details, method = 'bKash', emp_id = '9588'";
+              type = 'Bill', details = :details, method = 'bKash', emp_id = '9161'";
 
             $query2 = "UPDATE clients SET mode = 'Enable', take_time = 0, expire_date = '$this->expire_date', sms = 'unsent'
                WHERE id = '$this->client_id'";

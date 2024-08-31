@@ -3,10 +3,12 @@
     --button-color: #F16521;
 }
 
+
 html,
 body {
     overflow-x: hidden;
     height: 100vh;
+    background: #c8cac8;
 }
 
 .main_content {
@@ -93,7 +95,7 @@ body {
     background: #fdfbfb!important;
     border: 1px solid var(--primary-color)!important;
     padding: 20px;
-    border-radius: 15px!important;
+    border-radius: 5px!important;
 }
 
 .messageCard {
