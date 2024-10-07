@@ -40,7 +40,7 @@ $sms = new Sms($db);
 function sms_send($numbers)
 {
     require '../config/url_config.php';
-    $message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
+    $message = "WiFi ৩দিন পর অফ হবে,সচল রাখতে লিংকে বিল পে করুন\nbaycombd.com/paybill/";
 
     $data = [
         "api_key" => $sms_api_key,

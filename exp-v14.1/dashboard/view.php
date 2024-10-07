@@ -33,8 +33,7 @@ function expipering_3day_client_sms_send()
 		$ids =  implode(', ', $id);
 		$numbers =  implode(', ', $num);
 
-		$expired_3day_message = "⚠️ Warning!!\nআপনার Wi-Fi সংযোগের মেয়াদ আগামী ৩ দিন পর শেষ হবে। সংযোগটি চালু রাখতে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
-
+        $expired_3day_message = "WiFi ৩দিন পর অফ হবে,সচল রাখতে লিংকে বিল পে করুন\nbaycombd.com/paybill/";
 
 		//Set the value
 		$sms->ids = $ids;
@@ -114,8 +113,9 @@ function expired_client_sms_send_disconnect()
 
 		if ($mikrotik_response['status'] == 200) {
 
-			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
-
+            $expired_client_message = "WiFi মেয়াদ শেষ, অটো চালু করতে লিংকে বিল পে করুন৷\nbaycombd.com/paybill/";
+            
+            
 			//Set the value
 			$sms->ids = $ids;
 			$sms_send_response = json_decode(sms_send($numbers, $expired_client_message), true);
@@ -251,8 +251,10 @@ function expired_take_time_client_sms_send_disconnect()
 
 		if ($mikrotik_response['status'] == 200) {
 
-			$expired_client_message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
-
+            $expired_client_message = "WiFi মেয়াদ শেষ, অটো চালু করতে লিংকে বিল পে করুন৷\nbaycombd.com/paybill/";
+            
+            
+            
 			//Set the value
 			$sms->ids = $ids;
 			$sms_send_response = json_decode(sms_send($numbers, $expired_client_message), true);
@@ -347,7 +349,7 @@ function sms_send($numbers, $message)
 	return $response;
 }
 
-if ("00:00" <= date("H:i") && "03:00" >= date("H:i")) {
+if ("09:00" <= date("H:i") && "18:00" >= date("H:i")) {
 	expipering_3day_client_sms_send();
 	expired_client_sms_send_disconnect();
 	expired_take_time_client_sms_send_disconnect();
@@ -425,11 +427,6 @@ $expiredDataPoints = array(
 
 			<div class="alert alert-warning" role="alert">
 				<h4 class="alert-heading">Notice</h4>
-				<p> # প্রতিদিন সকাল ১০ টা হতে বিলে ৩ টার মধ্যে যাদের বিলের মেয়াদ শেষ তাদের লাইন অফ হবে এবং অগ্রীম ৩ দিন আগে ওয়ার্নিং SMS যাবে।
-				</p>
-				<hr>
-				<p># Take time 1 ছাড়া লাইন Enable করলে সকাল ১০ টা হতে বিলে ৩ টার মধ্যে অফ হয়ে যাবে।</p>
-				<hr>
 				<p># সর্বদা কাস্টমারদেরকে লিংক দিয়ে বিলে দিতে অবহিত করুন এবং বিলের লিংক SMS করে দিন।</p>
 			</div>
 

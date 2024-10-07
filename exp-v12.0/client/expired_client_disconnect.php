@@ -41,8 +41,9 @@ $sms = new Sms($db);
 function sms_send($numbers)
 {
     require '../config/url_config.php';
-    $message = "আপনার WiFi সংযোগের মেয়াদ শেষ, অটো চালু করতে লিংক দিয়ে বিল পরিশোধ করুন।\nhttps://baycombd.com/paybill/";
+    $message = "WiFi মেয়াদ শেষ, অটো চালু করতে লিংকে বিল পে করুন৷\nbaycombd.com/paybill/";
 
+    
     $data = [
         "api_key" => $sms_api_key,
         "senderid" => $sms_api_senderid,

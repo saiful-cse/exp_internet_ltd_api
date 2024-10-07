@@ -10,9 +10,11 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 //RoterOS
 use PEAR2\Net\RouterOS;
 
-$login_ip = "103.134.39.234";
-$username = "api";
-$password = "Saiful@#21490";
+$data = json_decode(file_get_contents("php://input"));
+
+$login_ip = $data->login_ip;
+$username = $data->username;
+$password = $data->password;
 
 require_once './PEAR2/Autoload.php';
 
@@ -25,25 +27,18 @@ try {
 
     $secret_ppp = array();
 
-    //not create another card file, adjusting same file
-
-    // foreach ($util->getAll() as $item) {
-        
-    //     array_push($secret_ppp,  $item->getProperty("name"));
-    // }
-    // echo json_encode($secret_ppp);
-
     foreach ($util->getAll() as $item) {
-        
-        if($item->getProperty('disabled') == "false"){
+
+        if ($item->getProperty('disabled') == "false") {
             array_push($secret_ppp,  $item->getProperty("name"));
         }
-        
     }
-    echo json_encode($secret_ppp);
-    
-    
-    
+    echo json_encode(
+        array(
+            "status" => 200,
+            "secret" => $secret_ppp
+        )
+    );
 
 } catch (\Throwable $th) {
     echo json_encode(

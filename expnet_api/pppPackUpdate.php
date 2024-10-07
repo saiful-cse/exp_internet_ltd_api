@@ -30,10 +30,9 @@ try {
         $util2->set(
             $util2->find($pppName),
             array(
-                'profile' => 'Basic'
+                'profile' => $data->pack
             )
         );
-       
     }
 
     echo json_encode(array(

@@ -70,7 +70,7 @@ $details = $client->client_details();
                             $pkg_price = 800;
                             break;
                         case 'Standard':
-                            $pkg_price = 10;
+                            $pkg_price = 1000;
                             break;
                         case 'Regular':
                             $pkg_price = 1000;
@@ -120,7 +120,10 @@ $details = $client->client_details();
                                     <?php echo "<b>Package Price: </b>" . $pkg_price . " TK (Monthly)"; ?> <br>
                                     <?php echo "<b>Payable amount: </b>" . $pkg_price . ' X ' . $totalmonth . ' = ' . $totalamount . " TK"; ?> <br>
                                 </p>
-                                <p class="text-center" style="color: gray; font-family: 'Bangla', sans-serif; font-size: 20px;">সব তথ্য সঠিক থাকলে কনফার্ম করুন</p>
+
+                            
+                                <h5 class="text-center" style="color: red; font-family: 'Bangla', sans-serif; font-size: 20px;">সব তথ্য সঠিক থাকলে কনফার্ম করুন, Successfull মেসেজ না আসা পর্যন্ত ব্রাউজার ও ইন্টারনেট কানেকশন বন্ধ করবেন না, অন্যথায় পেমেন্ট ফেইল হতে পারে।</h5> <br>
+
                                 <div class="input-btn">
                                     <a href="./bkash-payment/" class="form-control btn btn-secondary">Confirm</a>
                                 </div>
@@ -155,7 +158,8 @@ $details = $client->client_details();
                                 <?php echo "<b>Package Name: </b>" . $details['pkg_id']; ?> <br>
                                 <?php echo "<b>Package Price: </b>" . $pkg_price . " TK (Monthly)"; ?> <br>
                             </p>
-                            <p class="text-center" style="color: gray; font-family: 'Bangla', sans-serif; font-size: 20px;">সব তথ্য সঠিক থাকলে কনফার্ম করুন</p>
+                            <h5 class="text-center" style="color: red; font-family: 'Bangla', sans-serif; font-size: 20px;">সব তথ্য সঠিক থাকলে কনফার্ম করুন, Successfull মেসেজ না আসা পর্যন্ত ব্রাউজার ও ইন্টারনেট কানেকশন বন্ধ করবেন না, অন্যথায় পেমেন্ট ফেইল হতে পারে।</h5> <br>
+                            
                             <div class="input-btn">
                                 <a href="./bkash-payment/" class="form-control btn btn-secondary">Confirm</a>
                             </div>
@@ -164,8 +168,8 @@ $details = $client->client_details();
                         <div class="card messageCard">
                             <div class="card-body">
                                 <img src="img/warning.png" alt="" />
-                               <br>
-                               <br>
+                                <br>
+                                <br>
                                 <h3 style="font-family: 'Bangla', sans-serif; font-size: 20px;">আপনার দেওয়া মোবাইল নাম্বারটি দিয়ে ইন্টারনেট প্যাকেজ রেজিস্ট্রশন করা হয়নি। </h3>
                                 <div class="input-btn mt-3">
                                     <a href="index.php" class="form-control btn btn-secondary">Try Again</a>

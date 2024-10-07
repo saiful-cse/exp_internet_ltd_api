@@ -9,103 +9,76 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 /*
- * include database and object files
- */
-include_once '../config/database.php';
-include_once  '../objects/sms.php';
-
-
-// generate json web token
-include_once '../config/core.php';
-include_once '../libs/php-jwt-master/src/BeforeValidException.php';
-include_once '../libs/php-jwt-master/src/ExpiredException.php';
-include_once '../libs/php-jwt-master/src/SignatureInvalidException.php';
-include_once '../libs/php-jwt-master/src/JWT.php';
-
-use \Firebase\JWT\JWT;
-
-/*
- * Instance database and dashboard object
- */
-
-$database = new Database();
-$db = $database->getConnection();
-
-$jwt = $_POST['jwt'];
-$message = $_POST['message'];
-$number = $_POST['phone'];
-$client_id = $_POST['client_id'];
-
-/*
- * Instance database and dashboard object
- */
-$database = new Database();
-$db = $database->getConnection();
-
-/*
  * Initialize object
  */
-$sms = new Sms($db);
+$number = "8801835559161";
+$message = "Testing";
 
-function sms_send($number)
+
+function sms_send($number, $message)
 {
-    include '../config/url_config.php';
+    $url = "https://cheapsmsbd.xyz/_backend/index.php?route=extension/module/all_sms_gateway/api/sms/send";
+
+    // Authorization token
+    $token = "4LJiyhrESy47BoY4bvo9IlqzqgP8E0f4xRPZcuXi";
+
+    // Data to be sent in the POST request
     $data = [
-        "api_key" => $sms_api_key,
-        "senderid" => $sms_api_senderid,
-        "number" => $number,
-        "message" => $_POST['message']
+        "send_through" => "android",
+        "type" => "plain",
+        "phone" => $number,
+        "message" => $message
     ];
 
+    // Initialize cURL session
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $sms_api_url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1); // Specify this is a POST request
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Send data
+
+    // Set the headers
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Authorization: Bearer ' . $token
+    ));
+
+    // Return the response instead of outputting it
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    // Execute the request and capture the response
     $response = curl_exec($ch);
+
+    // Check for cURL errors
+    if ($response === false) {
+        echo 'Curl error: ' . curl_error($ch);
+    } else {
+        return $response;
+    }
+    // Close the cURL session
     curl_close($ch);
-    return $response;
 }
 
 //data check
-if (!empty($jwt) && !empty($message) && !empty($number) && !empty($client_id)) {
+if (!empty($message) && !empty($number)) {
 
-    try {
+    $sms_send_response = json_decode(sms_send($number, $message), true);
 
-        // decode jwt
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
-
-        //set the value
-        $sms->msg_body = $message;
-        $sms->client_id = $client_id;
-        $sms->created_at = date("Y-m-d H:i:s");
-
-        $sms_send_response = json_decode(sms_send($number), true);
-
-        if ($sms_send_response['response_code'] == 202) {
-            if ($sms->idwise_sms_store()) {
-                echo json_encode(array(
-                    "status" => 200,
-                    "message" => "SMS sent successfully"
-                ));
-            }
-        } else {
-            echo json_encode(array(
-                "status" => 201,
-                "message" => "[" . $sms_send_response['response_code'] . "]" .
-                    ", " . $sms_send_response['error_message']
-            ));
-        }
-    } catch (\Throwable $th) {
+    if ($sms_send_response['status'] === 'success') {
         echo json_encode(array(
-            "status" => 401,
-            "message" => "Access denied",
-            "error" => $th->getMessage()
+            "status" => 200,
+            "message" => "SMS sent successfully"
+        ));
+    } else {
+        echo json_encode(array(
+            "status" => 201,
+            "message" => "[" . $sms_send_response['status'] . "]" .
+                ", " . $sms_send_response['message']
         ));
     }
 } else {
-
     echo json_encode(array(
         "status" => 416,
         "message" => "Data Incomplete."
